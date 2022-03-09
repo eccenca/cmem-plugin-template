@@ -13,6 +13,6 @@ The following tools are needed (beside copier):
 ## Usage
 
 ```
-∴ copier https://github.com/eccenca/cmem-plugin-template my-plugin
+copier gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
