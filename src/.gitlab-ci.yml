@@ -1,0 +1,39 @@
+---
+default:
+  image: docker-registry.eccenca.com/eccenca-python:v3.7.0
+
+stages:
+  - test
+  - build
+
+check:
+  stage: test
+  script:
+    - task check
+  artifacts:
+    when: always
+    reports:
+      cobertura:
+        - ./dist/coverage.xml
+      junit:
+        - ./dist/junit-bandit.xml
+        - ./dist/junit-flake8.xml
+        - ./dist/junit-mypy.xml
+        - ./dist/junit-pylint.xml
+        - ./dist/junit-pytest.xml
+    paths:
+      - ./dist/badge-coverage.svg
+      - ./dist/badge-tests.svg
+      - ./dist/coverage
+      - ./dist/coverage.xml
+
+build:
+  stage: build
+  script:
+    - task build
+  artifacts:
+    when: always
+    paths:
+      - ./dist/*.tar.gz
+      - ./dist/*.whl
+

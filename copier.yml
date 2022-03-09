@@ -1,0 +1,32 @@
+---
+project_slug:
+    type: str
+    help: |
+      The project slug will be used as part of the package name.
+      Example: You enter 'awesome' and the name will be 'cmem-plugin-awesome'.
+      Currently, only single lower-case words are allowed here ...
+
+project_description:
+    type: str
+    help: |
+      The project description will be used as part of the README files and the package info.
+    default: This eccenca Corporate Memory plugin totally rocks :-)
+
+author_name:
+    type: str
+    help: |
+      The author name will be used as part of the package info.
+    default: Anonymous Person
+
+author_mail:
+    type: str
+    help: |
+      The author mail will be used as part of the package info.
+    default: anonymous@example.org
+
+_tasks:
+    - "git init"
+    - "task poetry:init poetry:install check build"
+
+_subdirectory: src
+
