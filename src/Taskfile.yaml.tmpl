@@ -150,7 +150,6 @@ tasks:
   poetry:init:
     desc: Initialze poetry env and add dev dependencies used in this taskfile.
     cmds:
-      - poetry env use 3.9
       - poetry add -D pytest pytest-cov black bandit pylint-junit safety genbadge flake8-formatter-junit-xml typed-ast mypy coverage defusedxml
 
   poetry:shell:
@@ -158,4 +157,3 @@ tasks:
     interactive: true
     cmds:
       - poetry shell
-
