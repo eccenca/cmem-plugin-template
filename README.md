@@ -7,7 +7,7 @@ This repository contains a [copier](https://copier.readthedocs.io/) template whi
 The following tools are needed (beside copier):
 
 - [poetry](https://python-poetry.org/) with a python 3.9.x environment
-- [task](https://taskfile.dev/)
+- [task](https://taskfile.dev/) (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [cmemc](https://eccenca.com/go/cmemc)
 
 ## Usage
