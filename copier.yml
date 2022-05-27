@@ -24,5 +24,9 @@ author_mail:
       The author mail will be used as part of the package info.
     default: anonymous@example.org
 
+_tasks:
+    - "git init"
+    - "task poetry:init poetry:install check build"
+
 _subdirectory: src
 
