@@ -7,10 +7,10 @@ This repository contains a [copier](https://copier.readthedocs.io/) template, wh
 The following tools are needed:
 
 - Python 3.9
-- [copier](https://copier.readthedocs.io/) (>=v6) for project template rendering
-- [poetry](https://python-poetry.org/) (>=1.1) for packaging and dependency managing
-- [task](https://taskfile.dev/) (>=v3) for build task running
-- [cmemc](https://eccenca.com/go/cmemc) (>=v22.1) for interacting with eccenca Corporate Memory
+- [copier](https://copier.readthedocs.io/) (>= v6) for project template rendering
+- [poetry](https://python-poetry.org/) (>= v1.1) for packaging and dependency managing
+- [task](https://taskfile.dev/) (>= v3) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
+- [cmemc](https://eccenca.com/go/cmemc) (>= v22.1) for interacting with eccenca Corporate Memory
 
 Example installation of requirements on Ubuntu (using [pipx](https://pypa.github.io/pipx/) to install the python tools)
 
