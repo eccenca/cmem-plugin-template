@@ -1,26 +1,26 @@
 # cmem-plugin-template
 
-## Requirements
+## Requirements and Installation
 
-- [cmemc](https://eccenca.com/go/cmemc)
+This repository contains a [copier](https://copier.readthedocs.io/) template, which can be used to bootstrap an eccenca Corporate Memory python plugin.
+
+The following tools are needed:
+
 - Python 3.9
+- [copier](https://copier.readthedocs.io/) (>=v6) for project template rendering
+- [poetry](https://python-poetry.org/) (>=1.1) for packaging and dependency managing
+- [task](https://taskfile.dev/) (>=v3) for build task running
+- [cmemc](https://eccenca.com/go/cmemc) (>=v22.1) for interacting with eccenca Corporate Memory
 
-## Installation
+Example installation of requirements on Ubuntu (using [pipx](https://pypa.github.io/pipx/) to install the python tools)
 
-This repository contains a [copier version 5.1.0](https://copier.readthedocs.io/) template which can be used to bootstrap an eccenca Corporate Memory (CMEM) python plugin.
-The following tools are needed (beside copier):
-
-- [poetry](https://python-poetry.org/) with a python 3.9.x environment
-- [task](https://taskfile.dev/)
-
-Example with Python3 on Ubuntu:
 ```
- sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
- python3 -m pip install --user pipx
- python3 -m pipx ensurepath
- pipx install 'copier==5.1.0'
- pipx inject copier "MarkupSafe<2.1.0"
- pipx install poetry
+sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install copier
+pipx install poetry
+pipx install cmem-cmemc
 ```
 
 ## Usage

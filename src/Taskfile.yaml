@@ -2,8 +2,10 @@
 ---
 version: '3'
 
+dotenv: ['.copier-answers.env']
+
 vars:
-  PACKAGE: cmem_plugin_[[ project_slug ]]
+  PACKAGE: cmem_plugin_$project_slug
   DIST_DIR: dist
   PWD:
     sh: pwd
