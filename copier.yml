@@ -35,12 +35,5 @@ author_mail:
       > 
     default: anonymous@example.org
 
-_tasks:
-    - "git init"
-    - "task poetry:init"
-    - "task poetry:install"
-    - "task check"
-    - "task build"
-
 _subdirectory: src
 
