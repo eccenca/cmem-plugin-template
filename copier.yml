@@ -35,8 +35,5 @@ author_mail:
       > 
     default: anonymous@example.org
 
-_tasks:
-    - "git init || echo 'repository already initialized.'"
-
 _subdirectory: src
 
