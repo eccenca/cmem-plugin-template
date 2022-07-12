@@ -1,7 +1,9 @@
 """Random values workflow plugin module"""
 import uuid
 from secrets import token_urlsafe
+from typing import Sequence
 
+from cmem_plugin_base.dataintegration.context import ExecutionContext
 from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
 from cmem_plugin_base.dataintegration.entity import (
     Entities, Entity, EntitySchema, EntityPath,
@@ -54,7 +56,11 @@ class DollyPlugin(WorkflowPlugin):
         self.number_of_entities = number_of_entities
         self.number_of_values = number_of_values
 
-    def execute(self, inputs=()) -> Entities:
+    def execute(
+            self,
+            inputs: Sequence[Entities],
+            context: ExecutionContext
+    ) -> Entities:
         self.log.info("Start creating random values.")
         self.log.info(f"Config length: {len(self.config.get())}")
         value_counter = 0

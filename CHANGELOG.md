@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Changed
+
+- use plugin base ^2
+- change interface of execute
+
 ### Removed
 
 - all copier after task (they often break the execution)
