@@ -48,7 +48,7 @@ $ git commit -m "init"
 
 Then you can run a test build:
 ```
-$ task poetry:init poetry:install check build
+$ task check build
 ```
 
 Available tasks for your project can be listed like this:
