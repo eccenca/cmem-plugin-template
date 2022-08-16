@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-...
+### Added
+
+- .gitattributes to reclassify *.py.jinja files as python
+- action trigger on main branch
+
 
 ## [3.0.1]
 
