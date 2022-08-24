@@ -14,6 +14,9 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
+      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2

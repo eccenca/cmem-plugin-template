@@ -18,7 +18,7 @@ from cmem_plugin_base.dataintegration.context import (
 )
 
 needs_cmem = pytest.mark.skipif(
-    "CMEM_BASE_URI" not in os.environ, reason="Needs CMEM configuration"
+    len(os.environ.get('CMEM_BASE_URI', '')) == 0, reason="Needs CMEM configuration"
 )
 
 
@@ -31,7 +31,7 @@ class TestUserContext(UserContext):
         # get access token from default service account
         try:
             access_token: str = get_token()["access_token"]
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.RequestException:
             access_token: str = ''
         self.token = lambda: access_token
 
