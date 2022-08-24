@@ -1,8 +1,9 @@
 """Plugin tests."""
-from cmem_plugin_base.dataintegration.context import ExecutionContext
+from cmem_plugin_base.dataintegration.context import ExecutionContext, ExecutionReport
 
 from cmem_plugin_{{ project_slug }}.workflow import DollyPlugin
 from cmem_plugin_{{ project_slug }}.transform import Lifetime
+from tests.utils import TestExecutionContext
 
 
 def test_execution():
@@ -13,7 +14,7 @@ def test_execution():
     plugin = DollyPlugin(number_of_entities=entities, number_of_values=values)
     result = plugin.execute(
         inputs=(),
-        context=ExecutionContext()
+        context=TestExecutionContext()
     )
     for item in result.entities:
         assert len(item.values) == len(result.schema.paths)

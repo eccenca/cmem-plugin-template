@@ -3,7 +3,7 @@ import uuid
 from secrets import token_urlsafe
 from typing import Sequence
 
-from cmem_plugin_base.dataintegration.context import ExecutionContext
+from cmem_plugin_base.dataintegration.context import ExecutionContext, ExecutionReport
 from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
 from cmem_plugin_base.dataintegration.entity import (
     Entities, Entity, EntitySchema, EntityPath,
@@ -71,6 +71,13 @@ class DollyPlugin(WorkflowPlugin):
             for _ in range(self.number_of_values):
                 values.append([token_urlsafe(16)])
                 value_counter += 1
+                context.report.update(
+                    ExecutionReport(
+                        entity_count=value_counter,
+                        operation='wait',
+                        operation_desc='random values generated'
+                    )
+                )
             entities.append(
                 Entity(
                     uri=entity_uri,
