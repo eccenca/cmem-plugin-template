@@ -3,6 +3,8 @@ import os
 from typing import Optional
 
 import pytest
+import requests
+
 
 # check for cmem environment and skip if not present
 from cmem.cmempy.api import get_token
@@ -27,7 +29,10 @@ class TestUserContext(UserContext):
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
+        try:
+            access_token: str = get_token()["access_token"]
+        except requests.exceptions.ConnectionError:
+            access_token: str = ''
         self.token = lambda: access_token
 
 

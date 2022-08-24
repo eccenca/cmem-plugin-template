@@ -3,7 +3,7 @@ from cmem_plugin_base.dataintegration.context import ExecutionContext, Execution
 
 from cmem_plugin_{{ project_slug }}.workflow import DollyPlugin
 from cmem_plugin_{{ project_slug }}.transform import Lifetime
-from tests.utils import TestExecutionContext
+from tests.utils import TestExecutionContext, needs_cmem
 
 
 def test_execution():
@@ -18,6 +18,7 @@ def test_execution():
     )
     for item in result.entities:
         assert len(item.values) == len(result.schema.paths)
+
 
 def test_execution_with_optional_input():
     """Test Lifetime with optional input"""
@@ -37,3 +38,9 @@ def test_execution_with_zero_inputs():
     result = Lifetime(start_date='').transform(inputs=[])
     for item in result:
         assert len(item) == 0
+
+
+@needs_cmem
+def test_integration_placeholder():
+    """Placeholder to write integration testcase with cmem"""
+    pass
