@@ -46,6 +46,7 @@ class TestPluginContext(PluginContext):
         self.project_id = project_id
         self.user = user
 
+
 class TestTaskContext(TaskContext):
     """dummy Task context that can be used in tests"""
 
