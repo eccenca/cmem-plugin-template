@@ -10,6 +10,11 @@ vars:
   PWD:
     sh: pwd
 
+includes:
+  custom:
+    taskfile: ./TaskfileCustom.yaml
+    optional: true
+
 tasks:
 
   default:

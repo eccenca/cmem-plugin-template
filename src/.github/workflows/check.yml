@@ -2,9 +2,9 @@ name: check
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "develop" branch
+  # Triggers the workflow on push or pull request events but only for the "main" and "develop" branch
   push:
-    branches: [ "develop" ]
+    branches: [ "main", "develop" ]
   pull_request:
     branches: [ "develop" ]
 
@@ -14,6 +14,9 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
+      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
