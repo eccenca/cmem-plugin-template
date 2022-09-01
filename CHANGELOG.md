@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - needs_cmem annotation to run test only of cmem environment is available
 - Dummy contexts in utils that can be used in tests
 - lifetime transform plugin
+- option to extend tasks with `TaskfileCustom.yml`
 
 ### Changed
 
