@@ -6,7 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-...
+### Added
+
+- .gitattributes to reclassify *.py.jinja files as python
+- action trigger on main branch
+- set CMEM_BASE_URI and OAUTH_CLIENT_SECRET from github secrets
+- needs_cmem annotation to run test only of cmem environment is available
+- Dummy contexts in utils that can be used in tests
+- lifetime transform plugin
+- option to extend tasks with `TaskfileCustom.yml`
+
+### Changed
+
+- use plugin base ^2.1.0
 
 ## [3.0.1]
 
