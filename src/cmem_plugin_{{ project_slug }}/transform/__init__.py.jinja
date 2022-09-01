@@ -1,8 +1,12 @@
 """lifetime(age) transform plugin module"""
 import datetime
-from typing import Sequence
 from datetime import date
-from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
+from typing import Sequence
+
+from cmem_plugin_base.dataintegration.description import (
+    Plugin,
+    PluginParameter,
+)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 
@@ -10,8 +14,8 @@ from cmem_plugin_base.dataintegration.plugins import TransformPlugin
     label="Lifetime (age - {{ project_slug }})",
     plugin_id="Example-Lifetime-{{ project_slug }}",
     description="From the input date,"
-                "the value gets transformed into number of years (age)."
-                " Supports only xsd:date(YYYY-MM-DD) format.",
+    "the value gets transformed into number of years (age)."
+    " Supports only xsd:date(YYYY-MM-DD) format.",
     documentation="""
 This example transform operator returns lifetime(age).
 
@@ -37,7 +41,8 @@ The parameter can be specified:
 )
 class Lifetime(TransformPlugin):
     """Lifetime Transform Plugin"""
-    DATE_FORMAT = '%Y-%m-%d'
+
+    DATE_FORMAT = "%Y-%m-%d"
 
     def __init__(self, start_date: str):
         self.start_date = start_date
@@ -46,7 +51,7 @@ class Lifetime(TransformPlugin):
         result = []
         if len(inputs) != 0:
             for collection in inputs:
-                result += ([f"{self._calculate_age(_)}" for _ in collection])
+                result += [f"{self._calculate_age(_)}" for _ in collection]
         if len(result) == 0 and len(self.start_date) > 0:
             result += [f"{self._calculate_age(self.start_date)}"]
         return result
@@ -61,8 +66,7 @@ class Lifetime(TransformPlugin):
         # raised when birthdate is February 29
         # and the current year is not a leap year
         except ValueError:
-            birthday = born.replace(year=today.year,
-                                    month=born.month + 1, day=1)
+            birthday = born.replace(year=today.year, month=born.month + 1, day=1)
 
         if birthday > today:
             return today.year - born.year - 1

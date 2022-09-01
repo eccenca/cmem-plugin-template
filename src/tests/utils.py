@@ -14,11 +14,11 @@ from cmem_plugin_base.dataintegration.context import (
     UserContext,
     TaskContext,
     ExecutionContext,
-    ReportContext
+    ReportContext,
 )
 
 needs_cmem = pytest.mark.skipif(
-    len(os.environ.get('CMEM_BASE_URI', '')) == 0, reason="Needs CMEM configuration"
+    os.environ.get("CMEM_BASE_URI", "") == "", reason="Needs CMEM configuration"
 )
 
 
@@ -27,13 +27,8 @@ class TestUserContext(UserContext):
 
     __test__ = False
 
-    def __init__(self):
-        # get access token from default service account
-        try:
-            access_token: str = get_token()["access_token"]
-        except requests.exceptions.RequestException:
-            access_token: str = ''
-        self.token = lambda: access_token
+    def token(self) -> str:
+        return get_token()["access_token"]
 
 
 class TestPluginContext(PluginContext):
@@ -41,8 +36,11 @@ class TestPluginContext(PluginContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "dummyProject",
-                 user: Optional[UserContext] = TestUserContext()):
+    def __init__(
+        self,
+        project_id: str = "dummyProject",
+        user: Optional[UserContext] = TestUserContext(),
+    ):
         self.project_id = project_id
         self.user = user
 
@@ -52,7 +50,7 @@ class TestTaskContext(TaskContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = 'dummyProject'):
+    def __init__(self, project_id: str = "dummyProject"):
         self.project_id = lambda: project_id
 
 
@@ -61,8 +59,11 @@ class TestExecutionContext(ExecutionContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "dummyProject",
-                 user: Optional[UserContext] = TestUserContext()):
+    def __init__(
+        self,
+        project_id: str = "dummyProject",
+        user: Optional[UserContext] = TestUserContext(),
+    ):
         self.report = ReportContext()
         self.task = TestTaskContext(project_id=project_id)
         self.user = user
