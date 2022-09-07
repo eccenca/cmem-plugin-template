@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-...
+### Changed
+
+- gitlab build plan: forward base image to v3.9.12-1
 
 ## [3.1.1]
 
