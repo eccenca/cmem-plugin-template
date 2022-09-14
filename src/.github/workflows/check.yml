@@ -17,36 +17,66 @@ jobs:
     env:
       CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+      SF_USERNAME: ${{ secrets.SF_USERNAME }}
+      SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+      SF_SECURITY_TOKEN: ${{ secrets.SF_SECURITY_TOKEN }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+
       - name: Install Task
         uses: arduino/setup-task@v1
+
       - name: Set up python
         id: setup-python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+
       - name: Install and configure poetry
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
+
       - name: Load cached venv if cache exists
         id: cached-poetry-dependencies
         uses: actions/cache@v2
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: task check
+
+      - name: bandit
         run: |
-          task check
+          task check:bandit
+
+      - name: flake8
+        run: |
+          task check:flake8
+
+      - name: mypy
+        run: |
+          task check:mypy
+
+      - name: pylint
+        run: |
+          task check:pylint
+
+      - name: pytest
+        run: |
+          task check:pytest
+
+      - name: safety
+        run: |
+          task check:safety
+
       - name: Publish Test Report in Action
         uses: mikepenz/action-junit-report@v3
-        if: always() # always run even if the previous step fails
+        if: always()  # always run even if the previous step fails
         with:
           report_paths: dist/junit-*.xml
+
       - name: Publish Test and Coverage Report as PR comment
         uses: xportation/junit-coverage-report@main
         if: github.event_name == 'pull_request'

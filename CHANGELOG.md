@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [3.2.0]
+
+### Changed
+
+- gitlab: split check phase into separate jobs
+- github: split check phase into separate jobs
+
+### Added
+
+- gitlab: manual `publish:pypi` job which uses `PYPI_TOKEN`
+
 ## [3.1.2]
 
 ### Changed
