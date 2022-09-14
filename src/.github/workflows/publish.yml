@@ -5,11 +5,6 @@ on:
   push:
     tags:  # trigger the deploy job on tag creation
       - "*"  # Note: not all tags will result in allowed pypi version identifier
-  workflow_run:  # after check workflow is finished
-    workflows: [check]
-    branches: [main]
-    types:
-      - completed
   workflow_dispatch:  # allows for manual trigger
 
 permissions:
