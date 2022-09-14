@@ -19,12 +19,13 @@ The following command will generate a new project for you:
 $ copier gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
-After that, you should initialize the repository:
+After that, you should initialize the repository and git hooks:
 ```
 $ cd cmem-plugin-my
 $ git init
 $ git add .
 $ git commit -m "init"
+$ pre-commit install
 ```
 
 Then you can run a test build:
@@ -113,6 +114,8 @@ The github as well as gitlab build plans need the same environment variables as 
 
 Working github action pipelines can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions) and [here](https://github.com/eccenca/cmem-plugin-graphql/actions).
 
+In addition to the CMEM credentials, a `PYPI_TOKEN` variable can be set in order to use the optional `publish:pypi` task (gitlab only).
+
 ## Requirements and Installation
 
 The following tools are needed:
@@ -131,6 +134,8 @@ $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
 $ pipx install poetry
+$ poetry self add "poetry-dynamic-versioning[plugin]"
+$ pipx install pre-commit
 $ pipx install cmem-cmemc
 ```
 

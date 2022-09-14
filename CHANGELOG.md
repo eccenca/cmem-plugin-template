@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-...
+### Changed
+
+- gitlab: split check phase into separate jobs
+- github: split check phase into separate jobs
+
+### Added
+
+- gitlab: manual `publish:pypi` job which uses `PYPI_TOKEN`
 
 ## [3.1.2]
 
