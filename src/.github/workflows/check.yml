@@ -15,12 +15,6 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    env:
-      CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
-      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
-      SF_USERNAME: ${{ secrets.SF_USERNAME }}
-      SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
-      SF_SECURITY_TOKEN: ${{ secrets.SF_SECURITY_TOKEN }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -65,6 +59,9 @@ jobs:
           task check:pylint
 
       - name: pytest
+        env:
+          CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
         run: |
           task check:pytest
 
