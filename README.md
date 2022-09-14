@@ -10,16 +10,16 @@ This repository contains a [copier](https://copier.readthedocs.io/) template, wh
 - [gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
 - badges, junit XML files and coverage stat generation
 
-## Usage
+## Setup and Usage
 
 ### Project Initialization
 
-The following command will generate a new project for you:
+The following command will create a new project directory:
 ```
 $ copier gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
-After that, you should initialize the repository and git hooks:
+After that, you can initialize the repository and install git hooks:
 ```
 $ cd cmem-plugin-my
 $ git init
@@ -28,14 +28,14 @@ $ git commit -m "init"
 $ pre-commit install
 ```
 
-Then you can run a test build:
+Then you can run the local test suite an build a first deployment artifact:
 ```
 $ task check build
 ```
 
 ### Project Update
 
-From time to time, this template will be upgraded, so you can update:
+From time to time, this template will be upgraded, so you can update your repository as well:
 ```
 $ copier update
 ```
@@ -81,12 +81,12 @@ tasks:
 ```
 
 
-### Setup Build Plan and Integration Tests
+### Setup Integration Tests
 
-This template uses pytest for testing. Testing your plugin is crucial and should be done locally and integrated into Corporate Memory.
+This template uses pytest for testing. Testing your plugin is crucial and should be done locally and integrated with eccenca Corporate Memory.
 
 In order to provide access to a Corporate Memory deployment, you need to provide correct environment variables.
-Without these variables, only test without integration can be executed (see `1 skipped`):
+Without these variables, only tests without integration can be executed (see `1 skipped`):
 
 ```
 $ task check:pytest
@@ -107,26 +107,29 @@ $ task check:pytest
 
 ```
 
-The github as well as gitlab build plans need the same environment variables as secrets:
+### Setup Build Plan
 
-- For github, go to Settings > Secret > Actions > New Repository Secret
-- For gitlab, go to Settings > CI/CD > Variables (Expand) > Add Variable (protected, masked, all environments)
+The gitlab workflow / github action pipelines need the same environment variables as secrets:
 
-Working github action pipelines can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions) and [here](https://github.com/eccenca/cmem-plugin-graphql/actions).
+- For github, go to Settings > Secret > Actions > [New Repository Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+- For gitlab, go to Settings > CI/CD > Variables (Expand) > [Add Variable (protected, masked, all environments)](https://docs.gitlab.com/ee/ci/variables/)
 
-In addition to the CMEM credentials, a `PYPI_TOKEN` variable can be set in order to use the optional `publish:pypi` task (gitlab only).
+Example github pipelines can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions) and [here](https://github.com/eccenca/cmem-plugin-graphql/actions).
 
-## Requirements and Installation
+In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
 
-The following tools are needed:
+### Install Local Requirements
+
+The following tools are needed for local task execution:
 
 - Python 3.9
 - [copier](https://copier.readthedocs.io/) (>= v6) for project template rendering
-- [poetry](https://python-poetry.org/) (>= v1.1) for packaging and dependency managing
+- [poetry](https://python-poetry.org/) (>= v1.1) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
+- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
 - [task](https://taskfile.dev/) (>= v3) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [cmemc](https://eccenca.com/go/cmemc) (>= v22.1) for interacting with eccenca Corporate Memory
 
-Example installation of requirements on Ubuntu (using [pipx](https://pypa.github.io/pipx/) to install the python tools)
+Example installation of the requirements with [pipx](https://pypa.github.io/pipx/) on Ubuntu:
 
 ```
 $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin

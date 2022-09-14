@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [4.0.0pre]
+## [4.0.0]
 
 ### Changed
 
-- package versions are now auto-generated with poetry dynamic versioning plugin
+- package versions are now generated with the poetry dynamic versioning plugin
+
+### Added
+
+- github: publication of tagged versions to pypi.org (if `PYPI_TOKEN` is set)
+- gitlab: publication of tagged versions to pypi.org (if `PYPI_TOKEN` is set)
 
 ## [3.2.0]
 
