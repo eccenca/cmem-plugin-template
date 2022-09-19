@@ -43,6 +43,7 @@ tasks:
     summary: |
       prepare check targets by creating appropriate directory
     run: once
+    internal: true
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
@@ -63,6 +64,7 @@ tasks:
       - check:pylint
       - check:pytest
       - check:safety
+      - check:dependencies
 
   check:pytest:
     desc: Run pytest suite.
@@ -135,24 +137,44 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
 
+  check:dependencies:
+    desc: Check for outdated dependencies.
+    deps:
+      - poetry:install
+    cmds:
+      - poetry update --dry-run | grep -v "Already installed"
+      - cmd: echo "" && echo "Some dependencies need updates!" && echo ""
+        silent: true
+      - cmd: exit 1
+        silent: true
+    status:
+      - test {{.DEP_STATUS}} == 1
+    vars:
+      DEP_STATUS:
+        desc: "1 means: dependencies up to date; 0 means: there are updates"
+        sh: |
+          poetry update --dry-run | grep "Package operations" \
+          | grep "0 install" | grep "0 update" | grep "0 remov" | wc -l | xargs
+
   python:format:
     desc: Format Python files.
     deps:
       - task: poetry:install
     cmds:
       - poetry run black .
+      - poetry run isort .
 
   poetry:install:
     desc: Install dependencies managed by Poetry.
     run: once
     cmds:
-      - poetry install
+      - poetry install --no-interaction
 
   poetry:update:
     desc: Update dependencies managed by Poetry to their newest versions.
     run: once
     cmds:
-      - poetry update
+      - poetry update --no-interaction
 
   poetry:init:
     desc: Initialze poetry env and add dev dependencies used in this taskfile.

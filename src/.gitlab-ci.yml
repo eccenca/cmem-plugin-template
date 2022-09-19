@@ -15,12 +15,21 @@ default:
       - .venv
 
 stages:
+  - install
   - test
   - build
   - publish
 
+dependencies:
+  stage: install
+  script:
+    - task poetry:install
+    - task check:dependencies
+
 bandit:
   stage: test
+  needs:
+    - dependencies
   script:
     - task check:bandit
   artifacts:
@@ -31,6 +40,8 @@ bandit:
 
 flake8:
   stage: test
+  needs:
+    - dependencies
   script:
     - task check:flake8
   artifacts:
@@ -41,6 +52,8 @@ flake8:
 
 mypy:
   stage: test
+  needs:
+    - dependencies
   script:
     - task check:mypy
   artifacts:
@@ -51,6 +64,8 @@ mypy:
 
 pylint:
   stage: test
+  needs:
+    - dependencies
   script:
     - task check:pylint
   artifacts:
@@ -61,6 +76,8 @@ pylint:
 
 pytest:
   stage: test
+  needs:
+    - dependencies
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   script:
     - task check:pytest
@@ -79,6 +96,8 @@ pytest:
 
 safety:
   stage: test
+  needs:
+    - dependencies
   script:
     - task check:safety
 

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [3.4.0]
+
+### Added
+
+- check:dependencies task - Check for outdated dependencies.
+- github: add check:dependencies task
+- gitlab: add install stage with check:dependencies task
+- python:format additionally uses isort
+
+### Changed
+
+- use poetry dependency group for dev dependencies
+
 ## [3.3.2]
 
 ### Fixed

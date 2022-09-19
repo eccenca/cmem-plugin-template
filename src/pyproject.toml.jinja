@@ -18,7 +18,7 @@ keywords = [
 python = "^3.9"
 cmem-plugin-base = "^2.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.0"
 pytest-cov = "^3.0.0"
 black = "^22.1.0"
@@ -31,6 +31,7 @@ typed-ast = "^1.5.2"
 mypy = "^0.931"
 coverage = "^6.3.2"
 defusedxml = "^0.7.1"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]

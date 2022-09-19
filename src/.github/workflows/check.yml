@@ -69,6 +69,10 @@ jobs:
         run: |
           task check:safety
 
+      - name: dependencies
+        run: |
+          task check:dependencies
+
       - name: Publish Test Report in Action
         uses: mikepenz/action-junit-report@v3
         if: always()  # always run even if the previous step fails
