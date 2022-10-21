@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- pytest memray memory profiler plugin
+
 ### Changed
 
 - upgrade pytest-cov to 4.x

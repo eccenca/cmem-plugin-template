@@ -70,7 +70,7 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run pytest --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
+      - poetry run pytest --memray --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
       - poetry run genbadge coverage -l -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
       - poetry run genbadge tests -l -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
     vars:
