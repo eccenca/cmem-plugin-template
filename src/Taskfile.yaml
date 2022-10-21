@@ -2,7 +2,7 @@
 ---
 version: '3'
 
-dotenv: ['.copier-answers.env']
+dotenv: ['.copier-answers.env', '.env']
 
 vars:
   PACKAGE: cmem_plugin_$project_slug
