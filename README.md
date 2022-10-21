@@ -1,6 +1,6 @@
 # cmem-plugin-template
 
-[![workflow][build-shield]][github-actions] [![copier][copier-shield]][copier] [![eccenca Corporate Memory][cmem-shield]][cmem] ![python-shield]
+[![version][version-shield]][changelog] [![workflow][build-shield]][github-actions] [![copier][copier-shield]][copier] [![eccenca Corporate Memory][cmem-shield]][cmem] ![python-shield]
 
 This repository contains a [copier](https://copier.readthedocs.io/) template.
 
@@ -156,6 +156,8 @@ $ pipx install poetry
 $ poetry self add "poetry-dynamic-versioning[plugin]"
 ```
 
+[version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
+[changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
 [github-actions]: https://github.com/eccenca/cmem-plugin-template/actions
 [build-shield]: https://github.com/eccenca/cmem-plugin-template/actions/workflows/check.yml/badge.svg
 [copier]: https://copier.readthedocs.io/
