@@ -58,7 +58,6 @@ task: Available tasks for this project:
 * check:safety:   Check source code with safety.
 * clean:          Removes dist, *.pyc and some caches
 * deploy: 		  Install plugin package in Corporate Memory
-* poetry:init:    Initialze poetry env and add dev dependencies used in this taskfile.
 * poetry:install: Install dependencies managed by Poetry.
 * poetry:shell:   Open a poetry shell.
 * poetry:update:  Update dependencies managed by Poetry to their newest versions.

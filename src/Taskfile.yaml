@@ -154,11 +154,6 @@ tasks:
     cmds:
       - poetry update
 
-  poetry:init:
-    desc: Initialze poetry env and add dev dependencies used in this taskfile.
-    cmds:
-      - poetry add -D pytest pytest-cov black bandit pylint-junit safety genbadge flake8-formatter-junit-xml typed-ast mypy coverage defusedxml
-
   poetry:shell:
     desc: Open a poetry shell.
     interactive: true

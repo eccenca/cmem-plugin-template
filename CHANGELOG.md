@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - upgrade pytest-cov to 4.x
 - upgrade mypy to 0.982
 
+### Removed
+
+- unneeded `poetry:init` task
+
 
 ## [3.3.2]
 
