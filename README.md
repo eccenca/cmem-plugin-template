@@ -61,7 +61,7 @@ task: Available tasks for this project:
 * check:pytest:   Run pytest suite.
 * check:safety:   Check source code with safety.
 * clean:          Removes dist, *.pyc and some caches
-* deploy: 		  Install plugin package in Corporate Memory
+* deploy:         Install plugin package in Corporate Memory
 * poetry:install: Install dependencies managed by Poetry.
 * poetry:shell:   Open a poetry shell.
 * poetry:update:  Update dependencies managed by Poetry to their newest versions.
