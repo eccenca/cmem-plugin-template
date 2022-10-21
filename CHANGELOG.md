@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - pytest memray memory profiler plugin
 - enable `.env` file usage
+- Taskfile with `clean` and `check` tasks to test the template
 
 ### Changed
 

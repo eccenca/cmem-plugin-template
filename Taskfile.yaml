@@ -1,0 +1,35 @@
+# https://taskfile.dev
+---
+version: '3'
+
+vars:
+  PLUGIN_DIR: cmem-plugin-awesome
+
+tasks:
+
+  default:
+    summary: |
+      Just a list of documented tasks.
+    silent: true
+    cmds:
+      - task --list
+
+  clean:
+    desc: clean up working directory
+    cmds:
+      - rm -rf {{.PLUGIN_DIR}}
+
+  check:
+    desc: create plugin with default answers and run check
+    deps:
+      - clean
+    cmds:
+      - copier --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.PLUGIN_DIR}}
+      - git init {{.PLUGIN_DIR}}
+      - cd {{.PLUGIN_DIR}} && git add .
+      - cd {{.PLUGIN_DIR}} && git commit -m "init from template" --author="Anonymous Person <anonymous@example.org>"
+      - cd {{.PLUGIN_DIR}} && task check
+    vars:
+      TEMPLATE_REVISION:
+        sh: git describe
+
