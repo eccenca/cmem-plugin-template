@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - upgrade pytest-cov to 4.x
+- upgrade mypy to 0.982
 
 
 ## [3.3.2]
