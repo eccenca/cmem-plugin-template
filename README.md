@@ -1,10 +1,14 @@
 # cmem-plugin-template
 
-This repository contains a [copier](https://copier.readthedocs.io/) template, which can be used to bootstrap an eccenca Corporate Memory python plugin.
+[![workflow][build-shield]][github-actions] [![copier][copier-shield]][copier] [![eccenca Corporate Memory][cmem-shield]][cmem] ![python-shield]
+
+This repository contains a [copier](https://copier.readthedocs.io/) template.
+
+You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.eccenca.com) [python plugin](https://documentation.eccenca.com/latest/develop/python-plugins/).
 
 ## Features
 
-- [python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/) and [safety](https://pyup.io/safety/) integration
+- [python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/), [memray](https://bloomberg.github.io/memray/) and [safety](https://pyup.io/safety/) integration
 - local build plan with [task](https://taskfile.dev/)
 - [github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
 - [gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
@@ -146,9 +150,17 @@ $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/
 $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
-$ pipx install poetry
-$ poetry self add "poetry-dynamic-versioning[plugin]"
 $ pipx install pre-commit
 $ pipx install cmem-cmemc
+$ pipx install poetry
+$ poetry self add "poetry-dynamic-versioning[plugin]"
 ```
+
+[github-actions]: https://github.com/eccenca/cmem-plugin-template/actions
+[build-shield]: https://github.com/eccenca/cmem-plugin-template/actions/workflows/check.yml/badge.svg
+[copier]: https://copier.readthedocs.io/
+[copier-shield]: https://img.shields.io/badge/made%20with-copier-orange
+[cmem]: https://documentation.eccenca.com
+[cmem-shield]: https://img.shields.io/badge/made%20for-Corporate%20Memory-blue
+[python-shield]: https://img.shields.io/badge/python-v3.9-blue
 
