@@ -31,5 +31,5 @@ tasks:
       - cd {{.PLUGIN_DIR}} && task check
     vars:
       TEMPLATE_REVISION:
-        sh: git describe
+        sh: git rev-parse HEAD
 
