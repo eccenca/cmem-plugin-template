@@ -27,7 +27,10 @@ tasks:
       - copier --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.PLUGIN_DIR}}
       - git init {{.PLUGIN_DIR}}
       - cd {{.PLUGIN_DIR}} && git add .
-      - cd {{.PLUGIN_DIR}} && git commit -m "init from template" --author="Anonymous Person <anonymous@example.org>"
+      - cd {{.PLUGIN_DIR}} && git config init.defaultBranch main
+      - cd {{.PLUGIN_DIR}} && git config user.name "Anonymous Person"
+      - cd {{.PLUGIN_DIR}} && git config user.email "anonymous@example.org"
+      - cd {{.PLUGIN_DIR}} && git commit -m "init from template"
       - cd {{.PLUGIN_DIR}} && task check
     vars:
       TEMPLATE_REVISION:
