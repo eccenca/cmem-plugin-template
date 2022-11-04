@@ -5,6 +5,7 @@ from typing import Optional
 import pytest
 # check for cmem environment and skip if not present
 from cmem.cmempy.api import get_token
+from cmem.cmempy.config import get_oauth_default_credentials
 from cmem_plugin_base.dataintegration.context import (
     PluginContext,
     UserContext,
@@ -22,10 +23,15 @@ class TestUserContext(UserContext):
     """dummy user context that can be used in tests"""
 
     __test__ = False
+    default_credential: dict = {}
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
+        if not TestUserContext.default_credential:
+            TestUserContext.default_credential = get_oauth_default_credentials()
+        access_token = get_token(_oauth_credentials=TestUserContext.default_credential)[
+            "access_token"
+        ]
         self.token = lambda: access_token
 
 
