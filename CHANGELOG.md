@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- Tests: `TestUserContext` to get access token from default service account.
+- Tests: `TestUserContext` to get access token from default service account using OAuth credentials from cmempy config.
 - Taskfile: ingore safety and wheel upgrade (temporary).
 
 ## [3.4.0] 2022-10-21
