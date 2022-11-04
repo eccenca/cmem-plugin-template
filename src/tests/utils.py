@@ -27,8 +27,10 @@ class TestUserContext(UserContext):
 
     __test__ = False
 
-    def token(self) -> str:
-        return get_token()["access_token"]
+    def __init__(self):
+        # get access token from default service account
+        access_token: str = get_token()["access_token"]
+        self.token = lambda: access_token
 
 
 class TestPluginContext(PluginContext):
