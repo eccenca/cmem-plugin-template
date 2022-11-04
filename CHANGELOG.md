@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - dependabot to run github actions on daily basis.
+- Tests: return task id with `TestTaskContext` and updated `TaskExecutionContext`.
+
+### Changed
+
+- Tests: `TestUserContext` to get access token from default service account.
+- Taskfile: ingore safety and wheel upgrade (temporary).
 
 ## [3.4.0] 2022-10-21
 
