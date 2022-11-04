@@ -52,8 +52,9 @@ class TestTaskContext(TaskContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "dummyProject"):
+    def __init__(self, project_id: str = "dummyProject", task_id: str = "dummyTask"):
         self.project_id = lambda: project_id
+        self.task_id = lambda: task_id
 
 
 class TestExecutionContext(ExecutionContext):
