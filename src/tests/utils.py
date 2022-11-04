@@ -62,11 +62,7 @@ class TestExecutionContext(ExecutionContext):
 
     __test__ = False
 
-    def __init__(
-        self,
-        project_id: str = "dummyProject",
-        user: Optional[UserContext] = TestUserContext(),
-    ):
+    def __init__(self, project_id: str = "dummyProject", task_id: str = "dummyTask"):
         self.report = ReportContext()
-        self.task = TestTaskContext(project_id=project_id)
-        self.user = user
+        self.task = TestTaskContext(project_id=project_id, task_id=task_id)
+        self.user = TestUserContext()
