@@ -100,7 +100,7 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run mypy -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
+      - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
