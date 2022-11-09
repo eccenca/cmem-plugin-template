@@ -8,7 +8,6 @@ from cmem.cmempy.workspace.projects.resources.resource import (
     create_resource,
     get_resource_response,
 )
-from cmem_plugin_base.dataintegration.context import ExecutionContext, ExecutionReport
 
 from cmem_plugin_{{ project_slug }}.transform import Lifetime
 from cmem_plugin_{{ project_slug }}.workflow import DollyPlugin
@@ -42,6 +41,7 @@ def setup(request):
     request.addfinalizer(lambda: delete_project(PROJECT_NAME))
 
 
+@needs_cmem
 def test_workflow_execution():
     """Test plugin execution"""
     entities = 100
