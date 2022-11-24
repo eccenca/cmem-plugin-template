@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [3.4.1] 2022-11-24
 
 ### Added
 
-- dependabot to run github actions on daily basis.
+- dependabot github action on daily basis
+- mypy and flake8 execution for tests code
+
+### Changed
+
+- github actions to latest versions
 
 ## [3.4.0] 2022-10-21
 
