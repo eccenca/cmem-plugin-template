@@ -15,9 +15,15 @@ project_description:
     type: str
     help: |
 
-      > The project description will be used as part of the README file and the package info.
+      > The project description will be used as part of the README file and the
+      > package info.
       >
-    default: This eccenca Corporate Memory plugin totally rocks :-)
+      > Use an imperative form to describe what a user can do.
+      >
+      > Example descriptions can be listed here:
+      >     https://pypi.org/search/?q=%22cmem-plugin-%22
+      >
+    default: Create awesome Knowledge Graphs with eccenca Corporate Memory :-)
 
 author_name:
     type: str
