@@ -2,13 +2,13 @@
 project_slug:
     type: str
     help: |
-      
+
       > The project slug will be used as part of the package name.
-      > 
+      >
       > Example: You enter 'awesome' and the name will be 'cmem-plugin-awesome'.
-      > 
+      >
       > Currently, only single lower-case words are allowed here ...
-      > 
+      >
     default: awesome
 
 project_description:
@@ -16,7 +16,7 @@ project_description:
     help: |
 
       > The project description will be used as part of the README file and the package info.
-      > 
+      >
     default: This eccenca Corporate Memory plugin totally rocks :-)
 
 author_name:
@@ -24,7 +24,7 @@ author_name:
     help: |
 
       > The author name will be used as part of the package info.
-      > 
+      >
     default: Anonymous Person
 
 author_mail:
@@ -32,8 +32,18 @@ author_mail:
     help: |
 
       > The author mail will be used as part of the package info.
-      > 
+      >
     default: anonymous@example.org
+
+github_page:
+    type: str
+    default: ""
+    help: |
+
+      > This URL (e.g. https://github.com/eccenca/cmem-plugin-kafka) will be
+      > used as a base for icons and the homepage link in the project toml.
+      > Leave blank if your project is not on github.
+      >
 
 _subdirectory: src
 

@@ -2,6 +2,8 @@
 
 {{ project_description }}
 
+{% if github_page -%}[![workflow]({{ github_page }}/actions/workflows/check.yml/badge.svg)]({{ github_page}}/actions){%- endif %}
+
 ## Development
 
 - Run [task](https://taskfile.dev/) to see all major development tasks.

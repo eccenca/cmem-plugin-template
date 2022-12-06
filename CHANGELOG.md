@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added
+
+- github_page question (to add icons and homepage links)
+
+
 ## [3.4.1] 2022-11-24
 
 ### Added
@@ -14,6 +21,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - github actions to latest versions
+
 
 ## [3.4.0] 2022-10-21
 

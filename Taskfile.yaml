@@ -19,6 +19,16 @@ tasks:
     cmds:
       - rm -rf {{.PLUGIN_DIR}}
 
+  create:
+    desc: create plugin directory with current version and ask for answers
+    deps:
+      - clean
+    cmds:
+      - copier --vcs-ref {{.TEMPLATE_REVISION}} . {{.PLUGIN_DIR}}
+    vars:
+      TEMPLATE_REVISION:
+        sh: git rev-parse HEAD
+
   check:
     desc: create plugin with default answers and run check
     deps:

@@ -13,6 +13,7 @@ readme = "README-public.md"
 keywords = [
     "eccenca Corporate Memory", "plugin"
 ]
+{% if github_page -%}homepage = "{{ github_page }}"{%- endif %}
 
 [tool.poetry.dependencies]
 python = "^3.9"
