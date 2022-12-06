@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - github_page question (to add icons and homepage links)
-
+- pypi question (to add icons and links)
+- made for badge in README
 
 ## [3.4.1] 2022-11-24
 

@@ -45,5 +45,14 @@ github_page:
       > Leave blank if your project is not on github.
       >
 
+pypi:
+    type: bool
+    default: false
+    help: |
+
+      > Is your plugin published on pypi.org?
+      > This information is used to add more badges to the READMEs.
+      >
+
 _subdirectory: src
 
