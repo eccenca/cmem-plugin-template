@@ -112,7 +112,8 @@ tasks:
     cmds:
       # ignore 48547 rdflib - json-ld not in use
       # ignore 51358 safety - dev dependency only
-      - poetry run safety check -i 48547 -i 51358
+      # ignore 52322 gitpython - dev dependency only
+      - poetry run safety check -i 48547 -i 51358 -i 52322
 
   check:bandit:
     desc: Check source code with bandit.
