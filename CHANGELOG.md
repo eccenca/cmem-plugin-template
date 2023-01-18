@@ -11,7 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - github_page question (to add icons and homepage links)
 - pypi question (to add icons and links)
 - made for badge in README
-- Add github token for task checkout step in the github workflow
+- github token for task checkout step in the github workflow
+
 
 ## [3.4.1] 2022-11-24
 
