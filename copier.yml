@@ -3,7 +3,7 @@ project_slug:
     type: str
     help: |
 
-      > The project slug will be used as part of the package name.
+      > project_slug: Will be used as part of the package name.
       >
       > Example: You enter 'awesome' and the name will be 'cmem-plugin-awesome'.
       >
@@ -15,7 +15,7 @@ project_description:
     type: str
     help: |
 
-      > The project description will be used as part of the README file and the
+      > project_description: Will be used as part of the README file and the
       > package info.
       >
       > Use an imperative form to describe what a user can do.
@@ -29,7 +29,7 @@ author_name:
     type: str
     help: |
 
-      > The author name will be used as part of the package info.
+      > author_name: Will be used as part of the package info.
       >
     default: Anonymous Person
 
@@ -37,7 +37,7 @@ author_mail:
     type: str
     help: |
 
-      > The author mail will be used as part of the package info.
+      > author_mail: Will be used as part of the package info.
       >
     default: anonymous@example.org
 
@@ -46,9 +46,9 @@ github_page:
     default: ""
     help: |
 
-      > This URL (e.g. https://github.com/eccenca/cmem-plugin-kafka) will be
-      > used as a base for icons and the homepage link in the project toml.
-      > Leave blank if your project is not on github.
+      > github_page: This URL (e.g. https://github.com/user/repo)
+      > will be used as a base for icons and the homepage link in
+      > the project toml. Leave blank if your project is not on github.
       >
 
 pypi:
@@ -56,7 +56,7 @@ pypi:
     default: false
     help: |
 
-      > Is your plugin published on pypi.org?
+      > pypi: Is your plugin published on pypi.org?
       > This information is used to add more badges to the READMEs.
       >
 
