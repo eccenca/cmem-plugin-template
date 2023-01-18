@@ -4,14 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [3.5.1] 2023-01-18
 
 ### Added
 
 - github_page question (to add icons and homepage links)
 - pypi question (to add icons and links)
 - made for badge in README
-- github token for task checkout step in the github workflow
+
+### Fixed
+
+- add github token for task checkout step in the github workflow to avoid quota errors
 
 
 ## [3.4.1] 2022-11-24
