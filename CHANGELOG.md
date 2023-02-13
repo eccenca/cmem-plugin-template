@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+
+## [3.6.0] 2023-02-13
+
+### Changed
+
+- updates of black, mypy and coverage
+
+### Fixed
+
+- gitlab ci yml migrated to gitlab >15 compatibility
+
+
 ## [3.5.1] 2023-01-18
 
 ### Added
