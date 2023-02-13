@@ -67,10 +67,9 @@ pytest:
   artifacts:
     when: always
     reports:
-      cobertura:
-        - dist/coverage.xml
-      junit:
-        - dist/junit-pytest.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: dist/coverage.xml
     paths:
       - dist/badge-coverage.svg
       - dist/badge-tests.svg
