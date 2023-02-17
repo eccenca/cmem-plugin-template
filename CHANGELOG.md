@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
 
+## [3.6.1] 2023-02-17
+
+### Changed
+
+- change development dependencies to group notation.
+
+
 ## [3.6.0] 2023-02-13
 
 ### Changed
