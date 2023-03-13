@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [4.0.0] 2023-03-13
+
+### Changed
+
+- upgrade dependencies incl. cmem-plugin-base to 3.0.0
+  - This includes backwards incompatible changes.
+  - Migration Notes: https://github.com/eccenca/cmem-plugin-base/blob/main/CHANGELOG.md
+
+
+## [3.6.2] 2023-03-10
+
+### Changed
+
+- update github actions checkout, cache and and setup-python (deprecated)
+
 
 ## [3.6.2] 2023-03-10
 
