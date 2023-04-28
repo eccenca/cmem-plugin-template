@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [4.1.0] 2023-04-28
+
+### Changed
+
+- forward to cmem-plugin-base 3.1.0 (23.1 release)
+- forward dev dependencies
+
+
 ## [4.0.0] 2023-03-13
 
 ### Changed
