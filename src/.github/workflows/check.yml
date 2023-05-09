@@ -42,6 +42,14 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
+      - name: Install dynamic versioning plugin
+        run: |
+          poetry self add "poetry-dynamic-versioning[plugin]"
+
+      - name: poetry
+        rub: |
+          task check:poetry
+
       - name: bandit
         run: |
           task check:bandit
