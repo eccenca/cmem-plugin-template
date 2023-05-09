@@ -1,10 +1,14 @@
 # cmem-plugin-template
 
-This repository contains a [copier](https://copier.readthedocs.io/) template, which can be used to bootstrap an eccenca Corporate Memory python plugin.
+[![version][version-shield]][changelog] [![workflow][build-shield]][github-actions] [![copier][copier-shield]][copier] [![eccenca Corporate Memory][cmem-shield]][cmem] ![python-shield]
+
+This repository contains a [copier](https://copier.readthedocs.io/) template.
+
+You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.eccenca.com) [python plugin](https://documentation.eccenca.com/latest/develop/python-plugins/).
 
 ## Features
 
-- [python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/) and [safety](https://pyup.io/safety/) integration
+- [python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/), [memray](https://bloomberg.github.io/memray/) and [safety](https://pyup.io/safety/) integration
 - local build plan with [task](https://taskfile.dev/)
 - [github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
 - [gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
@@ -15,12 +19,12 @@ This repository contains a [copier](https://copier.readthedocs.io/) template, wh
 ### Project Initialization
 
 The following command will create a new project directory:
-```
+```shell-session
 $ copier gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
 After that, you can initialize the repository and install git hooks:
-```
+```shell-session
 $ cd cmem-plugin-my
 $ git init
 $ git add .
@@ -29,14 +33,14 @@ $ pre-commit install
 ```
 
 Then you can run the local test suite an build a first deployment artifact:
-```
+```shell-session
 $ task check build
 ```
 
 ### Project Update
 
 From time to time, this template will be upgraded, so you can update your repository as well:
-```
+```shell-session
 $ copier update
 ```
 
@@ -45,7 +49,7 @@ Please have a look at the [copier documentation](https://copier.readthedocs.io/e
 ### Other Tasks
 
 Available tasks for your project can be listed like this:
-```
+```shell-session
 $ task
 task: Available tasks for this project:
 * build:          Build tarball and a wheel package.
@@ -57,17 +61,16 @@ task: Available tasks for this project:
 * check:pytest:   Run pytest suite.
 * check:safety:   Check source code with safety.
 * clean:          Removes dist, *.pyc and some caches
-* deploy: 		  Install plugin package in Corporate Memory
-* poetry:init:    Initialze poetry env and add dev dependencies used in this taskfile.
+* deploy:         Install plugin package in Corporate Memory
 * poetry:install: Install dependencies managed by Poetry.
 * poetry:shell:   Open a poetry shell.
 * poetry:update:  Update dependencies managed by Poetry to their newest versions.
 * python:format:  Format Python files.
 ```
 
-You can extend this by creating a custom tasks file in your repository root:
+You can extend this task lisk by creating a file `TaskfileCustom.yaml` in your repository root:
 
-```
+```shell-session
 $ cat TaskfileCustom.yaml
 ---
 version: '3'
@@ -83,20 +86,21 @@ tasks:
 
 ### Setup Integration Tests
 
-This template uses pytest for testing. Testing your plugin is crucial and should be done locally and integrated with eccenca Corporate Memory.
+This template uses pytest for testing.
+Testing your plugin is crucial and should be done locally and integrated with eccenca Corporate Memory.
 
-In order to provide access to a Corporate Memory deployment, you need to provide correct environment variables.
-Without these variables, only tests without integration can be executed (see `1 skipped`):
+In order to setup access to a Corporate Memory deployment, you need to provide correct environment variables.
+Without these variables, only standalone tests can be executed (see `1 skipped`):
 
-```
+```shell-session
 $ task check:pytest
 ...
 ... ===== 3 passed, 1 skipped in 0.09s =====
 ```
 
-By giving the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/latest/automate/cmemc-command-line-interface/installation-and-configuration/file-based-configuration#id-.FilebasedConfigurationv22.1-Reference), your plugin can be tested in an integrated way:
+By giving the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/22.1/automate/cmemc-command-line-interface/installation-and-configuration/file-based-configuration/#configuration-variables), your plugin can be tested in an integrated way:
 
-```
+```shell-session
 $ export CMEM_BASE_URI="https://cmem.example.org"
 $ export OAUTH_CLIENT_ID="cmem-service-account"
 $ export OAUTH_CLIENT_SECRET="..."
@@ -105,6 +109,16 @@ $ task check:pytest
 ...
 ... ===== 4 passed in 1.71s =====
 
+```
+
+You can also add these variables to the `.env` file in your repository root (just make sure to never commit this file).
+
+```shell-session
+$ cat .env
+CMEM_BASE_URI="https://cmem.example.org"
+OAUTH_CLIENT_ID="cmem-service-account"
+OAUTH_CLIENT_SECRET="..."
+OAUTH_GRANT_TYPE="client_credentials"
 ```
 
 ### Setup Build Plan
@@ -136,9 +150,19 @@ $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/
 $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
-$ pipx install poetry
-$ poetry self add "poetry-dynamic-versioning[plugin]"
 $ pipx install pre-commit
 $ pipx install cmem-cmemc
+$ pipx install poetry
+$ poetry self add "poetry-dynamic-versioning[plugin]"
 ```
+
+[version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
+[changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
+[github-actions]: https://github.com/eccenca/cmem-plugin-template/actions
+[build-shield]: https://github.com/eccenca/cmem-plugin-template/actions/workflows/check.yml/badge.svg
+[copier]: https://copier.readthedocs.io/
+[copier-shield]: https://img.shields.io/badge/made%20with-copier-orange
+[cmem]: https://documentation.eccenca.com
+[cmem-shield]: https://img.shields.io/badge/made%20for-Corporate%20Memory-blue
+[python-shield]: https://img.shields.io/badge/python-v3.9-blue
 

@@ -2,7 +2,7 @@
 ---
 version: '3'
 
-dotenv: ['.copier-answers.env']
+dotenv: ['.copier-answers.env', '.env']
 
 vars:
   PACKAGE: cmem_plugin_$project_slug
@@ -72,7 +72,7 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run pytest --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
+      - poetry run pytest --memray --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
       - poetry run genbadge coverage -l -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
       - poetry run genbadge tests -l -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
     vars:
@@ -102,7 +102,7 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run mypy -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
+      - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
@@ -112,7 +112,11 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run safety check -i 48547
+      # ignore 48547 rdflib - json-ld not in use
+      # ignore 51358 safety - dev dependency only
+      # ignore 52322 gitpython - dev dependency only
+      # ignore 51457 py - dev dependency only
+      - poetry run safety check -i 48547 -i 51358 -i 52322 -i 51457
 
   check:bandit:
     desc: Check source code with bandit.
@@ -131,8 +135,8 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run flake8 --exit-zero {{.PACKAGE}} {{.XML_PARAMS}}
-      - poetry run flake8 --show-source {{.PACKAGE}}
+      - poetry run flake8 --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
+      - poetry run flake8 --show-source tests {{.PACKAGE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
@@ -175,11 +179,6 @@ tasks:
     run: once
     cmds:
       - poetry update --no-interaction
-
-  poetry:init:
-    desc: Initialze poetry env and add dev dependencies used in this taskfile.
-    cmds:
-      - poetry add -D pytest pytest-cov black bandit pylint-junit safety genbadge flake8-formatter-junit-xml typed-ast mypy coverage defusedxml
 
   poetry:shell:
     desc: Open a poetry shell.
