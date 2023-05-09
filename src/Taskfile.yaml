@@ -57,6 +57,7 @@ tasks:
   check:
     desc: Run whole test suite.
     deps:
+      - check:poetry
       - check:bandit
       - check:flake8
       - check:mypy
@@ -138,6 +139,16 @@ tasks:
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
+
+  check:poetry:
+    desc: Check poetry dynamic versioning dependency
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry self show plugins | grep -w "poetry-dynamic-versioning ({{.PDV_VERSION}})"
+    vars:
+      PDV_VERSION: 0.21.4
 
   python:format:
     desc: Format Python files.
