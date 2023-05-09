@@ -4,45 +4,53 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [4.1.0] 2023-04-28
+## [Unreleased]
+
+### Added
+
+- check:dependencies task - Check for outdated dependencies.
+- github: add check:dependencies task
+- gitlab: add install stage with check:dependencies task
+- python:format additionally uses isort
+
+### Changed
+
+- use poetry dependency group for dev dependencies
+
+## [4.1.0]
 
 ### Changed
 
 - forward to cmem-plugin-base 3.1.0 (23.1 release)
 - forward dev dependencies
 
-
-## [4.0.0] 2023-03-13
+## [4.0.0]
 
 ### Changed
 
 - upgrade dependencies incl. cmem-plugin-base to 3.0.0
   - This includes backwards incompatible changes.
-  - Migration Notes: https://github.com/eccenca/cmem-plugin-base/blob/main/CHANGELOG.md
+  - Migration Notes: <https://github.com/eccenca/cmem-plugin-base/blob/main/CHANGELOG.md>
 
-
-## [3.6.2] 2023-03-10
-
-### Changed
-
-- update github actions checkout, cache and and setup-python (deprecated)
-
-
-## [3.6.2] 2023-03-10
+## [3.6.2]
 
 ### Changed
 
 - update github actions checkout, cache and and setup-python (deprecated)
 
+## [3.6.2]
 
-## [3.6.1] 2023-02-17
+### Changed
+
+- update github actions checkout, cache and and setup-python (deprecated)
+
+## [3.6.1]
 
 ### Changed
 
 - change development dependencies to group notation.
 
-
-## [3.6.0] 2023-02-13
+## [3.6.0]
 
 ### Changed
 
@@ -52,8 +60,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - gitlab ci yml migrated to gitlab >15 compatibility
 
-
-## [3.5.1] 2023-01-18
+## [3.5.1]
 
 ### Added
 
@@ -65,8 +72,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - add github token for task checkout step in the github workflow to avoid quota errors
 
-
-## [3.4.1] 2022-11-24
+## [3.4.1]
 
 ### Added
 
@@ -77,8 +83,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - github actions to latest versions
 
-
-## [3.4.0] 2022-10-21
+## [3.4.0]
 
 ### Added
 
@@ -96,23 +101,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - unneeded `poetry:init` task
 
-
-## [3.3.2] 2022-09-14
+## [3.3.2]
 
 ### Fixed
 
 - github: remove unneeded secrets
 - github: use secrets envs only in pylint step
 
-
-## [3.3.1] 2022-09-14
+## [3.3.1]
 
 ### Fixed
 
 - github: publish workflow now only executed on tags
 
-
-## [3.3.0] 2022-09-14
+## [3.3.0]
 
 ### Changed
 
@@ -123,8 +125,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - github: publication of tagged versions to pypi.org (if `PYPI_TOKEN` is set)
 - gitlab: publication of tagged versions to pypi.org (if `PYPI_TOKEN` is set)
 
-
-## [3.2.0] 2022-09-14
+## [3.2.0]
 
 ### Changed
 
@@ -135,22 +136,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - gitlab: manual `publish:pypi` job which uses `PYPI_TOKEN`
 
-
-## [3.1.2] 2022-09-07
+## [3.1.2]
 
 ### Changed
 
 - gitlab build plan: forward base image to v3.9.12-1
 
-
-## [3.1.1] 2022-09-01
+## [3.1.1]
 
 ### Fixed
 
 - public README
 
-
-## [3.1.0] 2022-09-01
+## [3.1.0]
 
 ### Added
 
@@ -166,15 +164,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - use plugin base ^2.1.0
 
-
-## [3.0.1] 2022-07-12
+## [3.0.1]
 
 ### Fixed
 
 - execution test now gives empty context
 
-
-## [3.0.0] 2022-07-12
+## [3.0.0]
 
 ### Changed
 
@@ -185,8 +181,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - all copier after task (they often break the execution)
 
-
-## [2.1.2] 2022-06-13
+## [2.1.2]
 
 ### Added
 
@@ -196,24 +191,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - remove useless option values not needed by latest pylint
 
-
-## [2.1.0] 2022-06-10
+## [2.1.0]
 
 ### Changed
 
 - ignore safety for librdf dependency
 
-
-## [2.0.0] 2022-05-27
+## [2.0.0]
 
 ### Changed
 
 - migration to copier 6
 
-
-## [1.0.0] 2022-05-09
+## [1.0.0]
 
 ### Added
 
 - initial version for copier 5
-
