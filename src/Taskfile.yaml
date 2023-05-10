@@ -57,7 +57,6 @@ tasks:
   check:
     desc: Run whole test suite.
     deps:
-      - check:poetry
       - check:bandit
       - check:flake8
       - check:mypy
@@ -140,18 +139,6 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
 
-  check:poetry:
-    desc: Check poetry dynamic versioning dependency
-    deps:
-      - poetry:install
-      - check:prepare
-    cmds:
-      - poetry check
-      - poetry self show plugins | grep -w "poetry-dynamic-versioning ({{.PDV_VERSION}})"
-    vars:
-      PDV_VERSION: 0.21.4
-    silent: true
-
   python:format:
     desc: Format Python files.
     deps:
@@ -162,8 +149,23 @@ tasks:
   poetry:install:
     desc: Install dependencies managed by Poetry.
     run: once
+    preconditions:
+      - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
+        msg: >
+          This project needs the poetry-dynamic-versioning
+          plugin > v{{.PDV_VERSION_MIN}}.
+
+          You can install it with
+          'poetry self add "poetry-dynamic-versioning[plugin]"'
     cmds:
+      - poetry check
       - poetry install
+    vars:
+      PDV_VERSION_MIN: 0.20
+      PDV_VERSION:
+        sh: >
+            poetry self show --addons poetry-dynamic-versioning --tree
+            | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
 
   poetry:update:
     desc: Update dependencies managed by Poetry to their newest versions.
