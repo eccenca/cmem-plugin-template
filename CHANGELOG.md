@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unrelease]
+
+### Added
+
+- check for correct poetry-dynamic-versioning plugin
+- check for valid pyproject.toml (poetry check)
+
+
 ## [4.1.0] 2023-04-28
 
 ### Changed

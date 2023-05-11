@@ -4,6 +4,11 @@ version: '3'
 
 dotenv: ['.copier-answers.env', '.env']
 
+.preparation: &preparation
+  deps:
+    - poetry:install
+    - check:prepare
+
 vars:
   PACKAGE: cmem_plugin_$project_slug
   DIST_DIR: dist
@@ -24,21 +29,7 @@ tasks:
     cmds:
       - task --list
 
-  deploy:
-    desc: Install plugin package in Corporate Memory
-    deps:
-      - clean
-      - build
-    cmds:
-      - cmemc admin workspace python install dist/*.tar.gz
-      - cmemc admin workspace python list-plugins
-
-  clean:
-    desc: Removes dist, *.pyc and some caches
-    cmds:
-      - rm -rf {{.DIST_DIR}} .mypy_cache .pytest_cache
-      - find . -name "*.pyc" -print0 | xargs -0 rm || echo ""
-
+  # {{{ preparation tasks
   check:prepare:
     summary: |
       prepare check targets by creating appropriate directory
@@ -46,13 +37,53 @@ tasks:
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
-  build:
-    desc: Build tarball and a wheel package.
-    deps:
-      - poetry:install
-      - check:prepare
+  poetry:install:
+    desc: Install dependencies managed by Poetry.
+    run: once
+    preconditions:
+      - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
+        msg: >
+          This project needs the poetry-dynamic-versioning
+          plugin > v{{.PDV_VERSION_MIN}}.
+
+          You can install it with the following command:
+          poetry self add "poetry-dynamic-versioning[plugin]"
     cmds:
-      - poetry build
+      - poetry check
+      - poetry install
+    vars:
+      PDV_VERSION_MIN: 0.20
+      PDV_VERSION:
+        sh: >
+            poetry self show --addons poetry-dynamic-versioning --tree
+            | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
+
+  python:format:
+    desc: Format Python files.
+    <<: *preparation
+    cmds:
+      - poetry run black .
+
+  poetry:update:
+    desc: Update dependencies managed by Poetry to their newest versions.
+    run: once
+    cmds:
+      - poetry update
+
+  poetry:shell:
+    desc: Open a poetry shell.
+    interactive: true
+    cmds:
+      - poetry shell
+
+  clean:
+    desc: Removes dist, *.pyc and some caches
+    cmds:
+      - rm -rf {{.DIST_DIR}} .mypy_cache .pytest_cache
+      - find . -name "*.pyc" -print0 | xargs -0 rm || echo ""
+
+  # }}}
+  # {{{ check tasks
 
   check:
     desc: Run whole test suite.
@@ -66,9 +97,7 @@ tasks:
 
   check:pytest:
     desc: Run pytest suite.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       - poetry run pytest --memray --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
       - poetry run genbadge coverage -l -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
@@ -80,12 +109,9 @@ tasks:
       BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
       BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
 
-
   check:pylint:
     desc: Check source code with pylint.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       - poetry run pylint --exit-zero {{.PACKAGE}}
       - poetry run pylint {{.PACKAGE}} {{.XML_PARAMS}}
@@ -96,9 +122,7 @@ tasks:
 
   check:mypy:
     desc: Check source code with mypy.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
@@ -106,9 +130,7 @@ tasks:
 
   check:safety:
     desc: Check source code with safety.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       # ignore 48547 rdflib - json-ld not in use
       # ignore 51358 safety - dev dependency only
@@ -118,9 +140,7 @@ tasks:
 
   check:bandit:
     desc: Check source code with bandit.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       - poetry run bandit --exit-zero -r {{.PACKAGE}}
       - poetry run bandit --format xml -r {{.PACKAGE}} -o {{.JUNIT_FILE}}
@@ -129,9 +149,7 @@ tasks:
 
   check:flake8:
     desc: Check source code with flake8.
-    deps:
-      - poetry:install
-      - check:prepare
+    <<: *preparation
     cmds:
       - poetry run flake8 --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
       - poetry run flake8 --show-source tests {{.PACKAGE}}
@@ -139,27 +157,23 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
 
-  python:format:
-    desc: Format Python files.
+  # }}}
+  # {{{ build and deploy tasks
+
+  deploy:
+    desc: Install plugin package in Corporate Memory
     deps:
-      - task: poetry:install
+      - clean
+      - build
     cmds:
-      - poetry run black .
+      - cmemc admin workspace python install dist/*.tar.gz
+      - cmemc admin workspace python list-plugins
 
-  poetry:install:
-    desc: Install dependencies managed by Poetry.
-    run: once
+  build:
+    desc: Build tarball and a wheel package.
+    <<: *preparation
     cmds:
-      - poetry install
+      - poetry build
 
-  poetry:update:
-    desc: Update dependencies managed by Poetry to their newest versions.
-    run: once
-    cmds:
-      - poetry update
+# }}}
 
-  poetry:shell:
-    desc: Open a poetry shell.
-    interactive: true
-    cmds:
-      - poetry shell

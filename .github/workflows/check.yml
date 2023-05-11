@@ -46,6 +46,7 @@ jobs:
           CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
         run: |
+          poetry self add "poetry-dynamic-versioning[plugin]"
           task check
 
       - name: Publish Test Report in Action
