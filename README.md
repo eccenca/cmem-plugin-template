@@ -16,6 +16,30 @@ You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.
 
 ## Setup and Usage
 
+### Install Local Requirements
+
+The following tools are needed for local task execution:
+
+- Python 3.11
+- [copier](https://copier.readthedocs.io/) (>= v8) for project template rendering
+- [poetry](https://python-poetry.org/) (>= v1.5) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
+- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
+- [task](https://taskfile.dev/) (>= v3) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
+- [cmemc](https://eccenca.com/go/cmemc) (>= v23.1) for interacting with eccenca Corporate Memory
+
+Example installation of the requirements with [pipx](https://pypa.github.io/pipx/) on Ubuntu:
+
+```
+$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+$ python3 -m pip install --user pipx
+$ python3 -m pipx ensurepath
+$ pipx install copier
+$ pipx install pre-commit
+$ pipx install cmem-cmemc
+$ pipx install poetry
+$ poetry self add "poetry-dynamic-versioning[plugin]"
+```
+
 ### Project Initialization
 
 The following command will create a new project directory:
@@ -132,29 +156,6 @@ Example github pipelines can be seen [here](https://github.com/eccenca/cmem-plug
 
 In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
 
-### Install Local Requirements
-
-The following tools are needed for local task execution:
-
-- Python 3.9
-- [copier](https://copier.readthedocs.io/) (>= v6) for project template rendering
-- [poetry](https://python-poetry.org/) (>= v1.1) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
-- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
-- [task](https://taskfile.dev/) (>= v3) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
-- [cmemc](https://eccenca.com/go/cmemc) (>= v22.1) for interacting with eccenca Corporate Memory
-
-Example installation of the requirements with [pipx](https://pypa.github.io/pipx/) on Ubuntu:
-
-```
-$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
-$ python3 -m pip install --user pipx
-$ python3 -m pipx ensurepath
-$ pipx install copier
-$ pipx install pre-commit
-$ pipx install cmem-cmemc
-$ pipx install poetry
-$ poetry self add "poetry-dynamic-versioning[plugin]"
-```
 
 [version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
 [changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
