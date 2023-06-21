@@ -28,7 +28,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.11'
 
       - name: Install and configure poetry
         uses: snok/install-poetry@v1
@@ -46,6 +46,7 @@ jobs:
           CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
         run: |
+          poetry self add "poetry-dynamic-versioning[plugin]"
           task check
 
       - name: Publish Test Report in Action

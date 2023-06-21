@@ -24,7 +24,7 @@ tasks:
     deps:
       - clean
     cmds:
-      - copier --vcs-ref {{.TEMPLATE_REVISION}} . {{.PLUGIN_DIR}}
+      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} . {{.PLUGIN_DIR}}
     vars:
       TEMPLATE_REVISION:
         sh: git rev-parse HEAD
@@ -34,7 +34,8 @@ tasks:
     deps:
       - clean
     cmds:
-      - copier --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.PLUGIN_DIR}}
+      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.PLUGIN_DIR}}
+      - git config --global init.defaultBranch develop
       - git init {{.PLUGIN_DIR}}
       - cd {{.PLUGIN_DIR}} && git add .
       - cd {{.PLUGIN_DIR}} && git config init.defaultBranch main

@@ -16,8 +16,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - use poetry dependency group for dev dependencies
+- switch to python 3.11
 
-## [4.1.0]
+
+## [4.2.0] 2023-05-11
+
+### Added
+
+- check for correct poetry-dynamic-versioning plugin
+- check for valid pyproject.toml (poetry check)
+
+
+## [4.1.0] 2023-04-28
 
 ### Changed
 
