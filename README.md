@@ -34,6 +34,8 @@ $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/
 $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
+# The next line mitigates this issue: https://github.com/copier-org/copier/issues/1225
+$ pipx inject copier "pydantic<2"
 $ pipx install pre-commit
 $ pipx install cmem-cmemc
 $ pipx install poetry
@@ -165,5 +167,5 @@ In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` s
 [copier-shield]: https://img.shields.io/badge/made%20with-copier-orange
 [cmem]: https://documentation.eccenca.com
 [cmem-shield]: https://img.shields.io/badge/made%20for-Corporate%20Memory-blue
-[python-shield]: https://img.shields.io/badge/python-v3.9-blue
+[python-shield]: https://img.shields.io/badge/python-v3.11-blue
 
