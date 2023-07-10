@@ -4,11 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [5.0.2] 2023-07-10
+
+### Fixed
+
+- github pipeline: remove cache config (poetry not found)
+
+
 ## [5.0.1] 2023-07-07
 
 ### Fixed
 
 - README: pypi links
+
 
 ## [5.0.0] 2023-07-06
 
