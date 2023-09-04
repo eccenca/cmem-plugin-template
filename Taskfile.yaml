@@ -42,6 +42,7 @@ tasks:
       - cd {{.PLUGIN_DIR}} && git config user.name "Anonymous Person"
       - cd {{.PLUGIN_DIR}} && git config user.email "anonymous@example.org"
       - cd {{.PLUGIN_DIR}} && git commit -m "init from template"
+      - cd {{.PLUGIN_DIR}} && poetry update
       - cd {{.PLUGIN_DIR}} && task check
     vars:
       TEMPLATE_REVISION:
