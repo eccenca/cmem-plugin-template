@@ -4,7 +4,11 @@ from secrets import token_urlsafe
 from typing import Sequence
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext, ExecutionReport
-from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
+from cmem_plugin_base.dataintegration.description import (
+    Icon,
+    Plugin,
+    PluginParameter
+)
 from cmem_plugin_base.dataintegration.entity import (
     Entities,
     Entity,
@@ -25,6 +29,7 @@ The values are generated in X rows a Y values. Both parameter can be specified:
 - 'number_of_entities': How many rows do you need.
 - 'number_of_values': How many values per row do you need.
 """,
+    icon=Icon(package=__package__, file_name="custom.svg"),
     parameters=[
         PluginParameter(
             name="number_of_entities",
