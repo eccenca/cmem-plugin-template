@@ -39,10 +39,7 @@ jobs:
 
       - name: install copier
         run: |
-          python3 -m pip install --user copier
-          # downgrade pydantic to fix import error
-          # refer https://github.com/copier-org/copier/issues/1225
-          python3 -m pip install -U 'pydantic<2'
+          python3 -m pip install --user copier>=8.3.0
 
       - name: create plugin with default answers and run check
         env:
