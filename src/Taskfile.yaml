@@ -97,11 +97,26 @@ tasks:
 
   check:pytest:
     desc: Run pytest suite.
+    platforms: [darwin, linux, windows]
     <<: *preparation
     cmds:
-      - poetry run pytest --memray --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
-      - poetry run genbadge coverage -l -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
-      - poetry run genbadge tests -l -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
+      # --memray is not used on windows
+      - platforms: [windows]
+        cmd: >
+          poetry run pytest --junitxml={{.JUNIT_FILE}}
+          --cov-report term  --cov-report xml:{{.COVERAGE_FILE}}
+          --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
+      - platforms: [darwin, linux]
+        cmd: >
+          poetry run pytest --memray --junitxml={{.JUNIT_FILE}}
+          --cov-report term --cov-report xml:{{.COVERAGE_FILE}}
+          --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
+      - cmd: >
+          poetry run genbadge coverage -l
+          -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
+      - cmd: >
+          poetry run genbadge tests -l
+          -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-pytest.xml
       COVERAGE_FILE: ./{{.DIST_DIR}}/coverage.xml

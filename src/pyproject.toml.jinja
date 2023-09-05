@@ -35,7 +35,7 @@ pillow = "^9.5.0"
 pylint-junit = "^0.3.2"
 pytest = "^7.3.1"
 pytest-cov = "^4.0.0"
-pytest-memray = "^1.4.0"
+pytest-memray = { version = "^1.4.0",  markers = "platform_system != 'Windows'" }
 safety = "^1.10.3"
 typed-ast = "^1.5.4"
 wheel = "^0.38.4"
