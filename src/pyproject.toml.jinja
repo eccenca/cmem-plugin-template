@@ -18,7 +18,10 @@ keywords = [
 [tool.poetry.dependencies]
 # if you need to change python version here, change it also in .python-version
 python = "^3.11"
-cmem-plugin-base = "4.2.0rc3"
+
+[tool.poetry.dependencies.cmem-plugin-base]
+version = "^4.2.0"
+allow-prereleases = true
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
