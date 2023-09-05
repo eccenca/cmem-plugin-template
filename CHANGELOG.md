@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased] 
+
+### Added
+
+- .python-version to the project root in order to control pyenv
+  - see https://realpython.com/intro-to-pyenv/ for a tutorial
+- custom icon for the workflow plugin
+  - cmem-plugin-base introduces a custom icon feature, which you can see here
+
+### Removed
+
+- Unneeded safety ignores
+
 ## [5.0.2] 2023-07-10
 
 ### Fixed
