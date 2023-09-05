@@ -4,18 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased] 
+## [5.1.0] 2023-09-05 
+
+### Changed
+
+- use cmem-plugin-base 4.1.0 which is used by Corporate Memory 23.2
 
 ### Added
 
 - .python-version to the project root in order to control pyenv
   - see https://realpython.com/intro-to-pyenv/ for a tutorial
-- custom icon for the workflow plugin
-  - cmem-plugin-base introduces a custom icon feature, which you can see here
 
-### Removed
+### Fixed
 
+- Windows / MinGW compatibility
+- used github actions
+- build plan
 - Unneeded safety ignores
+
 
 ## [5.0.2] 2023-07-10
 
