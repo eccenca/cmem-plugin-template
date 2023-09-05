@@ -42,17 +42,22 @@ $ poetry self add "poetry-dynamic-versioning[plugin]"
 
 ### Project Initialization
 
-The following command will create a new project directory with the latest released template:
+The following command will create a new project directory with the latest released template.
+This produces a plugin which is compatible the [latest release of eccenca Corporate Memory](https://documentation.eccenca.com/latest/).
+
 ```shell-session
 $ copier copy gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
 The following command will use the latest develop version of the template:
+This produces a plugin which is compatible the latest development snapshot of eccenca Corporate Memory.
+
 ```shell-session
 $ copier copy -r develop gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
 After that, you can initialize the repository and install git hooks:
+
 ```shell-session
 $ cd cmem-plugin-my
 $ git init
@@ -62,6 +67,7 @@ $ pre-commit install
 ```
 
 Then you can run the local test suite an build a first deployment artifact:
+
 ```shell-session
 $ task check build
 ```
@@ -69,8 +75,13 @@ $ task check build
 ### Project Update
 
 From time to time, this template will be upgraded, so you can update your repository as well:
+
 ```shell-session
 $ copier update
+```
+
+```shell-session
+$ copier update -r develop
 ```
 
 Please have a look at the [copier documentation](https://copier.readthedocs.io/en/stable/updating/).
@@ -78,6 +89,7 @@ Please have a look at the [copier documentation](https://copier.readthedocs.io/e
 ### Other Tasks
 
 Available tasks for your project can be listed like this:
+
 ```shell-session
 $ task
 task: Available tasks for this project:
