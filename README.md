@@ -34,8 +34,6 @@ $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/
 $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
-# The next line mitigates this issue: https://github.com/copier-org/copier/issues/1225
-$ pipx inject copier "pydantic<2"
 $ pipx install pre-commit
 $ pipx install cmem-cmemc
 $ pipx install poetry
@@ -44,9 +42,14 @@ $ poetry self add "poetry-dynamic-versioning[plugin]"
 
 ### Project Initialization
 
-The following command will create a new project directory:
+The following command will create a new project directory with the latest released template:
 ```shell-session
-$ copier gh:eccenca/cmem-plugin-template cmem-plugin-my
+$ copier copy gh:eccenca/cmem-plugin-template cmem-plugin-my
+```
+
+The following command will use the latest develop version of the template:
+```shell-session
+$ copier copy -r develop gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
 After that, you can initialize the repository and install git hooks:
