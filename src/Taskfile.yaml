@@ -31,14 +31,18 @@ tasks:
 
   # {{{ preparation tasks
   check:prepare:
+    internal: true
     summary: |
       prepare check targets by creating appropriate directory
     run: once
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
-  poetry:install:
-    desc: Install dependencies managed by Poetry.
+  poetry:check:
+    internal: true
+    platforms: [darwin, linux]
+    summary: |
+      Check poetry versioning plugin. Currently not under Windows.
     run: once
     preconditions:
       - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
@@ -48,15 +52,21 @@ tasks:
 
           You can install it with the following command:
           poetry self add "poetry-dynamic-versioning[plugin]"
-    cmds:
-      - poetry check
-      - poetry install
     vars:
       PDV_VERSION_MIN: 0.20
       PDV_VERSION:
         sh: >
             poetry self show --addons poetry-dynamic-versioning --tree
             | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
+
+  poetry:install:
+    desc: Install dependencies managed by Poetry.
+    run: once
+    deps:
+      - poetry:check
+    cmds:
+      - poetry check
+      - poetry install
 
   python:format:
     desc: Format Python files.
