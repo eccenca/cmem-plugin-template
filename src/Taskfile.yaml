@@ -12,8 +12,6 @@ dotenv: ['.copier-answers.env', '.env']
 vars:
   PACKAGE: cmem_plugin_$project_slug
   DIST_DIR: dist
-  PWD:
-    sh: pwd
 
 includes:
   custom:
@@ -24,7 +22,7 @@ tasks:
 
   default:
     summary: |
-      Just a list of documented tasks.
+      Just a list of documented tasks
     silent: true
     cmds:
       - task --list
@@ -42,7 +40,7 @@ tasks:
     internal: true
     platforms: [darwin, linux]
     summary: |
-      Check poetry versioning plugin. Currently not under Windows.
+      Check poetry versioning plugin. Currently not under Windows
     run: once
     preconditions:
       - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
@@ -60,31 +58,19 @@ tasks:
             | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
 
   poetry:install:
-    desc: Install dependencies managed by Poetry.
+    internal: true
+    desc: Install dependencies managed by Poetry
     run: once
     deps:
       - poetry:check
     cmds:
-      - poetry check
       - poetry install
 
   python:format:
-    desc: Format Python files.
+    desc: Format Python files
     <<: *preparation
     cmds:
       - poetry run black .
-
-  poetry:update:
-    desc: Update dependencies managed by Poetry to their newest versions.
-    run: once
-    cmds:
-      - poetry update
-
-  poetry:shell:
-    desc: Open a poetry shell.
-    interactive: true
-    cmds:
-      - poetry shell
 
   clean:
     desc: Removes dist, *.pyc and some caches
@@ -96,17 +82,22 @@ tasks:
   # {{{ check tasks
 
   check:
-    desc: Run whole test suite.
+    desc: Run whole test suite incl. unit and integration tests
+    deps:
+      - check:linters
+      - check:pytest
+
+  check:linters:
+    desc: Run all linter and static code analysis tests
     deps:
       - check:bandit
       - check:flake8
       - check:mypy
       - check:pylint
-      - check:pytest
       - check:safety
 
   check:pytest:
-    desc: Run pytest suite.
+    desc: Run unit and integration tests
     platforms: [darwin, linux, windows]
     <<: *preparation
     cmds:
@@ -135,7 +126,7 @@ tasks:
       BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
 
   check:pylint:
-    desc: Check source code with pylint.
+    desc: Find code smells, errors and style issues
     <<: *preparation
     cmds:
       - poetry run pylint --exit-zero {{.PACKAGE}}
@@ -146,7 +137,7 @@ tasks:
       XML_PARAMS: --output={{.JUNIT_FILE}} {{.FORMAT}}
 
   check:mypy:
-    desc: Check source code with mypy.
+    desc: Find type errors
     <<: *preparation
     cmds:
       - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
@@ -154,14 +145,14 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
   check:safety:
-    desc: Check source code with safety.
+    desc: Scan dependencies for vulnerabilities
     <<: *preparation
     cmds:
       # ignore 51358 safety - dev dependency only
       - poetry run safety check -i 51358
 
   check:bandit:
-    desc: Check source code with bandit.
+    desc: Find common security issues
     <<: *preparation
     cmds:
       - poetry run bandit --exit-zero -r {{.PACKAGE}}
@@ -170,7 +161,7 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-bandit.xml
 
   check:flake8:
-    desc: Check source code with flake8.
+    desc: Enforce standard source code style guide
     <<: *preparation
     cmds:
       - poetry run flake8 --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
@@ -192,7 +183,7 @@ tasks:
       - cmemc admin workspace python list-plugins
 
   build:
-    desc: Build tarball and a wheel package.
+    desc: Build a tarball and a wheel package
     <<: *preparation
     cmds:
       - poetry build
