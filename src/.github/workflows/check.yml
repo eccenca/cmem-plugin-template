@@ -16,6 +16,7 @@ jobs:
   check:
 
     runs-on: ubuntu-latest
+    concurrency: testing_environment
 
     steps:
       - name: Check out repository

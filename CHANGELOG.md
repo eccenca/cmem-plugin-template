@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Fixed
+
+- github pipeline: use `concurrency` to avoid integration test issues
+
+
 ## [5.1.0] 2023-09-05 
 
 ### Changed
