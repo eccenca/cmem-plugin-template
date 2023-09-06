@@ -3,7 +3,8 @@ name: check
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" and "develop" branch
+  # Triggers the workflow on push or pull request events
+  # but only for the "main" and "develop" branch
   push:
     branches: [main, develop]
   pull_request:
@@ -15,6 +16,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    concurrency: testing_environment
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
