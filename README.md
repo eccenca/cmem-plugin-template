@@ -1,44 +1,38 @@
 # cmem-plugin-template
 
-[![version][version-shield]][changelog] [![workflow][build-shield]][github-actions] [![copier][copier-shield]][copier] [![eccenca Corporate Memory][cmem-shield]][cmem] ![python-shield]
+[![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python-shield]
+[![eccenca Corporate Memory][cmem-shield]][cmem] [![copier][copier-shield]][copier] 
 
 This repository contains a [copier](https://copier.readthedocs.io/) template.
 
 You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.eccenca.com) [python plugin](https://documentation.eccenca.com/latest/develop/python-plugins/).
 
+
+<!-- vim-markdown-toc GFM -->
+
+* [Features](#features)
+* [Usage](#usage)
+    * [Project Initialization](#project-initialization)
+    * [Project Update](#project-update)
+    * [Other Tasks](#other-tasks)
+* [Setup](#setup)
+    * [Local Requirements](#local-requirements)
+    * [Integration Tests](#integration-tests)
+    * [CI Build Plan](#ci-build-plan)
+
+<!-- vim-markdown-toc -->
+
+
 ## Features
 
-- [python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/), [memray](https://bloomberg.github.io/memray/) and [safety](https://pyup.io/safety/) integration
-- local build plan with [task](https://taskfile.dev/)
-- [github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
-- [gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
-- badges, junit XML files and coverage stat generation
+- [Python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/), [memray](https://bloomberg.github.io/memray/) and [safety](https://pyup.io/safety/) integration
+- Local build plan with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW)
+- [Github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
+- [Gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
+- Badges, junit XML files and coverage stat generation
 
-## Setup and Usage
 
-### Install Local Requirements
-
-The following tools are needed for local task execution:
-
-- Python 3.11
-- [copier](https://copier.readthedocs.io/) (>= v8) for project template rendering
-- [poetry](https://python-poetry.org/) (>= v1.5) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
-- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
-- [task](https://taskfile.dev/) (>= v3) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
-- [cmemc](https://eccenca.com/go/cmemc) (>= v23.1) for interacting with eccenca Corporate Memory
-
-Example installation of the requirements with [pipx](https://pypa.github.io/pipx/) on Ubuntu:
-
-```
-$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
-$ python3 -m pip install --user pipx
-$ python3 -m pipx ensurepath
-$ pipx install copier
-$ pipx install pre-commit
-$ pipx install cmem-cmemc
-$ pipx install poetry
-$ poetry self add "poetry-dynamic-versioning[plugin]"
-```
+## Usage
 
 ### Project Initialization
 
@@ -91,22 +85,20 @@ Please have a look at the [copier documentation](https://copier.readthedocs.io/e
 Available tasks for your project can be listed like this:
 
 ```shell-session
-$ task
+∴ task
 task: Available tasks for this project:
-* build:          Build tarball and a wheel package.
-* check:          Run whole test suite.
-* check:bandit:   Check source code with bandit.
-* check:flake8:   Check source code with flake8.
-* check:mypy:     Check source code with mypy.
-* check:pylint:   Check source code with pylint.
-* check:pytest:   Run pytest suite.
-* check:safety:   Check source code with safety.
-* clean:          Removes dist, *.pyc and some caches
-* deploy:         Install plugin package in Corporate Memory
-* poetry:install: Install dependencies managed by Poetry.
-* poetry:shell:   Open a poetry shell.
-* poetry:update:  Update dependencies managed by Poetry to their newest versions.
-* python:format:  Format Python files.
+* build:               Build a tarball and a wheel package
+* check:               Run whole test suite incl. unit and integration tests
+* clean:               Removes dist, *.pyc and some caches
+* deploy:              Install plugin package in Corporate Memory
+* check:bandit:        Find common security issues
+* check:flake8:        Enforce standard source code style guide
+* check:linters:       Run all linter and static code analysis tests
+* check:mypy:          Find type errors
+* check:pylint:        Find code smells, errors and style issues
+* check:pytest:        Run unit and integration tests
+* check:safety:        Scan dependencies for vulnerabilities
+* python:format:       Format Python files
 ```
 
 You can extend this task lisk by creating a file `TaskfileCustom.yaml` in your repository root:
@@ -125,7 +117,33 @@ tasks:
 ```
 
 
-### Setup Integration Tests
+## Setup
+
+### Local Requirements
+
+The following tools are needed for local task execution:
+
+- Python 3.11
+- [copier](https://copier.readthedocs.io/) (>= v8.3) for project template rendering
+- [poetry](https://python-poetry.org/) (>= v1.6) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
+- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
+- [task](https://taskfile.dev/) (>= v3.29) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
+- [cmemc](https://eccenca.com/go/cmemc) (>= v23.1) for interacting with eccenca Corporate Memory
+
+Example installation of the requirements with [pipx](https://pypa.github.io/pipx/) on Ubuntu:
+
+```
+$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+$ python3 -m pip install --user pipx
+$ python3 -m pipx ensurepath
+$ pipx install copier
+$ pipx install pre-commit
+$ pipx install cmem-cmemc
+$ pipx install poetry
+$ poetry self add "poetry-dynamic-versioning[plugin]"
+```
+
+### Integration Tests
 
 This template uses pytest for testing.
 Testing your plugin is crucial and should be done locally and integrated with eccenca Corporate Memory.
@@ -162,7 +180,7 @@ OAUTH_CLIENT_SECRET="..."
 OAUTH_GRANT_TYPE="client_credentials"
 ```
 
-### Setup Build Plan
+### CI Build Plan
 
 The gitlab workflow / github action pipelines need the same environment variables as secrets:
 
@@ -177,10 +195,11 @@ In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` s
 [version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
 [changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
 [github-actions]: https://github.com/eccenca/cmem-plugin-template/actions
-[build-shield]: https://github.com/eccenca/cmem-plugin-template/actions/workflows/check.yml/badge.svg
+[build-shield-main]: https://img.shields.io/github/actions/workflow/status/eccenca/cmem-plugin-template/check.yml?logo=github&branch=main&label=main
+[build-shield-develop]: https://img.shields.io/github/actions/workflow/status/eccenca/cmem-plugin-template/check.yml?logo=github&branch=develop&label=develop
 [copier]: https://copier.readthedocs.io/
 [copier-shield]: https://img.shields.io/badge/made%20with-copier-orange
 [cmem]: https://documentation.eccenca.com
-[cmem-shield]: https://img.shields.io/badge/made%20for-Corporate%20Memory-blue
+[cmem-shield]: https://img.shields.io/badge/made%20for-eccenca%20Corporate%20Memory-blue?logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaWQ9IkxheWVyXzEiCiAgIGRhdGEtbmFtZT0iTGF5ZXIgMSIKICAgdmlld0JveD0iMCAwIDgxLjI5MDAwMSA4Mi4yODk4NiIKICAgdmVyc2lvbj0iMS4xIgogICB3aWR0aD0iODEuMjkwMDAxIgogICBoZWlnaHQ9IjgyLjI4OTg2NCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzODI2Ij4KICAgIDxzdHlsZQogICAgICAgaWQ9InN0eWxlODI0Ij4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjZjM5MjAwOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6IG5vbmU7CiAgICAgICAgc3Ryb2tlOiAjZjM5MjAwOwogICAgICAgIHN0cm9rZS13aWR0aDogMS41cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnCiAgICAgaWQ9Imc4NDAiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMwLjc2LC0zMS4xNDAxMzkpIj4KICAgIDxwYXRoCiAgICAgICBjbGFzcz0iY2xzLTEiCiAgICAgICBkPSJNIDU1LjksODUuMTkgQSAyMC4xNCwyMC4xNCAwIDEgMCAzNS43Niw2NS4wNSAyMC4xNCwyMC4xNCAwIDAgMCA1NS45LDg1LjE5IFoiCiAgICAgICBpZD0icGF0aDgyOCIgLz4KICAgIDxwYXRoCiAgICAgICBjbGFzcz0iY2xzLTEiCiAgICAgICBkPSJtIDk4LDU0LjE0IGEgOSw5IDAgMSAwIC04Ljk1LC05IDguOTUsOC45NSAwIDAgMCA4Ljk1LDkgeiIKICAgICAgIGlkPSJwYXRoODMwIiAvPgogICAgPHBhdGgKICAgICAgIGNsYXNzPSJjbHMtMSIKICAgICAgIGQ9Ik0gODguMzUsMTA4LjQzIEEgMTIuMzEsMTIuMzEgMCAxIDAgNzYsOTYuMTIgMTIuMzEsMTIuMzEgMCAwIDAgODguMzEsMTA4LjQzIFoiCiAgICAgICBpZD0icGF0aDgzMiIgLz4KICAgIDxsaW5lCiAgICAgICBjbGFzcz0iY2xzLTIiCiAgICAgICB4MT0iODYuOTcwMDAxIgogICAgICAgeTE9IjkyLjA1OTk5OCIKICAgICAgIHgyPSI1OC43Nzk5OTkiCiAgICAgICB5Mj0iNjcuMzYwMDAxIgogICAgICAgaWQ9ImxpbmU4MzQiIC8+CiAgICA8bGluZQogICAgICAgY2xhc3M9ImNscy0yIgogICAgICAgeDE9Ijk5LjE4IgogICAgICAgeTE9IjQ1Ljg0IgogICAgICAgeDI9IjU1LjQ4IgogICAgICAgeTI9IjY2LjEyMDAwMyIKICAgICAgIGlkPSJsaW5lODM2IiAvPgogICAgPGxpbmUKICAgICAgIGNsYXNzPSJjbHMtMiIKICAgICAgIHgxPSI5Ny45ODk5OTgiCiAgICAgICB5MT0iNDQuNjUwMDAyIgogICAgICAgeDI9Ijg4LjM0OTk5OCIKICAgICAgIHkyPSI5Mi44Mzk5OTYiCiAgICAgICBpZD0ibGluZTgzOCIgLz4KICA8L2c+Cjwvc3ZnPgo=
 [python-shield]: https://img.shields.io/badge/python-v3.11-blue
 
