@@ -4,11 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [5.3.1] 2023-09-14
+
+### Fixed
+
+- gitlab CI: artifact path for pytet
+
+
+## [5.3.0] 2023-09-08
+
+### Changed
+
+- forward mikepenz/action-junit-report to v4
+
+
+## [5.2.0] 2023-09-08
 
 ### Fixed
 
 - github pipeline: use `concurrency` to avoid integration test issues
+
+### Changes
+
+- update checkout action to v4
+- extend documentation
+- clean up local build plan / task documentation
 
 
 ## [5.1.0] 2023-09-05 

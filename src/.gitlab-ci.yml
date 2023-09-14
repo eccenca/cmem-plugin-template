@@ -70,6 +70,8 @@ pytest:
       coverage_report:
         coverage_format: cobertura
         path: dist/coverage.xml
+      junit:
+        - dist/junit-pytest.xml
     paths:
       - dist/badge-coverage.svg
       - dist/badge-tests.svg
