@@ -149,7 +149,8 @@ tasks:
     <<: *preparation
     cmds:
       # ignore 51358 safety - dev dependency only
-      - poetry run safety check -i 51358
+      # ignore 61489 pillow - dev dependency only
+      - poetry run safety check -i 51358 -i 61489
 
   check:bandit:
     desc: Find common security issues
