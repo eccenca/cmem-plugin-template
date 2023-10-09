@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [5.3.2] 2023-10-13
+## [5.3.3] 2023-10-13
+
+### Fixed
+
+- pylint/pillow dependencies to avoid errors
+
+
+## [5.3.2] 2023-10-13 (yanked)
 
 ### Fixed
 
