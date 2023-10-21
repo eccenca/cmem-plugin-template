@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [5.4.0] 2023-10-21
+
+### Changed
+
+- dependency to plugin base 4.3.0 (cmem-cmempy >= 23.3)
+
+
 ## [5.3.3] 2023-10-13
 
 ### Fixed
