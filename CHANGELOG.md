@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [5.4.1] 2023-11-06
+
+### Fixed
+
+- avoid safety issue 62044 for pip less than 23.3
+
+
 ## [5.4.0] 2023-10-21
 
 ### Changed

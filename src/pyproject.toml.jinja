@@ -33,6 +33,8 @@ flake8-formatter-junit-xml = "^0.0.6"
 pillow = "^9.5.0"
 genbadge = "^1.1.0"
 mypy = "^1.2.0"
+# Avoid safety issue 62044 for pip less than 23.3
+pip = ">=23.3"
 # https://github.com/rasjani/pylint-junit/issues/1
 pylint = "^2"
 pylint-junit = "^0.3.2"
