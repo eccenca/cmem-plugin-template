@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - dependency to plugin base 4.3.0 (cmem-cmempy >= 23.3)
 
+### Fixed
+
+- race condition in deploy task (#19)
+
 
 ## [5.3.4] 2023-11-06
 
