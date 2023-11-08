@@ -177,7 +177,6 @@ tasks:
   deploy:
     desc: Install plugin package in Corporate Memory
     deps:
-      - clean
       - build
     cmds:
       - cmemc admin workspace python install dist/*.tar.gz
@@ -186,6 +185,8 @@ tasks:
   build:
     desc: Build a tarball and a wheel package
     <<: *preparation
+    deps:
+      - clean
     cmds:
       - poetry build
 
