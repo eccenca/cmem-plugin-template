@@ -177,9 +177,9 @@ tasks:
   deploy:
     desc: Install plugin package in Corporate Memory
     deps:
-      - clean
-      - build
     cmds:
+      - task: clean
+      - task: build
       - cmemc admin workspace python install dist/*.tar.gz
       - cmemc admin workspace python list-plugins
 
