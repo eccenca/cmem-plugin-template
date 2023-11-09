@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - race condition in deploy task (#19)
+- pylint task ignored the test folder (the other linters did)
 
 
 ## [5.3.4] 2023-11-06

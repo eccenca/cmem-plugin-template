@@ -129,8 +129,8 @@ tasks:
     desc: Find code smells, errors and style issues
     <<: *preparation
     cmds:
-      - poetry run pylint --exit-zero {{.PACKAGE}}
-      - poetry run pylint {{.PACKAGE}} {{.XML_PARAMS}}
+      - poetry run pylint --exit-zero tests {{.PACKAGE}}
+      - poetry run pylint tests {{.PACKAGE}} {{.XML_PARAMS}}
     vars:
       FORMAT: --output-format=pylint_junit.JUnitReporter
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-pylint.xml
