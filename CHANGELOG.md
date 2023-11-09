@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - dependency to plugin base 4.3.0 (cmem-cmempy >= 23.3)
+- use poetry-dynamic-versioning option bump=true
+  - 0.0.1.devX.. instead of 0.0.0.postX
 
 ### Fixed
 
