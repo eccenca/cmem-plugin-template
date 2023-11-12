@@ -1,7 +1,7 @@
 """lifetime(age) transform plugin module"""
 import datetime
+from collections.abc import Sequence
 from datetime import date
-from typing import Sequence
 
 from cmem_plugin_base.dataintegration.description import (
     Plugin,
@@ -11,8 +11,7 @@ from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 
 @Plugin(
-    label="Lifetime (age - {{ project_slug }})",
-    plugin_id="Example-Lifetime-{{ project_slug }}",
+    label="Lifetime (age - example from template)",
     description="From the input date,"
     "the value gets transformed into number of years (age)."
     " Supports only xsd:date(YYYY-MM-DD) format.",
@@ -48,6 +47,7 @@ class Lifetime(TransformPlugin):
         self.start_date = start_date
 
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
+        """Do the actual transformation of values"""
         result = []
         if len(inputs) != 0:
             for collection in inputs:
@@ -57,9 +57,9 @@ class Lifetime(TransformPlugin):
         return result
 
     def _calculate_age(self, value: str) -> int:
-        """calculate age in years"""
-        today = date.today()
-        born = datetime.datetime.strptime(value, self.DATE_FORMAT).date()
+        """Calculate age in years"""
+        today = date.today()  # noqa: DTZ011
+        born = datetime.datetime.strptime(value, self.DATE_FORMAT).date()  # noqa: DTZ007
         try:
             birthday = born.replace(year=today.year)
 

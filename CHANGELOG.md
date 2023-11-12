@@ -8,15 +8,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- integrate ruff (removing bandit, flake8, black and pylint)
 - dependency to plugin base 4.3.0 (cmem-cmempy >= 23.3)
 - use poetry-dynamic-versioning option bump=true
   - 0.0.1.devX.. instead of 0.0.0.postX
-- add target-version = "py311" to black
 
 ### Fixed
 
 - race condition in deploy task (#19)
-- pylint task ignored the test folder (the other linters did)
 
 
 ## [5.3.4] 2023-11-06

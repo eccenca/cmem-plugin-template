@@ -1,16 +1,18 @@
 """Testing utilities."""
 import os
+from typing import ClassVar
 
 import pytest
+
 # check for cmem environment and skip if not present
 from cmem.cmempy.api import get_token
 from cmem.cmempy.config import get_oauth_default_credentials
 from cmem_plugin_base.dataintegration.context import (
-    PluginContext,
-    UserContext,
-    TaskContext,
     ExecutionContext,
+    PluginContext,
     ReportContext,
+    TaskContext,
+    UserContext,
 )
 
 needs_cmem = pytest.mark.skipif(
@@ -22,7 +24,7 @@ class TestUserContext(UserContext):
     """dummy user context that can be used in tests"""
 
     __test__ = False
-    default_credential: dict = {}
+    default_credential: ClassVar[dict] = {}
 
     def __init__(self):
         # get access token from default service account

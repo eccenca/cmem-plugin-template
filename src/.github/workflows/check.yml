@@ -42,21 +42,13 @@ jobs:
         run: |
           poetry self add "poetry-dynamic-versioning[plugin]"
 
-      - name: bandit
-        run: |
-          task check:bandit
-
-      - name: flake8
-        run: |
-          task check:flake8
-
       - name: mypy
         run: |
           task check:mypy
 
-      - name: pylint
+      - name: ruff
         run: |
-          task check:pylint
+          task check:ruff
 
       - name: pytest
         env:
