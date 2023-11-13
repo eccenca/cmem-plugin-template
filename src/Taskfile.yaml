@@ -67,14 +67,14 @@ tasks:
       - poetry install
 
   format:fix:
-    desc: Format Python files
+    desc: Format Python files and fix obvious issues
     <<: *preparation
     cmds:
       - poetry run ruff format tests {{.PACKAGE}}
       - poetry run ruff check tests {{.PACKAGE}} --fix-only
 
   format:fix-unsafe:
-    desc: Format Python files
+    desc: Format Python files and fix 'unsafe' issues
     <<: *preparation
     cmds:
       - poetry run ruff format tests {{.PACKAGE}}

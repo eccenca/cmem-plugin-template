@@ -25,7 +25,7 @@ You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.
 
 ## Features
 
-- [Python / poetry](https://python-poetry.org/) project with [pylint](https://pylint.pycqa.org/), [pytest](https://www.pytest.org/), [flake8](https://flake8.pycqa.org/), [mypy](http://mypy-lang.org/), [bandit](https://bandit.readthedocs.io/), [memray](https://bloomberg.github.io/memray/) and [safety](https://pyup.io/safety/) integration
+- [Python / poetry](https://python-poetry.org/) project with [ruff](https://docs.astral.sh/ruff/), [pytest](https://www.pytest.org/) + [memray](https://bloomberg.github.io/memray/), [mypy](http://mypy-lang.org/), and [safety](https://pyup.io/safety/) integration
 - Local build plan with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW)
 - [Github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
 - [Gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
@@ -87,18 +87,17 @@ Available tasks for your project can be listed like this:
 ```shell-session
 ∴ task
 task: Available tasks for this project:
-* build:               Build a tarball and a wheel package
-* check:               Run whole test suite incl. unit and integration tests
-* clean:               Removes dist, *.pyc and some caches
-* deploy:              Install plugin package in Corporate Memory
-* check:bandit:        Find common security issues
-* check:flake8:        Enforce standard source code style guide
-* check:linters:       Run all linter and static code analysis tests
-* check:mypy:          Find type errors
-* check:pylint:        Find code smells, errors and style issues
-* check:pytest:        Run unit and integration tests
-* check:safety:        Scan dependencies for vulnerabilities
-* python:format:       Format Python files
+* build:                   Build a tarball and a wheel package
+* check:                   Run whole test suite incl. unit and integration tests
+* clean:                   Removes dist, *.pyc and some caches
+* deploy:                  Install plugin package in Corporate Memory
+* check:linters:           Run all linter and static code analysis tests
+* check:mypy:              Complain about typing errors
+* check:pytest:            Run unit and integration tests
+* check:ruff:              Complain about everything else
+* check:safety:            Complain about vulnerabilities in dependencies
+* format:fix:              Format Python files and fix obvious issues
+* format:fix-unsafe:       Format Python files and fix 'unsafe' issues
 ```
 
 You can extend this task lisk by creating a file `TaskfileCustom.yaml` in your repository root:
@@ -124,8 +123,8 @@ tasks:
 The following tools are needed for local task execution:
 
 - Python 3.11
-- [copier](https://copier.readthedocs.io/) (>= v8.3) for project template rendering
-- [poetry](https://python-poetry.org/) (>= v1.6) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
+- [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering
+- [poetry](https://python-poetry.org/) (>= v1.7) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
 - [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
 - [task](https://taskfile.dev/) (>= v3.29) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [cmemc](https://eccenca.com/go/cmemc) (>= v23.1) for interacting with eccenca Corporate Memory
