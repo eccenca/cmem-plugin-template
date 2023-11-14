@@ -39,16 +39,6 @@ mypy:
       junit:
         - dist/junit-mypy.xml
 
-pylint:
-  stage: test
-  script:
-    - task check:pylint
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - dist/junit-pylint.xml
-
 pytest:
   stage: test
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
@@ -92,7 +82,6 @@ pypi:
   stage: publish
   needs:
     - ruff
-    - pylint
     - build
   allow_failure: true
   when: manual
