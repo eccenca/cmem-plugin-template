@@ -25,12 +25,19 @@ You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.
 
 ## Features
 
-- [Python / poetry](https://python-poetry.org/) project with [ruff](https://docs.astral.sh/ruff/), [pytest](https://www.pytest.org/) + [memray](https://bloomberg.github.io/memray/), [mypy](http://mypy-lang.org/), and [safety](https://pyup.io/safety/) integration
-- Local build plan with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW)
-- [Github build plan](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows)
-- [Gitlab build plan](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml)
-- Badges, junit XML files and coverage stat generation
-
+- [Python / poetry](https://python-poetry.org/) project with
+  - [pytest](https://www.pytest.org/) (incl. [memray](https://bloomberg.github.io/memray/) + [pytest-dotenv](https://github.com/quiqua/pytest-dotenv)) as testing framework,
+  - [ruff](https://docs.astral.sh/ruff/) as all-hands linter,
+  - [mypy](http://mypy-lang.org/) as type checker, and
+  - [safety](https://pyup.io/safety/) as dependency checker.
+- Build plans for
+  - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
+  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows), and
+  - locally with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW).
+  - Including
+    - badge generation,
+    - junit XML files, and
+    - coverage stat generation.
 
 ## Usage
 
