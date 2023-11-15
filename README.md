@@ -13,12 +13,14 @@ You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.
 * [Features](#features)
 * [Usage](#usage)
     * [Project Initialization](#project-initialization)
-    * [Project Update](#project-update)
+    * [Template Updates](#template-updates)
     * [Other Tasks](#other-tasks)
 * [Setup](#setup)
     * [Local Requirements](#local-requirements)
     * [Integration Tests](#integration-tests)
     * [CI Build Plan](#ci-build-plan)
+    * [Editor / IDE Support](#editor--ide-support)
+        * [PyCharm](#pycharm)
 
 <!-- vim-markdown-toc -->
 
@@ -27,16 +29,16 @@ You can use it to bootstrap an [eccenca Corporate Memory](https://documentation.
 
 - [Python / poetry](https://python-poetry.org/) project with
   - [pytest](https://www.pytest.org/) (incl. [memray](https://bloomberg.github.io/memray/) + [pytest-dotenv](https://github.com/quiqua/pytest-dotenv)) as testing framework,
-  - [ruff](https://docs.astral.sh/ruff/) as all-hands linter,
+  - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
   - [mypy](http://mypy-lang.org/) as type checker, and
-  - [safety](https://pyup.io/safety/) as dependency checker.
+  - [safety](https://pyup.io/safety/) as dependency vulnerability scanner.
 - Build plans for
   - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
   - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows), and
   - locally with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW).
   - Including
     - badge generation,
-    - junit XML files, and
+    - JUnit XML file and
     - coverage stat generation.
 
 ## Usage
@@ -67,29 +69,34 @@ $ git commit -m "init"
 $ pre-commit install
 ```
 
-Then you can run the local test suite an build a first deployment artifact:
+Then you can run the local test suite an build a first deployment artefact:
 
 ```shell-session
 $ task check build
 ```
 
-### Project Update
+### Template Updates
 
-From time to time, this template will be upgraded, so you can update your repository as well:
+We [continuously update](https://github.com/eccenca/cmem-plugin-template/graphs/code-frequency) this repository.
+This includes maintenance of dependencies, build plan updates and the adoption of new features from the [plugin base library](https://github.com/eccenca/cmem-plugin-base).
+
+In order to upgrade your plugin project to the latest template release, use the following command:
 
 ```shell-session
 $ copier update
 ```
 
+In order to prepare your plugin project for the upcoming next release, use this command:
+
 ```shell-session
 $ copier update -r develop
 ```
 
-Please have a look at the [copier documentation](https://copier.readthedocs.io/en/stable/updating/).
+Please also have a look at the [copier documentation](https://copier.readthedocs.io/en/stable/updating/).
 
 ### Other Tasks
 
-Available tasks for your project can be listed like this:
+All available tasks for your project can be listed like this:
 
 ```shell-session
 ∴ task
@@ -107,7 +114,7 @@ task: Available tasks for this project:
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
 ```
 
-You can extend this task lisk by creating a file `TaskfileCustom.yaml` in your repository root:
+You can extend this task list by creating a file `TaskfileCustom.yaml` in your repository root:
 
 ```shell-session
 $ cat TaskfileCustom.yaml
@@ -151,8 +158,8 @@ $ poetry self add "poetry-dynamic-versioning[plugin]"
 
 ### Integration Tests
 
-This template uses pytest for testing.
-Testing your plugin is crucial and should be done locally and integrated with eccenca Corporate Memory.
+This template uses the [pytest](https://pytest.org) testing framework.
+Testing your plugin is crucial and should be done locally as well as  integrated with eccenca Corporate Memory.
 
 In order to setup access to a Corporate Memory deployment, you need to provide correct environment variables.
 Without these variables, only standalone tests can be executed (see `1 skipped`):
@@ -163,22 +170,18 @@ $ task check:pytest
 ... ===== 3 passed, 1 skipped in 0.09s =====
 ```
 
-By giving the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/22.1/automate/cmemc-command-line-interface/installation-and-configuration/file-based-configuration/#configuration-variables), your plugin can be tested in an integrated way:
+By providing the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/latest/automate/cmemc-command-line-interface/installation-and-configuration/file-based-configuration/#configuration-variables) in a `.env` file or directly in your environment, your plugin can be tested in an integrated way:
 
-```shell-session
+``` shell-session
+# Environment as direct variables:
 $ export CMEM_BASE_URI="https://cmem.example.org"
 $ export OAUTH_CLIENT_ID="cmem-service-account"
 $ export OAUTH_CLIENT_SECRET="..."
 $ export OAUTH_GRANT_TYPE="client_credentials"
-$ task check:pytest
-...
-... ===== 4 passed in 1.71s =====
-
 ```
 
-You can also add these variables to the `.env` file in your repository root (just make sure to never commit this file).
-
-```shell-session
+``` shell-session
+# Environment as .env files
 $ cat .env
 CMEM_BASE_URI="https://cmem.example.org"
 OAUTH_CLIENT_ID="cmem-service-account"
@@ -188,15 +191,23 @@ OAUTH_GRANT_TYPE="client_credentials"
 
 ### CI Build Plan
 
-The gitlab workflow / github action pipelines need the same environment variables as secrets:
+The gitlab workflow as well as the github action pipelines need the same environment variables as secrets:
 
 - For github, go to Settings > Secret > Actions > [New Repository Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - For gitlab, go to Settings > CI/CD > Variables (Expand) > [Add Variable (protected, masked, all environments)](https://docs.gitlab.com/ee/ci/variables/)
 
-Example github pipelines can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions) and [here](https://github.com/eccenca/cmem-plugin-graphql/actions).
+An example github pipeline can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions).
 
 In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
 
+### Editor / IDE Support
+
+#### PyCharm
+
+In order to have the best PyCharm experience when starting a project with this template, we suggest the following PyCharm plugins:
+
+- [Ruff](https://plugins.jetbrains.com/plugin/20574-ruff) will provide the linting hints which will be raised by the pipeline anyway.
+- [Taskfile](https://plugins.jetbrains.com/plugin/17058-taskfile) will allow for starting tasks.
 
 [version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
 [changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
