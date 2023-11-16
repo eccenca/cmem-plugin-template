@@ -174,6 +174,7 @@ tasks:
     <<: *preparation
     deps:
       - clean
+      - poetry:check
     cmds:
       - poetry build
 
