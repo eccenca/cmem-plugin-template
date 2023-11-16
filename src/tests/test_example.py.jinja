@@ -9,8 +9,8 @@ from cmem.cmempy.workspace.projects.resources.resource import (
     get_resource_response,
 )
 
-from cmem_plugin_{{ project_slug }}.transform import Lifetime
-from cmem_plugin_{{ project_slug }}.workflow import DollyPlugin
+from cmem_plugin_{{ project_slug }}.example_transform import Lifetime
+from cmem_plugin_{{ project_slug }}.example_workflow import DollyPlugin
 from tests.utils import TestExecutionContext, needs_cmem
 
 PROJECT_NAME = "{{ project_slug }}_test_project"
@@ -19,9 +19,9 @@ RESOURCE_NAME = "sample_dataset.txt"
 DATASET_TYPE = "text"
 
 
-@pytest.fixture
-def setup(request):
-    """Provides the DI build project incl. assets."""
+@pytest.fixture()
+def di_environment() -> object:
+    """Provide the DI build project incl. assets."""
     make_new_project(PROJECT_NAME)
     make_new_dataset(
         project_name=PROJECT_NAME,
@@ -37,12 +37,15 @@ def setup(request):
             file_resource=response_file,
             replace=True,
         )
-
-    request.addfinalizer(lambda: delete_project(PROJECT_NAME))
+    yield {
+        "project": PROJECT_NAME,
+        "dataset": RESOURCE_NAME,
+    }
+    delete_project(PROJECT_NAME)
 
 
 @needs_cmem
-def test_workflow_execution():
+def test_workflow_execution() -> None:
     """Test plugin execution"""
     entities = 100
     values = 10
@@ -53,23 +56,21 @@ def test_workflow_execution():
         assert len(item.values) == len(result.schema.paths)
 
 
-def test_transform_execution_with_optional_input():
+def test_transform_execution_with_optional_input() -> None:
     """Test Lifetime with optional input"""
     result = Lifetime(start_date="2000-05-22").transform(inputs=[])
     for item in result:
         assert item == "23"
 
 
-def test_transform_execution_with_inputs():
+def test_transform_execution_with_inputs() -> None:
     """Test Lifetime with sequence of inputs."""
-    result = Lifetime(start_date="").transform(
-        inputs=[["2000-05-22", "2021-12-12", "1904-02-29"]]
-    )
-    assert result >= ["22", "0", "118"]
+    result = Lifetime(start_date="").transform(inputs=[["2000-05-22", "2021-12-12", "1904-02-29"]])
+    assert list(result) >= ["22", "0", "118"]
 
 
 @needs_cmem
-def test_integration_placeholder(setup):
+def test_integration_placeholder(di_environment: dict) -> None:
     """Placeholder to write integration testcase with cmem"""
-    with get_resource_response(PROJECT_NAME, RESOURCE_NAME) as response:
+    with get_resource_response(di_environment["project"], di_environment["dataset"]) as response:
         assert response.text != ""

@@ -19,25 +19,15 @@ stages:
   - build
   - publish
 
-bandit:
+ruff:
   stage: test
   script:
-    - task check:bandit
+    - task check:ruff
   artifacts:
     when: always
     reports:
       junit:
-        - dist/junit-bandit.xml
-
-flake8:
-  stage: test
-  script:
-    - task check:flake8
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - dist/junit-flake8.xml
+        - dist/junit-ruff.xml
 
 mypy:
   stage: test
@@ -48,16 +38,6 @@ mypy:
     reports:
       junit:
         - dist/junit-mypy.xml
-
-pylint:
-  stage: test
-  script:
-    - task check:pylint
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - dist/junit-pylint.xml
 
 pytest:
   stage: test
@@ -86,7 +66,6 @@ safety:
 build:
   stage: build
   needs:
-    - bandit
     - mypy
     - pytest
     - safety
@@ -102,8 +81,7 @@ pypi:
   # publishing only available on a tag
   stage: publish
   needs:
-    - flake8
-    - pylint
+    - ruff
     - build
   allow_failure: true
   when: manual

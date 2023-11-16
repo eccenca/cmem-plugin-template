@@ -66,11 +66,19 @@ tasks:
     cmds:
       - poetry install
 
-  python:format:
-    desc: Format Python files
+  format:fix:
+    desc: Format Python files and fix obvious issues
     <<: *preparation
     cmds:
-      - poetry run black .
+      - poetry run ruff format tests {{.PACKAGE}}
+      - poetry run ruff check tests {{.PACKAGE}} --fix-only
+
+  format:fix-unsafe:
+    desc: Format Python files and fix 'unsafe' issues
+    <<: *preparation
+    cmds:
+      - poetry run ruff format tests {{.PACKAGE}}
+      - poetry run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
 
   clean:
     desc: Removes dist, *.pyc and some caches
@@ -83,18 +91,16 @@ tasks:
 
   check:
     desc: Run whole test suite incl. unit and integration tests
-    deps:
-      - check:linters
-      - check:pytest
+    cmds:
+      - task: check:linters
+      - task: check:pytest
 
   check:linters:
     desc: Run all linter and static code analysis tests
-    deps:
-      - check:bandit
-      - check:flake8
-      - check:mypy
-      - check:pylint
-      - check:safety
+    cmds:
+      - task: check:ruff
+      - task: check:mypy
+      - task: check:safety
 
   check:pytest:
     desc: Run unit and integration tests
@@ -125,19 +131,8 @@ tasks:
       BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
       BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
 
-  check:pylint:
-    desc: Find code smells, errors and style issues
-    <<: *preparation
-    cmds:
-      - poetry run pylint --exit-zero {{.PACKAGE}}
-      - poetry run pylint {{.PACKAGE}} {{.XML_PARAMS}}
-    vars:
-      FORMAT: --output-format=pylint_junit.JUnitReporter
-      JUNIT_FILE: ./{{.DIST_DIR}}/junit-pylint.xml
-      XML_PARAMS: --output={{.JUNIT_FILE}} {{.FORMAT}}
-
   check:mypy:
-    desc: Find type errors
+    desc: Complain about typing errors
     <<: *preparation
     cmds:
       - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
@@ -145,31 +140,23 @@ tasks:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
   check:safety:
-    desc: Scan dependencies for vulnerabilities
+    desc: Complain about vulnerabilities in dependencies
     <<: *preparation
     cmds:
       # ignore 51358 safety - dev dependency only
       # ignore 61489 pillow - dev dependency only
       - poetry run safety check -i 51358 -i 61489
 
-  check:bandit:
-    desc: Find common security issues
+  check:ruff:
+    desc: Complain about everything else
     <<: *preparation
     cmds:
-      - poetry run bandit --exit-zero -r {{.PACKAGE}}
-      - poetry run bandit --format xml -r {{.PACKAGE}} -o {{.JUNIT_FILE}}
+      - poetry run ruff check --show-source tests {{.PACKAGE}}
+      - poetry run ruff check --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
+      - poetry run ruff format --check tests {{.PACKAGE}}
     vars:
-      JUNIT_FILE: ./{{.DIST_DIR}}/junit-bandit.xml
-
-  check:flake8:
-    desc: Enforce standard source code style guide
-    <<: *preparation
-    cmds:
-      - poetry run flake8 --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
-      - poetry run flake8 --show-source tests {{.PACKAGE}}
-    vars:
-      JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
-      XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-ruff.xml
+      XML_PARAMS: --output-format junit --output-file {{.JUNIT_FILE}}
 
   # }}}
   # {{{ build and deploy tasks
@@ -177,7 +164,6 @@ tasks:
   deploy:
     desc: Install plugin package in Corporate Memory
     deps:
-      - clean
       - build
     cmds:
       - cmemc admin workspace python install dist/*.tar.gz
@@ -186,6 +172,9 @@ tasks:
   build:
     desc: Build a tarball and a wheel package
     <<: *preparation
+    deps:
+      - clean
+      - poetry:check
     cmds:
       - poetry build
 

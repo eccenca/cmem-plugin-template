@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Changed
+
+- integrate ruff (removing bandit, flake8, black and pylint)
+- use plugin base 4.3.0 (cmem-cmempy >= 23.3)
+- use poetry-dynamic-versioning option bump=true
+  - 0.0.1.devX.. instead of 0.0.0.postX
+
+### Fixed
+
+- race condition in deploy task (#19)
+- missing check for poetry versioning plugin on build task
+
+
 ## [5.3.4] 2023-11-06
 
 ### Fixed

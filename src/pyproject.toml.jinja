@@ -20,30 +20,19 @@ keywords = [
 python = "^3.11"
 
 [tool.poetry.dependencies.cmem-plugin-base]
-version = "^4.1.0"
-# allow-prereleases = true
+version = "^4.3.0"
+allow-prereleases = false
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.7.5"
-black = "^23.3.0"
-coverage = "^7.2.3"
-defusedxml = "^0.7.1"
-flake8-formatter-junit-xml = "^0.0.6"
-# https://github.com/smarie/python-genbadge/issues/31
-pillow = "^9.5.0"
-genbadge = "^1.1.0"
+genbadge = {extras = ["coverage"], version = "^1.1.1"}
 mypy = "^1.2.0"
-# Avoid safety issue 62044 for pip less than 23.3
-pip = ">=23.3"
-# https://github.com/rasjani/pylint-junit/issues/1
-pylint = "^2"
-pylint-junit = "^0.3.2"
+pip = ">=23.3" # Avoid safety issue 62044 for pip less than 23.3
 pytest = "^7.3.1"
-pytest-cov = "^4.0.0"
-pytest-memray = { version = "^1.4.0",  markers = "platform_system != 'Windows'" }
+pytest-cov = "^4.1.0"
+pytest-dotenv = "^0.5.2"
+pytest-memray = { version = "^1.5.0",  markers = "platform_system != 'Windows'" }
+ruff = "^0.1.5"
 safety = "^1.10.3"
-typed-ast = "^1.5.4"
-wheel = "^0.38.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
@@ -53,23 +42,7 @@ build-backend = "poetry_dynamic_versioning.backend"
 enable = true
 vcs = "git"
 dirty = true
-
-[tool.pylint.MASTER]
-load-plugins="pylint_junit"
-
-[tool.pylint.General]
-ignore = "version.py"
-
-[tool.pylint.'MESSAGES CONTROL']
-extension-pkg-whitelist = "pydantic"
-disable = "fixme"
-
-# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#pylint
-[tool.pylint.messages_control]
-disable = "R0903"
-
-[tool.pylint.format]
-max-line-length = "88"
+bump = true
 
 [tool.mypy]
 warn_return_any = true
@@ -77,4 +50,31 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = ""
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.format]
+line-ending = "lf" # Use `\n` line endings for all files
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN101",  # Missing type annotation for self in method
+    "ANN204",  # Missing return type annotation for special method `__init__`
+    "COM812",  # missing-trailing-comma
+    "D107",    # Missing docstring in __init__
+    "D203",    # [*] 1 blank line required before class docstring
+    "D211",    # No blank lines allowed before class docstring
+    "D213",    # Multi-line docstring summary should start at the second line
+    "D400",    # First line should end with a period
+    "D415",    # First line should end with a period, question mark, or exclamation point
+    "EM",      # Exception texts - https://docs.astral.sh/ruff/rules/#flake8-errmsg-em
+    "G004",    # Logging statement uses f-string
+    "ISC001",  # single-line-implicit-string-concatenation
+    "PD",      # opinionated linting for pandas code
+    "S101",    # use of assert detected
+    "TRY003",  # Avoid specifying long messages outside the exception class
+]
 
