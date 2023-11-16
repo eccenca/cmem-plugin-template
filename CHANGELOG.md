@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [6.0.1] 2023-11-16
+
+### Fixed
+
+- pre-commit hook switched to ruff as well
+
+
 ## [6.0.0] 2023-11-16
 
 ### Changed
