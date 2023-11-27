@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - pre-commit hook switched to ruff as well
+- check:ruff now creates always a junit XML file
 
 
 ## [6.0.0] 2023-11-16

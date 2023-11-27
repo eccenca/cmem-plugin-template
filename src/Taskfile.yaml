@@ -151,8 +151,8 @@ tasks:
     desc: Complain about everything else
     <<: *preparation
     cmds:
-      - poetry run ruff check --show-source tests {{.PACKAGE}}
       - poetry run ruff check --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
+      - poetry run ruff check --show-source tests {{.PACKAGE}}
       - poetry run ruff format --check tests {{.PACKAGE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-ruff.xml
