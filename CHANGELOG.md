@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+...
+
+
+## [6.0.1] 2023-11-16
+
+### Fixed
+
+- pre-commit hook switched to ruff as well
+
+
+## [6.0.0] 2023-11-16
+
 ### Changed
 
 - integrate ruff (removing bandit, flake8, black and pylint)
