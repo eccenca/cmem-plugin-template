@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - check:ruff now creates always a junit XML file
 - ignore FIX002 - allow to add TODO notes in the code
+- ignore FBT (boolean trap)
 
 
 ## [6.0.1] 2023-11-16
