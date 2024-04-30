@@ -51,6 +51,18 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 addopts = ""
 
+[tool.coverage.report]
+exclude_also = [
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+    ]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
