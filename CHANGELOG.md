@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added
+
+- pytest-html report generation
+
+### Changed
+
+- coverage report does some advanced exclusion:
+  - https://coverage.readthedocs.io/en/7.5.0/excluding.html#advanced-exclusion
+- update dependencies
+
+### Security
+
+- ignore pips 67599 safety issue
+
+
 ## [6.1.0] 2024-02-02
 
 ### Fixed

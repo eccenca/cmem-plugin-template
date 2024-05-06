@@ -20,18 +20,19 @@ keywords = [
 python = "^3.11"
 
 [tool.poetry.dependencies.cmem-plugin-base]
-version = "^4.3.0"
+version = "^4.5.0"
 allow-prereleases = false
 
 [tool.poetry.group.dev.dependencies]
 genbadge = {extras = ["coverage"], version = "^1.1.1"}
-mypy = "^1.2.0"
-pip = ">=23.3" # Avoid safety issue 62044 for pip less than 23.3
-pytest = "^7.3.1"
+mypy = "^1.10.0"
+pip = "^24"
+pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
 pytest-dotenv = "^0.5.2"
-pytest-memray = { version = "^1.5.0",  markers = "platform_system != 'Windows'" }
-ruff = "^0.1.5"
+pytest-html = "^4.1.1"
+pytest-memray = { version = "^1.6.0",  markers = "platform_system != 'Windows'" }
+ruff = "^0.1.15"
 safety = "^1.10.3"
 
 [build-system]
@@ -50,6 +51,18 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = ""
+
+[tool.coverage.report]
+exclude_also = [
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+    ]
 
 [tool.ruff]
 line-length = 100
