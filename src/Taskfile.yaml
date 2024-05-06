@@ -144,8 +144,8 @@ tasks:
     <<: *preparation
     cmds:
       # ignore 51358 safety - dev dependency only
-      # ignore 61489 pillow - dev dependency only
-      - poetry run safety check -i 51358 -i 61489
+      # ignore 67599 pip - dev dependency only
+      - poetry run safety check -i 51358 -i 67599
 
   check:ruff:
     desc: Complain about everything else
