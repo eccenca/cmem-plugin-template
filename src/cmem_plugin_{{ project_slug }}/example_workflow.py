@@ -1,4 +1,5 @@
 """Random values workflow plugin module"""
+
 import uuid
 from collections.abc import Sequence
 from secrets import token_urlsafe

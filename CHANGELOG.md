@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [6.3.0] 2024-05-22
+
+### Changed
+
+- update ruff
+
+### Fixed
+
+- exampe test
+
+
 ## [6.2.0] 2024-05-06
 
 ### Added
@@ -14,7 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - coverage report does some advanced exclusion:
   - https://coverage.readthedocs.io/en/7.5.0/excluding.html#advanced-exclusion
-- update dependencies
+- update dependencies, esp. ruff
 
 ### Security
 

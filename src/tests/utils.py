@@ -1,4 +1,5 @@
 """Testing utilities."""
+
 import os
 from typing import ClassVar
 
