@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - coverage report does some advanced exclusion:
   - https://coverage.readthedocs.io/en/7.5.0/excluding.html#advanced-exclusion
-- update dependencies
+- update dependencies, esp. ruff
 
 ### Security
 

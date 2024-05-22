@@ -1,4 +1,5 @@
 """lifetime(age) transform plugin module"""
+
 import datetime
 from collections.abc import Sequence
 from datetime import date
