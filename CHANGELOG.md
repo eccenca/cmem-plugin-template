@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [6.3.1] 2024-06-03
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Security
+
+- ignore dev dependency security issue 70612 for jinja2
 
 
 ## [6.3.0] 2024-05-22
