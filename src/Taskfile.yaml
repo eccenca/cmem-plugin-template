@@ -148,7 +148,8 @@ tasks:
     cmds:
       # ignore 51358 safety - dev dependency only
       # ignore 67599 pip - dev dependency only
-      - poetry run safety check -i 51358 -i 67599
+      # ignore 70612 jinja2 - dev dependency only
+      - poetry run safety check -i 51358 -i 67599 -i 70612
 
   check:ruff:
     desc: Complain about everything else
