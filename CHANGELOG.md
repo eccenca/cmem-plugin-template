@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- dependency updates (ruff 0.5, pytest 8, pytest-cov 5)
+- cmem-plugin-base -> 4.7.0
 
 
 ## [6.3.1] 2024-06-03
