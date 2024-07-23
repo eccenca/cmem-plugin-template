@@ -9,7 +9,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - dependency updates (ruff 0.5, pytest 8, pytest-cov 5)
-- cmem-plugin-base -> 4.7.0
+- cmem-plugin-base -> 4.7.0 (Corporate Memory 24.2.x)
+- github: update to actions/setup-python@v5
+- github: update to arduino/setup-task@v2
 
 
 ## [6.3.1] 2024-06-03
