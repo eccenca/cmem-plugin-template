@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [6.4.0] 2024-08-18
+
+### Changed
+
+- dependency updates (ruff 0.5, pytest 8, pytest-cov 5)
+- cmem-plugin-base -> 4.7.0 (Corporate Memory 24.2.x)
+- github: update to actions/setup-python@v5
+- github: update to arduino/setup-task@v2
+
+
 ## [6.3.1] 2024-06-03
 
 ### Security
