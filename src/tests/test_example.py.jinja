@@ -20,7 +20,7 @@ RESOURCE_NAME = "sample_dataset.txt"
 DATASET_TYPE = "text"
 
 
-@pytest.fixture()
+@pytest.fixture
 def di_environment() -> object:
     """Provide the DI build project incl. assets."""
     make_new_project(PROJECT_NAME)
