@@ -1,7 +1,8 @@
 # cmem-plugin-template
 
 [![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python-shield]
-[![eccenca Corporate Memory][cmem-shield]][cmem] [![copier][copier-shield]][copier] 
+[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] 
+[![eccenca Corporate Memory][cmem-shield]][cmem]
 
 This repository contains a [copier](https://copier.readthedocs.io/) template.
 
@@ -217,6 +218,12 @@ In order to have the best PyCharm experience when starting a project with this t
 [copier]: https://copier.readthedocs.io/
 [copier-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json
 [cmem]: https://documentation.eccenca.com
-[cmem-shield]: https://img.shields.io/badge/made%20for-eccenca%20Corporate%20Memory-blue?logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaWQ9IkxheWVyXzEiCiAgIGRhdGEtbmFtZT0iTGF5ZXIgMSIKICAgdmlld0JveD0iMCAwIDgxLjI5MDAwMSA4Mi4yODk4NiIKICAgdmVyc2lvbj0iMS4xIgogICB3aWR0aD0iODEuMjkwMDAxIgogICBoZWlnaHQ9IjgyLjI4OTg2NCIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcwogICAgIGlkPSJkZWZzODI2Ij4KICAgIDxzdHlsZQogICAgICAgaWQ9InN0eWxlODI0Ij4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjZjM5MjAwOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6IG5vbmU7CiAgICAgICAgc3Ryb2tlOiAjZjM5MjAwOwogICAgICAgIHN0cm9rZS13aWR0aDogMS41cHg7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnCiAgICAgaWQ9Imc4NDAiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMwLjc2LC0zMS4xNDAxMzkpIj4KICAgIDxwYXRoCiAgICAgICBjbGFzcz0iY2xzLTEiCiAgICAgICBkPSJNIDU1LjksODUuMTkgQSAyMC4xNCwyMC4xNCAwIDEgMCAzNS43Niw2NS4wNSAyMC4xNCwyMC4xNCAwIDAgMCA1NS45LDg1LjE5IFoiCiAgICAgICBpZD0icGF0aDgyOCIgLz4KICAgIDxwYXRoCiAgICAgICBjbGFzcz0iY2xzLTEiCiAgICAgICBkPSJtIDk4LDU0LjE0IGEgOSw5IDAgMSAwIC04Ljk1LC05IDguOTUsOC45NSAwIDAgMCA4Ljk1LDkgeiIKICAgICAgIGlkPSJwYXRoODMwIiAvPgogICAgPHBhdGgKICAgICAgIGNsYXNzPSJjbHMtMSIKICAgICAgIGQ9Ik0gODguMzUsMTA4LjQzIEEgMTIuMzEsMTIuMzEgMCAxIDAgNzYsOTYuMTIgMTIuMzEsMTIuMzEgMCAwIDAgODguMzEsMTA4LjQzIFoiCiAgICAgICBpZD0icGF0aDgzMiIgLz4KICAgIDxsaW5lCiAgICAgICBjbGFzcz0iY2xzLTIiCiAgICAgICB4MT0iODYuOTcwMDAxIgogICAgICAgeTE9IjkyLjA1OTk5OCIKICAgICAgIHgyPSI1OC43Nzk5OTkiCiAgICAgICB5Mj0iNjcuMzYwMDAxIgogICAgICAgaWQ9ImxpbmU4MzQiIC8+CiAgICA8bGluZQogICAgICAgY2xhc3M9ImNscy0yIgogICAgICAgeDE9Ijk5LjE4IgogICAgICAgeTE9IjQ1Ljg0IgogICAgICAgeDI9IjU1LjQ4IgogICAgICAgeTI9IjY2LjEyMDAwMyIKICAgICAgIGlkPSJsaW5lODM2IiAvPgogICAgPGxpbmUKICAgICAgIGNsYXNzPSJjbHMtMiIKICAgICAgIHgxPSI5Ny45ODk5OTgiCiAgICAgICB5MT0iNDQuNjUwMDAyIgogICAgICAgeDI9Ijg4LjM0OTk5OCIKICAgICAgIHkyPSI5Mi44Mzk5OTYiCiAgICAgICBpZD0ibGluZTgzOCIgLz4KICA8L2c+Cjwvc3ZnPgo=
+[cmem-shield]: https://img.shields.io/endpoint?url=https://dev.documentation.eccenca.com/badge.json
 [python-shield]: https://img.shields.io/badge/python-v3.11-blue
+[mypy-link]: https://mypy-lang.org/
+[mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
+[ruff-link]: https://docs.astral.sh/ruff/
+[ruff-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&label=Code%20Style
+[poetry-link]: https://python-poetry.org/
+[poetry-shield]: https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json
 
