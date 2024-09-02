@@ -1,4 +1,18 @@
 ---
+project_type:
+    type: str
+    help: |
+
+      > project_type: Which type of project is this?
+      >
+      > - Plugins are eccenca Corporate Memory Plugins installable with cmemc.
+      > - Generic projects are just using the build plan and the config.
+      >
+    choices:
+        Plugin: "plugin"
+        Generic: "generic"
+    default: plugin
+
 project_slug:
     type: str
     help: |
@@ -10,6 +24,26 @@ project_slug:
       > Currently, only single lower-case words are allowed here ...
       >
     default: awesome
+
+package_name:
+    type: str
+    when: false
+    default: |-
+        {% if project_type == 'plugin' -%}
+            cmem-plugin-{{ project_slug }}
+        {%- else -%}
+            {{ project_slug }}
+        {%- endif %}
+
+package_dir:
+    type: str
+    when: false
+    default: |-
+        {% if project_type == 'plugin' -%}
+            cmem_plugin_{{ project_slug | replace("-", "_") }}
+        {%- else -%}
+            {{ project_slug | replace("-", "_") }}
+        {%- endif %}
 
 project_description:
     type: str

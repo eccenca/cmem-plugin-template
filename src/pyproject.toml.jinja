@@ -1,13 +1,12 @@
 [tool.poetry]
-name = "cmem-plugin-{{ project_slug }}"
+name = "{{ package_name }}"
 version = "0.0.0"
 license = "Apache-2.0"
 description = "{{ project_description }}"
 authors = ["{{ author_name }} <{{ author_mail }}>"]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Environment :: Plugins",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    {% if project_type == 'plugin' -%}"Environment :: Plugins",{%- endif %}
 ]
 readme = "README-public.md"
 keywords = [

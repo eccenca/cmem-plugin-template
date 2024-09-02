@@ -2,6 +2,7 @@
 
 {{ project_description }}
 
+{% if project_type == "plugin" -%}
 [![eccenca Corporate Memory][cmem-shield]][cmem-link]
 
 This is a plugin for [eccenca](https://eccenca.com) [Corporate Memory](https://documentation.eccenca.com). You can install it with the [cmemc](https://eccenca.com/go/cmemc) command line clients like this:
@@ -9,6 +10,7 @@ This is a plugin for [eccenca](https://eccenca.com) [Corporate Memory](https://d
 ```
 cmemc admin workspace python install cmem-plugin-{{ project_slug }}
 ```
+{%- endif %}
 
 [![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] 
 {% if github_page -%}[![workflow]({{ github_page }}/actions/workflows/check.yml/badge.svg)]({{ github_page}}/actions){%- endif %} {% if pypi -%}[![pypi version](https://img.shields.io/pypi/v/cmem-plugin-{{ project_slug }})](https://pypi.org/project/{{ project_slug}}){%- endif %} {% if pypi -%}[![license](https://img.shields.io/pypi/l/cmem-plugin-{{ project_slug }})](https://pypi.org/project/cmem-plugin-{{ project_slug}}){%- endif %}
