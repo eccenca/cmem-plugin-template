@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+_commit: v6.4.0-8-gedec671
+_src_path: .
+author_mail: anonymous@example.org
+author_name: Anonymous Person
+github_page: ''
+project_description: Create awesome Knowledge Graphs with eccenca Corporate Memory
+    :-)
+project_slug: ttt
+project_type: plugin
+pypi: false
+

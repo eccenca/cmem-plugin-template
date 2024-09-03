@@ -1,0 +1,76 @@
+---
+name: check
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" and "develop" branch
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+    concurrency: testing_environment
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+
+      - name: Set up python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install and configure poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Install dynamic versioning plugin
+        run: |
+          poetry self add "poetry-dynamic-versioning[plugin]"
+
+      - name: mypy
+        run: |
+          task check:mypy
+
+      - name: ruff
+        run: |
+          task check:ruff
+
+      - name: pytest
+        env:
+          CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
+          OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+        run: |
+          task check:pytest
+
+      - name: safety
+        run: |
+          task check:safety
+
+      - name: Publish Test Report in Action
+        uses: mikepenz/action-junit-report@v4
+        if: always()  # always run even if the previous step fails
+        with:
+          report_paths: dist/junit-*.xml
+
+      - name: Publish Test and Coverage Report as PR comment
+        uses: xportation/junit-coverage-report@main
+        if: github.event_name == 'pull_request'
+        with:
+          junit-path: dist/junit-pytest.xml
+          coverage-path: dist/coverage.xml
+
