@@ -3,27 +3,37 @@ project_type:
     type: str
     help: |
 
-      > project_type: Which type of project is this?
+      > project_type:
+      > 
+      > Which type of project is this?
       >
       > - Plugins are eccenca Corporate Memory Plugins installable with cmemc.
       > - Generic projects are just using the build plan and the config.
       >
     choices:
-        Plugin: "plugin"
-        Generic: "generic"
+        eccenca Corporate Memory Plugin: "plugin"
+        Generic Python Project: "generic"
     default: plugin
 
 project_slug:
     type: str
     help: |
 
-      > project_slug: Will be used as part of the package name.
+      > project_slug:
+      >
+      {% if project_type == 'plugin' -%}
+      > Will be used as part of the package name.
       >
       > Example: You enter 'awesome' and the name will be 'cmem-plugin-awesome'.
-      >
-      > Currently, only single lower-case words are allowed here ...
+      {%- else -%}
+      > Will be used as package name.
+      {%- endif %}
       >
     default: awesome
+    validator: >-
+        {% if not (project_slug | regex_search('^[a-z][a-z0-9\-]+$')) %}
+        project_slug must start with a letter, followed one or more letters, digits or dashes all lowercase.
+        {% endif %}
 
 package_name:
     type: str
@@ -49,14 +59,17 @@ project_description:
     type: str
     help: |
 
-      > project_description: Will be used as part of the README file and the
-      > package info.
+      > project_description:
       >
+      > Will be used as part of the README file and the package info.
+      >
+      {% if project_type == 'plugin' -%}
       > Use an imperative form to describe what a user can do.
       >
       > Example descriptions can be listed here:
       >     https://pypi.org/search/?q=%22cmem-plugin-%22
       >
+      {%- endif %}
     default: Create awesome Knowledge Graphs with eccenca Corporate Memory :-)
 
 author_name:

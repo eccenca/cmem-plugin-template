@@ -5,22 +5,23 @@ license = "Apache-2.0"
 description = "{{ project_description }}"
 authors = ["{{ author_name }} <{{ author_mail }}>"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    {% if project_type == 'plugin' -%}"Environment :: Plugins",{%- endif %}
+    "Development Status :: 4 - Beta",{% if project_type == 'plugin' -%}
+    "Environment :: Plugins",{%- endif %}
 ]
 readme = "README-public.md"
-keywords = [
+{% if project_type == 'plugin' -%}keywords = [
     "eccenca Corporate Memory", "plugin"
-]
+]{%- endif %}
 {% if github_page -%}homepage = "{{ github_page }}"{%- endif %}
 
-[tool.poetry.dependencies]
+[tool.poetry.dependencies]{% if project_type == 'plugin' -%}
 # if you need to change python version here, change it also in .python-version
-python = "^3.11"
+python = "^3.11"{%- else %}
+python = ">=3.11, ^3"{%- endif %}
 
-[tool.poetry.dependencies.cmem-plugin-base]
+{% if project_type == 'plugin' -%}[tool.poetry.dependencies.cmem-plugin-base]
 version = "^4.7.0"
-allow-prereleases = false
+allow-prereleases = false{%- endif %}
 
 [tool.poetry.group.dev.dependencies]
 genbadge = {extras = ["coverage"], version = "^1.1.1"}

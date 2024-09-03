@@ -1,1 +1,0 @@
-"""generic-project - main package"""

@@ -1,4 +1,7 @@
-"""Plugin tests."""
+"""Plugin tests.
+
+Remove this and other example files after bootstrapping your project.
+"""
 
 import io
 
@@ -10,11 +13,11 @@ from cmem.cmempy.workspace.projects.resources.resource import (
     get_resource_response,
 )
 
-from cmem_plugin_ttt.example_transform import Lifetime
-from cmem_plugin_ttt.example_workflow import DollyPlugin
+from {{ package_dir }}.example_transform import Lifetime
+from {{ package_dir }}.example_workflow import DollyPlugin
 from tests.utils import TestExecutionContext, needs_cmem
 
-PROJECT_NAME = "ttt_test_project"
+PROJECT_NAME = "{{ package_dir }}_test_project"
 DATASET_NAME = "sample_dataset"
 RESOURCE_NAME = "sample_dataset.txt"
 DATASET_TYPE = "text"
@@ -31,7 +34,7 @@ def di_environment() -> object:
         parameters={"file": RESOURCE_NAME},
         autoconfigure=False,
     )
-    with io.StringIO("ttt plugin sample file.") as response_file:
+    with io.StringIO("{{ package_name }} plugin sample file.") as response_file:
         create_resource(
             project_name=PROJECT_NAME,
             resource_name=RESOURCE_NAME,

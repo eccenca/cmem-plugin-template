@@ -1,0 +1,14 @@
+# https://taskfile.dev
+---
+version: '3'
+
+tasks:
+
+  deploy:
+    desc: Install plugin package in Corporate Memory
+    deps:
+      - build
+    cmds:
+      - cmemc admin workspace python install dist/*.tar.gz
+      - cmemc admin workspace python list-plugins
+
