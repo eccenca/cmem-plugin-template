@@ -204,7 +204,7 @@ The gitlab workflow as well as the github action pipelines need the same environ
 - For github, go to Settings > Secret > Actions > [New Repository Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - For gitlab, go to Settings > CI/CD > Variables (Expand) > [Add Variable (protected, masked, all environments)](https://docs.gitlab.com/ee/ci/variables/)
 
-An example github pipeline can be seen [here](https://github.com/eccenca/cmem-plugin-kafka/actions).
+An example github pipeline can be seen [here](https://github.com/eccenca/cmem-plugin-yaml/actions).
 
 In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
 
