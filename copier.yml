@@ -78,7 +78,7 @@ author_name:
 
       > author_name: Will be used as part of the package info.
       >
-    default: Anonymous Person
+    default: eccenca GmbH
 
 author_mail:
     type: str
@@ -86,7 +86,7 @@ author_mail:
 
       > author_mail: Will be used as part of the package info.
       >
-    default: anonymous@example.org
+    default: cmempy-developer@eccenca.com
 
 github_page:
     type: str
