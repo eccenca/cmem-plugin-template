@@ -110,7 +110,6 @@ task: Available tasks for this project:
 * build:                   Build a tarball and a wheel package
 * check:                   Run whole test suite incl. unit and integration tests
 * clean:                   Removes dist, *.pyc and some caches
-* deploy:                  Install plugin package in Corporate Memory
 * check:linters:           Run all linter and static code analysis tests
 * check:mypy:              Complain about typing errors
 * check:pytest:            Run unit and integration tests
@@ -118,6 +117,7 @@ task: Available tasks for this project:
 * check:safety:            Complain about vulnerabilities in dependencies
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
+* plugin:deploy:           Install plugin package in Corporate Memory
 ```
 
 You can extend this task list by creating a file `TaskfileCustom.yaml` in your repository root:
