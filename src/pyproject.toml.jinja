@@ -21,7 +21,10 @@ python = ">=3.11, ^3"{%- endif %}
 
 {% if project_type == 'plugin' -%}[tool.poetry.dependencies.cmem-plugin-base]
 version = "^4.7.0"
-allow-prereleases = false{%- endif %}
+allow-prereleases = false
+
+[tool.poetry.group.dev.dependencies.cmem-cmemc]
+version = "^24.2.0"{%- endif %}
 
 [tool.poetry.group.dev.dependencies]
 genbadge = {extras = ["coverage"], version = "^1.1.1"}
