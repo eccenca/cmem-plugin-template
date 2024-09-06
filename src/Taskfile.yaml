@@ -49,6 +49,10 @@ tasks:
       Check poetry versioning plugin. Currently not under Windows
     run: once
     preconditions:
+      - sh: '[ -d .git ]'
+        msg: >
+          Your newly created project directory needs to be initialized
+          as a git repository.
       - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
         msg: >
           This project needs the poetry-dynamic-versioning
