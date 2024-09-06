@@ -67,7 +67,7 @@ This produces a plugin which is compatible the latest development snapshot of ec
 $ copier copy -r develop gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
-After that, you can initialize the repository and install git hooks:
+After that, you need to initialize the repository and optionally install the git pre-commit hooks:
 
 ```shell-session
 $ cd cmem-plugin-my
