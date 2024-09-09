@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+_commit: v6.4.0-16-gff7d5d3
+_src_path: .
+author_mail: anonymous@example.org
+author_name: Anonymous Person
+github_page: https://github.com/eccenca/cmem-plugin-kafka
+project_description: Create awesome Knowledge Graphs with eccenca Corporate Memory
+    :-)
+project_slug: kafka
+project_type: plugin
+pypi: true
+

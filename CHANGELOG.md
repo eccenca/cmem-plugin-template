@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [7.0.0] 2024-09-09
+
+### Changed
+
+- Generalization of the template
+  - You can create now projects of the following types:
+    - eccenca Corporate Memory plugins (same as before)
+    - Generic Python Projects (this is new)
+  - The first template question will ask you for the project type.
+  - Most features depend on this project type and will adapt to the decision.
+
+### Added
+
+- more shields
+
+### Fixed
+
+- limitations of the 6.x template version regarding project name
+
+
 ## [6.4.0] 2024-08-18
 
 ### Changed
