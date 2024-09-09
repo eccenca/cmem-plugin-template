@@ -6,11 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- Generalization of the template
+  - You can create now projects of the following types:
+    - eccenca Corporate Memory plugins (same as before)
+    - Generic Python Projects (this is new)
+  - The first template question will ask you for the project type.
+  - Most features depend on this project type and will adapt to the decision.
 
 ### Added
 
 - more shields
+
+### Fixed
+
+- limitations of the 6.x template version regarding project name
 
 
 ## [6.4.0] 2024-08-18
