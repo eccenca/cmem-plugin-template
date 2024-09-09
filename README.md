@@ -102,7 +102,7 @@ Please also have a look at the [copier documentation](https://copier.readthedocs
 
 ### Other Tasks
 
-All available tasks for your project can be listed like this:
+The available tasks for your project can be listed like this (note that there are more tasks, prefixed with `plugin:` in case you started a plugin project):
 
 ```shell-session
 ∴ task
@@ -117,7 +117,6 @@ task: Available tasks for this project:
 * check:safety:            Complain about vulnerabilities in dependencies
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
-* plugin:deploy:           Install plugin package in Corporate Memory
 ```
 
 You can extend this task list by creating a file `TaskfileCustom.yaml` in your repository root:
@@ -142,12 +141,11 @@ tasks:
 
 The following tools are needed for local task execution:
 
-- Python 3.11
-- [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering
+- Python 3.11+
+- [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering and updating
+- [task](https://taskfile.dev/) (>= v3.29) for running build tasks (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [poetry](https://python-poetry.org/) (>= v1.7) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
-- [pre-commit](https://pre-commit.com/) (>= v2.20) - managing and maintaining pre-commit hooks
-- [task](https://taskfile.dev/) (>= v3.29) for build task running (make sure to follow the installation instructions to avoid confusion with taskwarrior)
-- [cmemc](https://eccenca.com/go/cmemc) (>= v23.1) for interacting with eccenca Corporate Memory (only needed for plugin projects)
+- [pre-commit](https://pre-commit.com/) (>= v2.20) for managing pre-commit hooks (optional)
 
 Example installation of the requirements with [pipx](https://pipx.pypa.io/) on Ubuntu:
 
@@ -157,7 +155,6 @@ $ python3 -m pip install --user pipx
 $ python3 -m pipx ensurepath
 $ pipx install copier
 $ pipx install pre-commit
-$ pipx install cmem-cmemc
 $ pipx install poetry
 $ poetry self add "poetry-dynamic-versioning[plugin]"
 ```
