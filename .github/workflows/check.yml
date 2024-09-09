@@ -47,7 +47,7 @@ jobs:
         run: |
           python3 -m pip install --user copier>=8.3.0
 
-      - name: create plugin with default answers and run check
+      - name: create projects with default answers and run check
         env:
           CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
@@ -59,12 +59,12 @@ jobs:
         uses: mikepenz/action-junit-report@v4
         if: always()  # always run even if the previous step fails
         with:
-          report_paths: cmem-plugin-awesome/dist/junit-*.xml
+          report_paths: '**/dist/junit-*.xml'
 
-      - name: Publish Test and Coverage Report as PR comment
+      - name: Publish Test and Coverage Report of ONE test case as PR comment
         uses: xportation/junit-coverage-report@main
         if: github.event_name == 'pull_request'
         with:
-          junit-path: cmem-plugin-awesome/dist/junit-pytest.xml
-          coverage-path: cmem-plugin-awesome/dist/coverage.xml
+          junit-path: plugin_dir/dist/junit-pytest.xml
+          coverage-path: plugin_dir/dist/coverage.xml
 

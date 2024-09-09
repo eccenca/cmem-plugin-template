@@ -1,0 +1,19 @@
+# https://taskfile.dev
+---
+version: '3'
+
+tasks:
+
+  install:
+    desc: Install plugin package in Corporate Memory
+    cmds:
+      - task build
+      - poetry run cmemc admin workspace python install dist/{{package_dir}}*.tar.gz
+      - poetry run cmemc admin workspace python list-plugins
+
+  uninstall:
+    desc: Unnstall plugin package in Corporate Memory
+    cmds:
+      - task build
+      - poetry run cmemc admin workspace python uninstall {{ package_name }}
+      - poetry run cmemc admin workspace python list-plugins

@@ -3,7 +3,6 @@
 version: '3'
 
 vars:
-  PLUGIN_DIR: cmem-plugin-awesome
   TEMPLATE_REVISION:
     sh: git rev-parse HEAD
 
@@ -19,34 +18,75 @@ tasks:
   clean:
     desc: clean up working directory
     cmds:
-      - rm -rf {{.PLUGIN_DIR}}
+      - rm -rf *_dir
 
   create:
-    desc: create plugin directory with current version and ask for answers
+    desc: create a project with the current version and ask for answers
     deps:
       - clean
     cmds:
-      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} . {{.PLUGIN_DIR}}
+      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} . new_dir
 
-  generate:
-    desc: create plugin directory from the current version and default answers
+  check:generate:case:
+    desc: generate a project with the current version from a TEST_CASE
+    preconditions:
+      - sh: "[[ -v TEST_CASE ]]"
+        msg: >
+          Environment needs 'TEST_CASE' variable.
+          See tests directory - all yaml files without suffix are test cases.
+      - sh: "[ -f tests/${TEST_CASE}.yml ]"
+        msg: Test case file ${TEST_CASE}.yml does not exist.
+    cmds:
+      - rm -rf {{.TEST_CASE}}_dir
+      - mkdir {{.TEST_CASE}}_dir
+      - cp tests/{{.TEST_CASE}}.yml {{.TEST_CASE}}_dir/.copier-answers.yml
+      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.TEST_CASE}}_dir
+      - git config --global init.defaultBranch develop
+      - cd {{.TEST_CASE}}_dir && git init .
+      - cd {{.TEST_CASE}}_dir && git add .
+      - cd {{.TEST_CASE}}_dir && git config init.defaultBranch main
+      - cd {{.TEST_CASE}}_dir && git config user.name "Anonymous Person"
+      - cd {{.TEST_CASE}}_dir && git config user.email "anonymous@example.org"
+      - cd {{.TEST_CASE}}_dir && git commit -m "init from template"
+
+  check:generate:cases:
+    desc: generate all test cases with the current template version
     deps:
       - clean
+    vars:
+      TEST_CASES:
+        sh: find tests -type f -name '*.yml' | sed 's/^tests\///g' | sed 's/\.yml$//g'
     cmds:
-      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.PLUGIN_DIR}}
-      - git config --global init.defaultBranch develop
-      - git init {{.PLUGIN_DIR}}
-      - cd {{.PLUGIN_DIR}} && git add .
-      - cd {{.PLUGIN_DIR}} && git config init.defaultBranch main
-      - cd {{.PLUGIN_DIR}} && git config user.name "Anonymous Person"
-      - cd {{.PLUGIN_DIR}} && git config user.email "anonymous@example.org"
-      - cd {{.PLUGIN_DIR}} && git commit -m "init from template"
+      - for: { var: TEST_CASES }
+        cmd: TEST_CASE={{.ITEM}} task check:generate:case
+
+  check:validate:case:
+    desc: validate a project test case
+    preconditions:
+      - sh: "[[ -v TEST_CASE ]]"
+        msg: >
+          Environment needs 'TEST_CASE' variable.
+          See tests directory - all yaml files without suffix are test cases.
+      - sh: "[ -d ${TEST_CASE}_dir ]"
+        msg: >
+          Test case directory ${TEST_CASE}.yml does not exist.
+          Please use check:generate* tasks to create directories.
+    cmds:
+      - cd {{.TEST_CASE}}_dir && poetry update
+      - cd {{.TEST_CASE}}_dir && task check
+
+  check:validate:cases:
+    desc: validate all test cases
+    vars:
+      TEST_CASES:
+        sh: find tests -type f -name '*.yml' | sed 's/^tests\///g' | sed 's/\.yml$//g'
+    cmds:
+      - for: { var: TEST_CASES }
+        cmd: TEST_CASE={{.ITEM}} task check:validate:case
 
   check:
-    desc: create plugin with default answers and run check
-    deps:
-      - generate
+    desc: First generate, the validate all test cases
     cmds:
-      - cd {{.PLUGIN_DIR}} && poetry update
-      - cd {{.PLUGIN_DIR}} && task check
+      - task: check:generate:cases
+      - task: check:validate:cases
 
