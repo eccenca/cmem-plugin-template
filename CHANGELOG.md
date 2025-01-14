@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+### Changed
+
+- all: update dev-dependencies
+- plugin: tailored for Corporate Memory v24.3.x
+
 
 ## [7.0.0] 2024-09-09
 
