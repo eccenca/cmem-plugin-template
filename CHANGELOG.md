@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- all: update dev-dependencies
+- plugin: tailored for Corporate Memory v25.1.x (cmem-plugin-base >= v4.9.0+)
+- plugin: example test code now uses integrated Context classes
 
 
 ## [7.1.0] 2025-02-10
