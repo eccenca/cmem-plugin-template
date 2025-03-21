@@ -55,10 +55,7 @@ pytest:
         - dist/junit-pytest.xml
     paths:
       - __metadata__.json
-      - dist/badge-coverage.svg
-      - dist/badge-tests.svg
-      - dist/coverage
-      - dist/coverage.xml
+      - dist/*
 
 safety:
   stage: test
