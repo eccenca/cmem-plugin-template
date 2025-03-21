@@ -130,12 +130,20 @@ tasks:
           --cov-report term --cov-report xml:{{.COVERAGE_FILE}}
           --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
           --html={{.HTML_FILE}} --self-contained-html
-      - cmd: >
-          poetry run genbadge coverage -l
-          -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
-      - cmd: >
-          poetry run genbadge tests -l
-          -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
+      - >
+        poetry run genbadge coverage -l
+        -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
+      - >
+        poetry run genbadge tests -l
+        -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
+      - poetry run cimd extract coverage-xml {{.COVERAGE_FILE}}
+      - poetry run cimd extract junit-xml {{.JUNIT_FILE}}
+      - poetry run cimd delete --field value 0
+      - |
+        if [[ "$CI_JOB_URL" != "" ]]; then
+          poetry run cimd extend gitlab-link coverage-xml-line-rate --artifact-path {{.COVERAGE_DIR}}/index.html
+          poetry run cimd extend gitlab-link "junit-xml.*" --artifact-path {{.HTML_FILE}}
+        fi
     vars:
       BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
       BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
