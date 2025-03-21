@@ -93,7 +93,7 @@ tasks:
   clean:
     desc: Removes dist, *.pyc and some caches
     cmds:
-      - rm -rf {{.DIST_DIR}} .mypy_cache .pytest_cache
+      - rm -rf {{.DIST_DIR}} .mypy_cache .pytest_cache __metadata__.json
       - find . -name "*.pyc" -print0 | xargs -0 rm || echo ""
 
   # }}}

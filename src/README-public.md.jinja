@@ -11,7 +11,8 @@ cmemc admin workspace python install {{ package_name }}
 ```
 {%- endif %}
 {% if github_page -%}[![workflow]({{ github_page }}/actions/workflows/check.yml/badge.svg)]({{ github_page}}/actions){%- endif %} {% if pypi -%}[![pypi version](https://img.shields.io/pypi/v/{{ package_name }})](https://pypi.org/project/{{ package_name }}){%- endif %} {% if pypi -%}[![license](https://img.shields.io/pypi/l/{{ package_name }})](https://pypi.org/project/{{ package_name }}){%- endif %}
-[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] 
+[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] [![{cimd metadata enabled}][cmid-metadata-enabled]][cimd]
+
 
 {% if project_type == 'plugin' -%}[cmem-link]: https://documentation.eccenca.com
 [cmem-shield]: https://img.shields.io/endpoint?url=https://dev.documentation.eccenca.com/badge.json{%- endif %}
@@ -23,4 +24,6 @@ cmemc admin workspace python install {{ package_name }}
 [mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
 [copier]: https://copier.readthedocs.io/
 [copier-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json
+[cimd]: https://github.com/seebi/cimd
+[cmid-metadata-enabled]: https://img.shields.io/badge/%7Bcimd%7D-metadata_enabled-gray?labelColor=orange
 
