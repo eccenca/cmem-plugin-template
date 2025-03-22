@@ -46,6 +46,7 @@ pytest:
     - task check:pytest
   artifacts:
     when: always
+    name: artifacts-and__metadata__
     reports:
       coverage_report:
         coverage_format: cobertura
@@ -53,10 +54,8 @@ pytest:
       junit:
         - dist/junit-pytest.xml
     paths:
-      - dist/badge-coverage.svg
-      - dist/badge-tests.svg
-      - dist/coverage
-      - dist/coverage.xml
+      - __metadata__.json
+      - dist/*
 
 safety:
   stage: test

@@ -147,3 +147,5 @@ co
 artifacts
 .DS_Store
 .task
+__metadata__.json
+
