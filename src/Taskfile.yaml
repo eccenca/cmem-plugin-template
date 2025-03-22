@@ -120,37 +120,67 @@ tasks:
       # --memray is not used on windows
       - platforms: [windows]
         cmd: >
-          poetry run pytest --junitxml={{.JUNIT_FILE}}
-          --cov-report term  --cov-report xml:{{.COVERAGE_FILE}}
-          --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
-          --html={{.HTML_FILE}} --self-contained-html
+          poetry run pytest
+          --cov={{.PACKAGE}}
+          --junitxml={{.PYTEST_XML}}
+          --html={{.PYTEST_HTML}} --self-contained-html
+          --cov-report term
+          --cov-report xml:{{.COVERAGE_FILE}}
+          --cov-report html:{{.COVERAGE_DIR}}
+          | tee {{.PYTEST_LOG}}
       - platforms: [darwin, linux]
         cmd: >
-          poetry run pytest --memray --junitxml={{.JUNIT_FILE}}
-          --cov-report term --cov-report xml:{{.COVERAGE_FILE}}
-          --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
-          --html={{.HTML_FILE}} --self-contained-html
+          poetry run pytest
+          --cov={{.PACKAGE}}
+          --memray --most-allocations=1
+          --junitxml={{.PYTEST_XML}}
+          --html={{.PYTEST_HTML}} --self-contained-html
+          --cov-report term
+          --cov-report xml:{{.COVERAGE_FILE}}
+          --cov-report html:{{.COVERAGE_DIR}}
+          | tee {{.PYTEST_LOG}}
       - >
         poetry run genbadge coverage -l
         -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
       - >
         poetry run genbadge tests -l
-        -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
+        -i {{.PYTEST_XML}} -o {{.BADGE_TESTS}}
       - poetry run cimd extract coverage-xml {{.COVERAGE_FILE}}
-      - poetry run cimd extract junit-xml {{.JUNIT_FILE}}
+      - poetry run cimd extract junit-xml {{.PYTEST_XML}}
       - poetry run cimd delete --field value 0
       - |
         if [[ "$CI_JOB_URL" != "" ]]; then
           poetry run cimd extend gitlab-link coverage-xml-line-rate --artifact-path {{.COVERAGE_DIR}}/index.html
-          poetry run cimd extend gitlab-link "junit-xml.*" --artifact-path {{.HTML_FILE}}
+          poetry run cimd extend gitlab-link "junit-xml.*" --artifact-path {{.PYTEST_HTML}}
         fi
+      - platforms: [darwin, linux]
+        task: check:pytest:cimd
     vars:
       BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
       BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
       COVERAGE_DIR: ./{{.DIST_DIR}}/coverage
       COVERAGE_FILE: ./{{.DIST_DIR}}/coverage.xml
-      HTML_FILE: ./{{.DIST_DIR}}/pytest.html
-      JUNIT_FILE: ./{{.DIST_DIR}}/junit-pytest.xml
+      PYTEST_HTML: ./{{.DIST_DIR}}/pytest.html
+      PYTEST_XML: ./{{.DIST_DIR}}/junit-pytest.xml
+      PYTEST_LOG: ./{{.DIST_DIR}}/pytest.log
+
+  check:pytest:cimd:
+    desc: prepare cimd metadata for pytest stage
+    internal: true
+    cmds:
+      - >
+        poetry run cimd add memray-max-memory {{.MAX_MEMORY}}
+        --label "Max Memory"
+        --description "Highest total memory allocated in a single test"
+        --image "https://img.shields.io/badge/Max%20Memory-{{.MAX_MEMORY}}-yellow"
+      - |
+        if [[ "$CI_JOB_URL" != "" ]]; then
+          poetry run cimd extend gitlab-link "memray.*" --artifact-path {{.PYTEST_LOG}}
+        fi
+    vars:
+      PYTEST_LOG: ./{{.DIST_DIR}}/pytest.log
+      MAX_MEMORY:
+        sh: cat {{.PYTEST_LOG}} | grep "Total memory allocated" | cut -d ":" -f 2 | tr -d "[:blank:]"
 
   check:mypy:
     desc: Complain about typing errors
