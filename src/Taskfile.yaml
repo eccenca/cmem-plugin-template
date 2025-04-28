@@ -68,7 +68,6 @@ tasks:
             | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
 
   poetry:install:
-    internal: true
     desc: Install dependencies managed by Poetry
     run: once
     deps:

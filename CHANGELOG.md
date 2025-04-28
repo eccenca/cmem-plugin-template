@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD012 MD013 MD024 MD033 -->
 # Change Log
 
 All notable changes to this project will be documented in this file.
@@ -11,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - all: update dev-dependencies
 - plugin: tailored for Corporate Memory v25.1.x (cmem-plugin-base >= v4.9.0+)
 - plugin: example test code now uses integrated Context classes
+- all: make poetry:install task non-internal (to allow calls from custom tasks)
 
 
 ## [7.1.0] 2025-02-10
