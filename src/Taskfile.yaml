@@ -159,6 +159,12 @@ tasks:
       # ignore 51358 safety - dev dependency only
       - poetry run safety check -i 51358
 
+  check:deptry:
+    desc: Complain about unused or missing dependencies
+    <<: *preparation
+    cmds:
+      - poetry run deptry .
+
   check:ruff:
     desc: Complain about everything else
     <<: *preparation
