@@ -57,6 +57,10 @@ jobs:
         run: |
           task check:pytest
 
+      - name: deptry
+        run: |
+          task check:deptry
+
       - name: safety
         run: |
           task check:safety

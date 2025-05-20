@@ -58,6 +58,11 @@ pytest:
       - dist/coverage
       - dist/coverage.xml
 
+deptry:
+  stage: test
+  script:
+    - task check:deptry
+
 safety:
   stage: test
   script:
