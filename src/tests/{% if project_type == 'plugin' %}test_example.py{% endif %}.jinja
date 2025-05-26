@@ -74,7 +74,7 @@ def test_transform_execution_with_optional_input() -> None:
     """Test Lifetime with optional input"""
     result = Lifetime(start_date="2000-05-22").transform(inputs=[])
     for item in result:
-        assert item == "24"
+        assert item == "25"
 
 
 def test_transform_execution_with_inputs() -> None:
