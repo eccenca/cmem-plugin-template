@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - all: update dev-dependencies
-- plugin: tailored for Corporate Memory v25.1.x (cmem-plugin-base >= v4.9.0+)
+- cmem-plugin-base -> 4.10.2 (Corporate Memory 25.1.x)
 - update cmemc dev-dependency to v25
 - plugin: example test code now uses integrated Context classes
 - all: make poetry:install task non-internal (to allow calls from custom tasks)
