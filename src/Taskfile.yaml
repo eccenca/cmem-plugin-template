@@ -109,6 +109,7 @@ tasks:
     cmds:
       - task: check:ruff
       - task: check:mypy
+      - task: check:deptry
       - task: check:safety
 
   check:pytest:
