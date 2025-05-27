@@ -164,7 +164,7 @@ tasks:
     desc: Complain about unused or missing dependencies
     <<: *preparation
     cmds:
-      - poetry run deptry {{.PACKAGE}}
+      - poetry run deptry .
 
   check:ruff:
     desc: Complain about everything else
