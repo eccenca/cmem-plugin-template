@@ -1,7 +1,8 @@
+<!-- markdownlint-disable MD012 MD013 MD024 MD033 -->
 # cmem-plugin-template
 
 [![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python-shield]
-[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier] 
+[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier]
 [![eccenca Corporate Memory][cmem-shield]][cmem]
 
 This repository contains a [copier](https://copier.readthedocs.io/) template.
@@ -36,7 +37,8 @@ You can use it to bootstrap the following types of project:
 - [Python / poetry](https://python-poetry.org/) project with
   - [pytest](https://www.pytest.org/) (incl. [memray](https://bloomberg.github.io/memray/) + [pytest-dotenv](https://github.com/quiqua/pytest-dotenv) + [code coverage](https://github.com/pytest-dev/pytest-cov)) as the testing framework,
   - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
-  - [mypy](http://mypy-lang.org/) as type checker, and
+  - [mypy](http://mypy-lang.org/) as type checker,
+  - [deptry](https://deptry.com/) as dependency issue checker, and
   - [safety](https://pyup.io/safety/) as dependency vulnerability scanner.
 - Build plans for
   - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
@@ -78,7 +80,7 @@ $ pre-commit install
 Then you can run the local test suite and build a first deployment artefact:
 
 ```shell-session
-$ task check build
+task check build
 ```
 
 ### Template Updates
@@ -89,13 +91,13 @@ This includes maintenance of dependencies, build plan updates and the adoption o
 In order to upgrade your project to the latest template release, use the following command:
 
 ```shell-session
-$ copier update
+copier update
 ```
 
 In order to prepare your project for the upcoming next release, use this command:
 
 ```shell-session
-$ copier update -r develop
+copier update -r develop
 ```
 
 Please also have a look at the [copier documentation](https://copier.readthedocs.io/en/stable/updating/).
@@ -150,13 +152,13 @@ The following tools are needed for local task execution:
 Example installation of the requirements with [pipx](https://pipx.pypa.io/) on Ubuntu:
 
 ``` shell-session
-$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
-$ python3 -m pip install --user pipx
-$ python3 -m pipx ensurepath
-$ pipx install copier
-$ pipx install pre-commit
-$ pipx install poetry
-$ poetry self add "poetry-dynamic-versioning[plugin]"
+sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+pipx install copier
+pipx install pre-commit
+pipx install poetry
+poetry self add "poetry-dynamic-versioning[plugin]"
 ```
 
 ### Integration Tests
@@ -201,7 +203,7 @@ The gitlab workflow as well as the github action pipelines need the same environ
 - For github, go to Settings > Secret > Actions > [New Repository Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - For gitlab, go to Settings > CI/CD > Variables (Expand) > [Add Variable (protected, masked, all environments)](https://docs.gitlab.com/ee/ci/variables/)
 
-An example github pipeline can be seen [here](https://github.com/eccenca/cmem-plugin-yaml/actions).
+An example github pipeline can be seen [at this github project](https://github.com/eccenca/cmem-plugin-yaml/actions).
 
 In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
 
