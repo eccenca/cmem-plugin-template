@@ -7,7 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- upgrade base dependency to 4.12.1
 
 
 ## [7.2.0] 2025-05-28
