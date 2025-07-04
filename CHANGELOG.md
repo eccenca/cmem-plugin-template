@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Changed
+
+- upgrade base dependency to 4.12.1
+- all: update dev-dependencies
+
+
 ## [7.2.0] 2025-05-28
 
 ### Added
