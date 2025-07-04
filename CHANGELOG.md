@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - upgrade base dependency to 4.12.1
+- all: update dev-dependencies
 
 
 ## [7.2.0] 2025-05-28
