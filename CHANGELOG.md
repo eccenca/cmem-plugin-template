@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - upgrade base dependency to 4.12.1
 - all: update dev-dependencies
 
+### Fixed
+
+- lower cmemc dependency restriction in order to avoid dependency deadlock
+
 
 ## [7.2.0] 2025-05-28
 
