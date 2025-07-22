@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - lower cmemc dependency restriction in order to avoid dependency deadlock
+- gitlab pipeline - pytest job: export all paths in `dist` as artefacts
 
 
 ## [7.2.0] 2025-05-28
