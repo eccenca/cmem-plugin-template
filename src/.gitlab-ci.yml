@@ -71,6 +71,7 @@ build:
     - mypy
     - pytest
     - safety
+    - deptry
   script:
     - task build
   artifacts:
