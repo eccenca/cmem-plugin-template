@@ -143,7 +143,7 @@ tasks:
 
 The following tools are needed for local task execution:
 
-- Python 3.11+
+- Python 3.13.x
 - [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering and updating
 - [task](https://taskfile.dev/) (>= v3.29) for running build tasks (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [poetry](https://python-poetry.org/) (>= v1.7) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
