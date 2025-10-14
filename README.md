@@ -225,7 +225,7 @@ In order to have the best PyCharm experience, when starting a project with this 
 [copier-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json
 [cmem]: https://documentation.eccenca.com
 [cmem-shield]: https://img.shields.io/endpoint?url=https://dev.documentation.eccenca.com/badge.json
-[python-shield]: https://img.shields.io/badge/python-v3.11-blue
+[python-shield]: https://img.shields.io/badge/python-v3.13-blue
 [mypy-link]: https://mypy-lang.org/
 [mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
 [ruff-link]: https://docs.astral.sh/ruff/
