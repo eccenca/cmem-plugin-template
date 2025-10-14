@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- all: switch to python 3.13
+- all: switch to python 3.13.8
 - all: update dev-dependencies
 
 

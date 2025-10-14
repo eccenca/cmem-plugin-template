@@ -1,6 +1,6 @@
 ---
 default:
-  image: docker-registry.eccenca.com/eccenca-python:v3.13.7-1
+  image: docker-registry.eccenca.com/eccenca-python:v3.13.8
   # all jobs can be interrupted in case a new commit is pushed
   interruptible: true
   before_script:
