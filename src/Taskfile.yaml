@@ -160,12 +160,6 @@ tasks:
     cmds:
       - poetry run pip-audit --aliases
 
-  check:pip-audit:fix:
-    desc: Try fixing vulnerabilities in dependencies
-    <<: *preparation
-    cmds:
-      - poetry run pip-audit --fix
-
   check:trivy:
     desc: Scan for vulnerabilities using Trivy
     <<: *preparation
