@@ -170,7 +170,7 @@ tasks:
     desc: Scan for vulnerabilities using Trivy
     <<: *preparation
     cmds:
-      - trivy fs --scanners vuln
+      - trivy fs --scanners vuln .
     preconditions:
       - sh: command -v trivy
         msg: "Trivy is not installed. Install it from https://trivy.dev/latest/getting-started/installation/"
