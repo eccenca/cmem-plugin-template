@@ -60,17 +60,17 @@ deptry:
   script:
     - task check:deptry
 
-safety:
+pip-audit:
   stage: test
   script:
-    - task check:safety
+    - task check:pip-audit
 
 build:
   stage: build
   needs:
     - mypy
     - pytest
-    - safety
+    - pip-audit
     - deptry
   script:
     - task build
