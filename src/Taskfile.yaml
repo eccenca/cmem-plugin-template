@@ -112,7 +112,7 @@ tasks:
       - task: check:ruff
       - task: check:mypy
       - task: check:deptry
-      - task: check:safety
+      - task: check:pip-audit
 
   check:pytest:
     desc: Run unit and integration tests
