@@ -154,12 +154,17 @@ tasks:
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
-  check:safety:
+  check:pip-audit:
     desc: Complain about vulnerabilities in dependencies
     <<: *preparation
     cmds:
-      # ignore 51358 safety - dev dependency only
-      - poetry run safety check -i 51358
+      - poetry run pip-audit --aliases
+
+  check:pip-audit:fix:
+    desc: Try fixing vulnerabilities in dependencies
+    <<: *preparation
+    cmds:
+      - poetry run pip-audit --fix
 
   check:deptry:
     desc: Complain about unused or missing dependencies
