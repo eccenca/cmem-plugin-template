@@ -39,7 +39,7 @@ You can use it to bootstrap the following types of project:
   - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
   - [mypy](http://mypy-lang.org/) as type checker,
   - [deptry](https://deptry.com/) as dependency issue checker, and
-  - [safety](https://pyup.io/safety/) as dependency vulnerability scanner.
+  - [trivy](https://trivy.dev/) as dependency vulnerability scanner.
 - Build plans for
   - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
   - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows), and
@@ -116,7 +116,7 @@ task: Available tasks for this project:
 * check:mypy:              Complain about typing errors
 * check:pytest:            Run unit and integration tests
 * check:ruff:              Complain about everything else
-* check:safety:            Complain about vulnerabilities in dependencies
+* check:trivy:             Complain about vulnerabilities in dependencies
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
 ```
