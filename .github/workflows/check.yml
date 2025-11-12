@@ -57,7 +57,7 @@ jobs:
           task check
 
       - name: Publish Test Report in Action
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@v6
         if: always()  # always run even if the previous step fails
         with:
           report_paths: '**/dist/junit-*.xml'
