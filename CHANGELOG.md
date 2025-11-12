@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - all: switch to python 3.13.8
 - all: update dev-dependencies
-
+- use trivy as vulnerability scanner in exchange for safety
 
 ## [7.3.0] 2025-07-04
 

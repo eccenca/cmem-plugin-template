@@ -112,7 +112,7 @@ tasks:
       - task: check:ruff
       - task: check:mypy
       - task: check:deptry
-      - task: check:pip-audit
+      - task: check:trivy
 
   check:pytest:
     desc: Run unit and integration tests
@@ -153,12 +153,6 @@ tasks:
       - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
-
-  check:pip-audit:
-    desc: Complain about vulnerabilities in dependencies
-    <<: *preparation
-    cmds:
-      - poetry run pip-audit --aliases
 
   check:trivy:
     desc: Scan for vulnerabilities using Trivy

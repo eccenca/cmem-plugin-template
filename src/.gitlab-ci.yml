@@ -60,11 +60,6 @@ deptry:
   script:
     - task check:deptry
 
-pip-audit:
-  stage: test
-  script:
-    - task check:pip-audit
-
 trivy:
   stage: test
   script:
@@ -75,7 +70,7 @@ build:
   needs:
     - mypy
     - pytest
-    - pip-audit
+    - trivy
     - deptry
   script:
     - task build

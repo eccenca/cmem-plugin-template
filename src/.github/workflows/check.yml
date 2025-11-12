@@ -61,10 +61,6 @@ jobs:
         run: |
           task check:deptry
 
-      - name: pip-audit
-        run: |
-          task check:pip-audit
-
       - name: trivy
         run: |
           task check:trivy
