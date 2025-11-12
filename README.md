@@ -80,7 +80,7 @@ $ pre-commit install
 Then you can run the local test suite and build a first deployment artefact:
 
 ```shell-session
-task check build
+task build
 ```
 
 ### Template Updates
