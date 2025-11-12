@@ -68,11 +68,6 @@ pip-audit:
 trivy:
   stage: test
   script:
-    - apt-get update && apt-get install -y curl gnupg lsb-release
-    - mkdir -p /etc/apt/keyrings
-    - curl -fsSL https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor -o /etc/apt/keyrings/trivy.gpg
-    - echo "deb [signed-by=/etc/apt/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/trivy.list
-    - apt-get update && apt-get install -y trivy
     - task check:trivy
 
 build:
