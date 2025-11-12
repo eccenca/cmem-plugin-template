@@ -158,7 +158,7 @@ tasks:
     desc: Scan for vulnerabilities using Trivy
     <<: *preparation
     cmds:
-      - poetry run trivy fs --scanners vuln .
+      - poetry run trivy fs --scanners vuln --exit-code 1 .
 
   check:deptry:
     desc: Complain about unused or missing dependencies
