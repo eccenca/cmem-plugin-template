@@ -60,17 +60,17 @@ deptry:
   script:
     - task check:deptry
 
-safety:
+trivy:
   stage: test
   script:
-    - task check:safety
+    - task check:trivy
 
 build:
   stage: build
   needs:
     - mypy
     - pytest
-    - safety
+    - trivy
     - deptry
   script:
     - task build
