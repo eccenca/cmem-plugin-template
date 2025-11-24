@@ -1,4 +1,7 @@
 ---
+default_language_version:
+  python: python3.13
+
 repos:
   - repo: local
     hooks:
@@ -36,3 +39,9 @@ repos:
         stages: [post-checkout, post-merge]
         always_run: true
 
+      - id: trivy
+        name: check:trivy
+        description: run trivy to scan for vulnerabilities
+        entry: task check:trivy
+        language: python
+        pass_filenames: false

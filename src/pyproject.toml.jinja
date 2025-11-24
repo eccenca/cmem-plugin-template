@@ -16,28 +16,28 @@ readme = "README-public.md"
 
 [tool.poetry.dependencies]{% if project_type == 'plugin' -%}
 # if you need to change python version here, change it also in .python-version
-python = "^3.11"{%- else %}
-python = ">=3.11, ^3"{%- endif %}
+python = "^3.13"{%- else %}
+python = ">=3.13, ^3"{%- endif %}
 
 {% if project_type == 'plugin' -%}[tool.poetry.dependencies.cmem-plugin-base]
-version = "^4.12.1"
+version = "^4.15.0"
 allow-prereleases = false
 
 [tool.poetry.group.dev.dependencies.cmem-cmemc]
-version = "^25.3.0"{%- endif %}
+version = ">=24.2.0"{%- endif %}
 
 [tool.poetry.group.dev.dependencies]
-deptry = "^0.23.0"
+deptry = "^0.23.1"
 genbadge = {extras = ["coverage"], version = "^1.1.2"}
-mypy = "^1.16.1"
-pip = "^25.1.1"
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
+mypy = "^1.18.2"
+pip = "^25.2"
+pytest = "^8.4.2"
+pytest-cov = "^7.0.0"
 pytest-dotenv = "^0.5.2"
 pytest-html = "^4.1.1"
-pytest-memray = { version = "^1.7.0",  markers = "platform_system != 'Windows'" }
-ruff = "^0.12.0"
-safety = "^1.10.3"
+pytest-memray = { version = "^1.8.0",  markers = "platform_system != 'Windows'" }
+ruff = "^0.13.3"
+trivy-py = "0.66.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]

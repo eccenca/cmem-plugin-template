@@ -5,12 +5,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [8.0.0] 2025-11-24
+
+### Changed
+
+- all: switch to python 3.13.8
+- all: update dev-dependencies
+- use trivy as vulnerability scanner in exchange for safety
+- pre-commit: use python 3.13
+
 ## [7.3.0] 2025-07-04
 
 ### Changed
 
 - upgrade base dependency to 4.12.1
 - all: update dev-dependencies
+
+### Fixed
+
+- lower cmemc dependency restriction in order to avoid dependency deadlock
+- gitlab pipeline - pytest job: export all paths in `dist` as artefacts
 
 
 ## [7.2.0] 2025-05-28

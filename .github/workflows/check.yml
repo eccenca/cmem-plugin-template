@@ -34,7 +34,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.13'
 
       - name: Install and configure poetry
         uses: snok/install-poetry@v1
@@ -57,7 +57,7 @@ jobs:
           task check
 
       - name: Publish Test Report in Action
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@v6
         if: always()  # always run even if the previous step fails
         with:
           report_paths: '**/dist/junit-*.xml'

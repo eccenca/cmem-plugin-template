@@ -20,9 +20,11 @@ includes:
   custom:
     taskfile: ./TaskfileCustom.yaml
     optional: true
+    flatten: true
   plugin:
     taskfile: .tasks-plugin.yml
     optional: true
+    flatten: true
 
 tasks:
 
@@ -110,7 +112,7 @@ tasks:
       - task: check:ruff
       - task: check:mypy
       - task: check:deptry
-      - task: check:safety
+      - task: check:trivy
 
   check:pytest:
     desc: Run unit and integration tests
@@ -152,12 +154,11 @@ tasks:
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
-  check:safety:
-    desc: Complain about vulnerabilities in dependencies
+  check:trivy:
+    desc: Scan for vulnerabilities using Trivy
     <<: *preparation
     cmds:
-      # ignore 51358 safety - dev dependency only
-      - poetry run safety check -i 51358
+      - poetry run trivy fs --scanners vuln --exit-code 1 .
 
   check:deptry:
     desc: Complain about unused or missing dependencies

@@ -1,0 +1,4 @@
+# .trivyignore
+
+# ignore 51358 safety - dev dependency only
+CVE-2022-39280

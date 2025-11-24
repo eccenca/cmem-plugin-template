@@ -39,7 +39,7 @@ You can use it to bootstrap the following types of project:
   - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
   - [mypy](http://mypy-lang.org/) as type checker,
   - [deptry](https://deptry.com/) as dependency issue checker, and
-  - [safety](https://pyup.io/safety/) as dependency vulnerability scanner.
+  - [trivy](https://trivy.dev/) as dependency vulnerability scanner.
 - Build plans for
   - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
   - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows), and
@@ -80,7 +80,7 @@ $ pre-commit install
 Then you can run the local test suite and build a first deployment artefact:
 
 ```shell-session
-task check build
+task build
 ```
 
 ### Template Updates
@@ -116,7 +116,7 @@ task: Available tasks for this project:
 * check:mypy:              Complain about typing errors
 * check:pytest:            Run unit and integration tests
 * check:ruff:              Complain about everything else
-* check:safety:            Complain about vulnerabilities in dependencies
+* check:trivy:             Complain about vulnerabilities in dependencies
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
 ```
@@ -143,7 +143,7 @@ tasks:
 
 The following tools are needed for local task execution:
 
-- Python 3.11+
+- Python 3.13.x
 - [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering and updating
 - [task](https://taskfile.dev/) (>= v3.29) for running build tasks (make sure to follow the installation instructions to avoid confusion with taskwarrior)
 - [poetry](https://python-poetry.org/) (>= v1.7) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
@@ -225,7 +225,7 @@ In order to have the best PyCharm experience, when starting a project with this 
 [copier-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json
 [cmem]: https://documentation.eccenca.com
 [cmem-shield]: https://img.shields.io/endpoint?url=https://dev.documentation.eccenca.com/badge.json
-[python-shield]: https://img.shields.io/badge/python-v3.11-blue
+[python-shield]: https://img.shields.io/badge/python-v3.13-blue
 [mypy-link]: https://mypy-lang.org/
 [mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
 [ruff-link]: https://docs.astral.sh/ruff/

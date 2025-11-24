@@ -20,16 +20,16 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Task
         uses: arduino/setup-task@v2
 
       - name: Set up python
         id: setup-python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.13'
 
       - name: Install and configure poetry
         uses: snok/install-poetry@v1
@@ -61,9 +61,9 @@ jobs:
         run: |
           task check:deptry
 
-      - name: safety
+      - name: trivy
         run: |
-          task check:safety
+          task check:trivy
 
       - name: Publish Test Report in Action
         uses: mikepenz/action-junit-report@v4
