@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - use trivy as vulnerability scanner in exchange for safety
 - pre-commit: use python 3.13
 
+
 ## [7.3.0] 2025-07-04
 
 ### Changed
