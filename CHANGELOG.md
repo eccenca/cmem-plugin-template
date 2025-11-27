@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [8.1.0] 2025-11-27
+
+### Changed
+
+- replace trivy-py with trivy-py-ecc ^0.67.2
+
 ## [8.0.0] 2025-11-24
 
 ### Changed
@@ -13,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - all: update dev-dependencies
 - use trivy as vulnerability scanner in exchange for safety
 - pre-commit: use python 3.13
+
 
 ## [7.3.0] 2025-07-04
 
