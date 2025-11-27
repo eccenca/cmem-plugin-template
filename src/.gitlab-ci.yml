@@ -62,8 +62,15 @@ deptry:
 
 trivy:
   stage: test
+  variables:
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: ".trivycache/"
+    TRIVY_DISABLE_VEX_NOTICE: "true"
   script:
     - task check:trivy
+  cache:
+    paths:
+      - .trivycache/
 
 build:
   stage: build

@@ -22,6 +22,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
 
+      - name: Cache Trivy DB
+        id: cache-trivydb
+        uses: actions/cache@v4
+        with:
+          path: .trivycache
+          key: ${{ runner.os }}-trivydb
+
       - name: Install Task
         uses: arduino/setup-task@v2
 
@@ -62,6 +69,10 @@ jobs:
           task check:deptry
 
       - name: trivy
+        env:
+          TRIVY_NO_PROGRESS: "true"
+          TRIVY_CACHE_DIR: ".trivycache/"
+          TRIVY_DISABLE_VEX_NOTICE: "true"
         run: |
           task check:trivy
 
