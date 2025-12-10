@@ -51,7 +51,7 @@ tasks:
       Check poetry versioning plugin. Currently not under Windows
     run: once
     preconditions:
-      - sh: '[ -d .git ]'
+      - sh: git -C . rev-parse
         msg: >
           Your newly created project directory needs to be initialized
           as a git repository.
