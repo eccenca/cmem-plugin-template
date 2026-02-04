@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [8.3.1] 2026-02-04
+
+### Fixed
+
+- update dependencies, no vulnerabilities
+
+
 ## [8.3.0] 2026-01-21
 
 ### Changed
