@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
+
+## [8.3.2] 2026-03-02
+
 ### Changed
 
 - update trivy-py-ecc to v0.69
