@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - export requirements.txt on build
 
+### Changed
+
+- gitlab: use python image v3.13.12
+
 
 ## [8.3.2] 2026-03-02
 
