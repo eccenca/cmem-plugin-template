@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [8.4.0] 2026-04-14
 
 ### Added
 
@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - gitlab: use python image v3.13.12
-- use cmem-plugin-base v4.16.1
+- use cmem-plugin-base v4.16.1 (Corporate Memory 26.1)
 
 ### Fixed
 
