@@ -57,7 +57,7 @@ tasks:
       TEST_CASES:
         sh: find tests -type f -name '*.yml' | sed 's/^tests\///g' | sed 's/\.yml$//g'
     cmds:
-      - for: { var: TEST_CASES }
+      - for: {var: TEST_CASES}
         cmd: TEST_CASE={{.ITEM}} task check:generate:case
 
   check:validate:case:
@@ -81,7 +81,7 @@ tasks:
       TEST_CASES:
         sh: find tests -type f -name '*.yml' | sed 's/^tests\///g' | sed 's/\.yml$//g'
     cmds:
-      - for: { var: TEST_CASES }
+      - for: {var: TEST_CASES}
         cmd: TEST_CASE={{.ITEM}} task check:validate:case
 
   check:

@@ -7,7 +7,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- export requirements.txt on build
+
+### Changed
+
+- gitlab: use python image v3.13.12
+- use cmem-plugin-base v4.16.1
+
+### Fixed
+
+- ruff target-version now `py313`
+- gitignore: .claude/settings.local.json
 
 
 ## [8.3.2] 2026-03-02

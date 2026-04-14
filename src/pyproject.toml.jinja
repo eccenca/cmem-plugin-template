@@ -20,7 +20,7 @@ python = "^3.13"{%- else %}
 python = ">=3.13, ^3"{%- endif %}
 
 {% if project_type == 'plugin' -%}[tool.poetry.dependencies.cmem-plugin-base]
-version = "^4.15.0"
+version = "^4.16.1"
 allow-prereleases = false
 
 [tool.poetry.group.dev.dependencies.cmem-cmemc]
@@ -70,7 +70,7 @@ exclude_also = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py313"
 
 [tool.ruff.format]
 line-ending = "lf" # Use `\n` line endings for all files

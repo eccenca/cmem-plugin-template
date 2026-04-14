@@ -138,6 +138,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Claude code specifics
+.claude/settings.local.json
+
 # project build plan specific ignores
 version.py
 co

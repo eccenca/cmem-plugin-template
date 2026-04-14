@@ -192,4 +192,5 @@ tasks:
       - poetry:check
     cmds:
       - poetry build
+      - poetry export --without=dev -f requirements.txt >dist/requirements.txt
 
