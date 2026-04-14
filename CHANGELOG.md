@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - ruff target-version now `py313`
+- gitignore: .claude/settings.local.json
 
 
 ## [8.3.2] 2026-03-02
