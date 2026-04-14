@@ -16,6 +16,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - gitlab: use python image v3.13.12
 - use cmem-plugin-base v4.16.1
 
+### Fixed
+
+- ruff target-version now `py313`
+
 
 ## [8.3.2] 2026-03-02
 
