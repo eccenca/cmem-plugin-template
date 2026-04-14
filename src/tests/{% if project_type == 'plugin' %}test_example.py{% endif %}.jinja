@@ -6,7 +6,6 @@ Remove this and other example files after bootstrapping your project.
 import io
 import os
 from collections.abc import Generator
-from typing import Any
 
 import pytest
 from cmem.cmempy.workspace.projects.datasets.dataset import make_new_dataset
@@ -36,7 +35,7 @@ class BuildProject:
 
 
 @pytest.fixture
-def build_project() -> Generator[BuildProject, Any, None]:
+def build_project() -> Generator[BuildProject]:
     """Provide the DI build project incl. assets."""
     _ = BuildProject()
     make_new_project(_.project_name)
