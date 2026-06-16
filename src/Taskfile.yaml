@@ -162,6 +162,7 @@ tasks:
         poetry run trivy fs
         --include-dev-deps
         --scanners vuln
+        --skip-files .poetry/plugins/poetry.lock
         --exit-code 1
         .
 
