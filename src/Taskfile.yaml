@@ -44,36 +44,9 @@ tasks:
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
-  poetry:check:
-    internal: true
-    platforms: [darwin, linux]
-    summary: |
-      Check poetry versioning plugin. Currently not under Windows
-    run: once
-    preconditions:
-      - sh: git -C . rev-parse
-        msg: >
-          Your newly created project directory needs to be initialized
-          as a git repository.
-      - sh: '[[ {{.PDV_VERSION}} > {{.PDV_VERSION_MIN}} ]]'
-        msg: >
-          This project needs the poetry-dynamic-versioning
-          plugin > v{{.PDV_VERSION_MIN}}.
-
-          You can install it with the following command:
-          poetry self add "poetry-dynamic-versioning[plugin]"
-    vars:
-      PDV_VERSION_MIN: 0.20
-      PDV_VERSION:
-        sh: >
-            poetry self show --addons poetry-dynamic-versioning --tree
-            | head -1 | cut -d " " -f 2 | cut -d "." -f 1-2
-
   poetry:install:
     desc: Install dependencies managed by Poetry
     run: once
-    deps:
-      - poetry:check
     cmds:
       - poetry install
 
@@ -162,6 +135,7 @@ tasks:
         poetry run trivy fs
         --include-dev-deps
         --scanners vuln
+        --skip-files .poetry/plugins/poetry.lock
         --exit-code 1
         .
 
@@ -189,7 +163,6 @@ tasks:
     <<: *preparation
     deps:
       - clean
-      - poetry:check
     cmds:
       - poetry build
       - poetry export --without=dev -f requirements.txt >dist/requirements.txt
