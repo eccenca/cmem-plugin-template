@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [8.5.0] 2026-06-24
 
 ### Changed
 
 - gitlab: use python image v3.13.13
+- trivy: use 0.71.2.1
+- poetry: use explicit plugin requirements instead of Taskfile checks
 
 
 ## [8.4.1] 2026-04-14
