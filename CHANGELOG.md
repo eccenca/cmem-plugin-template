@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - gitlab: use python image v3.13.13
+- trivy: use 0.71.2.1
+- poetry: use explicit plugin requirements instead of Taskfile checks
 
 
 ## [8.4.1] 2026-04-14
