@@ -89,4 +89,4 @@ def test_integration_placeholder(build_project: BuildProject) -> None:
     with client.datasets.get_file_resource(
         build_project.project_name, build_project.resource_name
     ) as response:
-        assert response.text == build_project.dataset_content
+        assert response.read().decode() == build_project.dataset_content
