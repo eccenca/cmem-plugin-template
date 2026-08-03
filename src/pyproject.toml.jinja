@@ -25,7 +25,7 @@ python = "^3.13"{%- else %}
 python = ">=3.13, ^3"{%- endif %}
 
 {% if project_type == 'plugin' -%}[tool.poetry.dependencies.cmem-plugin-base]
-version = "^4.16.1"
+version = "^4.19.0"
 allow-prereleases = false
 
 [tool.poetry.group.dev.dependencies.cmem-cmemc]
