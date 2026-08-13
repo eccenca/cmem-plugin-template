@@ -7,7 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- update dependencies esp. trivy (0.73.0.1) and ruff (0.16.2)
 
 
 ## [8.5.0] 2026-06-24
