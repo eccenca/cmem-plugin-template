@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- ruff: allow asserts and unused args in test files
 - update dependencies esp. trivy (0.73.0.1) and ruff (0.16.2)
 
 
