@@ -27,7 +27,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: .trivycache
-          key: ${{ runner.os }}-trivydb
+          key: ${{ runner.os }}-trivydb-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-trivydb-
 
       - name: Install Task
         uses: arduino/setup-task@v3
