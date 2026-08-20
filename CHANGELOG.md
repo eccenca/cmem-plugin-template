@@ -7,7 +7,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- github: refresh the Trivy DB cache in the generated check workflow
+  - the key was constant, so the database was saved once and never replaced
+  - it now rotates per run with a prefix fallback, as the template's own CI does
+- copier >= v9 is now enforced by the template, not only documented
+  - an older copier fails with a clear message instead of an obscure error
+  - v9 is a support policy: it is the only major this template is tested against
+
+### Removed
+
+- the empty `[tool.pytest.ini_options] addopts` setting, which configured nothing
+
+### Fixed
+
+- .gitignore no longer ignores every `*.xml` and `*.html` file in the project
+  - they were meant for the reports in `dist/`, which is already ignored anyway
+  - a plugin shipping an XML resource or an HTML page had it silently untracked
+  - after `copier update`, such files may newly appear as untracked
+- .gitignore no longer ignores `version.py`, unused since poetry-dynamic-versioning
 
 
 ## [8.7.0] 2026-08-20
