@@ -19,6 +19,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - ruff: ignore CPY001 (missing copyright notice)
 - update dependencies esp. trivy (0.73.0.1) and ruff (0.16.2)
 
+### Fixed
+
+- generated Taskfile: custom tasks file is `TaskfileCustom.yaml`
+  - the file header wrongly named it `TaskfileCustom.yml`, which is silently ignored
+- generated Taskfile: typo in the file header
+- plugin: typo in the `uninstall` task description
+- README: poetry requirement is `>= v2.1` (`[tool.poetry.requires-plugins]` needs poetry 2.x)
+- README: task list was outdated
+- README: drop manual `poetry self add` step (required plugins are installed automatically)
+- gitlab: remove misleading comment on the `pypi` job (it is manual, not tag-restricted)
+- trivyignore: drop stale CVE-2022-39280 suppression from the safety era, explain the file instead
+
 
 ## [8.5.0] 2026-06-24
 
