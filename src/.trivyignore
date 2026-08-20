@@ -1,4 +1,10 @@
 # .trivyignore
-
-# ignore 51358 safety - dev dependency only
-CVE-2022-39280
+#
+# Vulnerabilities listed here are excluded from `task check:trivy`.
+#
+# Add one identifier per line (e.g. CVE-2022-39280), and always precede it with
+# a comment stating which dependency is affected, why the finding is acceptable
+# and, if possible, when the entry can be removed again. An unexplained
+# suppression in a security scanner is worse than no suppression at all.
+#
+# See https://trivy.dev/latest/docs/configuration/filtering/ for the syntax.
