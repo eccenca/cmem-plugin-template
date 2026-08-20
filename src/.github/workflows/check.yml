@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Cache Trivy DB
         id: cache-trivydb
@@ -30,11 +30,11 @@ jobs:
           key: ${{ runner.os }}-trivydb
 
       - name: Install Task
-        uses: arduino/setup-task@v2
+        uses: arduino/setup-task@v3
 
       - name: Set up python
         id: setup-python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.13'
 
@@ -73,7 +73,7 @@ jobs:
           task check:trivy
 
       - name: Publish Test Report in Action
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v6
         if: always()  # always run even if the previous step fails
         with:
           report_paths: dist/junit-*.xml
