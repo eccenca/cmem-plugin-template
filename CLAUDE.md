@@ -99,8 +99,19 @@ conventions worth matching:
 - Nested bullets are used to warn about consequences, e.g. a lint rule that may
   start failing checks in existing projects.
 
-Releasing is a one-line commit renaming `## [Unreleased]` to
-`## [X.Y.Z] YYYY-MM-DD`, followed by a signed tag `vX.Y.Z`.
+## Releasing
+
+The release procedure is codified as a skill: `.claude/skills/release/SKILL.md`,
+invocable as `/release` (optionally `/release 8.6.0`). Follow it rather than
+improvising a tag — it encodes the preconditions, the version derivation rules
+and the branch model.
+
+In short: `main` is a pointer that fast-forwards onto `develop` at release time
+and never carries its own commits, a release is a single commit renaming
+`## [Unreleased]` to `## [X.Y.Z] YYYY-MM-DD` with the subject `release X.Y.Z`,
+and the annotated PGP-signed tag `vX.Y.Z` is the release artifact. This
+repository publishes nothing to PyPI and deliberately creates no GitHub
+Releases.
 
 Historically, major versions were reserved for toolchain-level changes — a
 Python version switch, replacing the linter, a `cmem-plugin-base` major bump.
