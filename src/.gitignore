@@ -142,10 +142,8 @@ cython_debug/
 .claude/settings.local.json
 
 # project build plan specific ignores
-version.py
+# 'co' is CMEM orchestration output, which is sometimes part of a build plan.
 co
-*.xml
-*.html
 *.bak
 artifacts
 .DS_Store
