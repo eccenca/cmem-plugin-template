@@ -10,6 +10,69 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - ruff: allow asserts and unused args in test files
+- update dependencies esp. trivy (0.73.0.1) and ruff (0.16.2)
+
+
+## [8.5.0] 2026-06-24
+
+### Changed
+
+- gitlab: use python image v3.13.13
+- trivy: use 0.71.2.1
+- poetry: use explicit plugin requirements instead of Taskfile checks
+
+
+## [8.4.1] 2026-04-14
+
+### Fixed
+
+- ruff UP043 issue in example plugin code
+
+
+## [8.4.0] 2026-04-14
+
+### Added
+
+- export requirements.txt on build
+
+### Changed
+
+- gitlab: use python image v3.13.12
+- use cmem-plugin-base v4.16.1 (Corporate Memory 26.1)
+
+### Fixed
+
+- ruff target-version now `py313`
+- gitignore: .claude/settings.local.json
+
+
+## [8.3.2] 2026-03-02
+
+### Changed
+
+- update trivy-py-ecc to v0.69
+
+
+## [8.3.1] 2026-02-04
+
+### Fixed
+
+- update dependencies, no vulnerabilities
+
+
+## [8.3.0] 2026-01-21
+
+### Changed
+
+- all: update dev-dependencies
+
+
+## [8.2.1] 2025-12-10
+
+### Fixed
+
+- git repository init check (is now able to work inside submodule)
+
 
 ## [8.2.0] 2025-11-27
 

@@ -35,10 +35,6 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
-      - name: Install dynamic versioning plugin
-        run: |
-          poetry self add "poetry-dynamic-versioning[plugin]"
-
       - name: Publish Package
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
