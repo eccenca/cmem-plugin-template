@@ -3,17 +3,15 @@
 Remove this and other example files after bootstrapping your project.
 """
 
-import io
 import os
+import tempfile
 from collections.abc import Generator
+from pathlib import Path
 
 import pytest
-from cmem.cmempy.workspace.projects.datasets.dataset import make_new_dataset
-from cmem.cmempy.workspace.projects.project import delete_project, make_new_project
-from cmem.cmempy.workspace.projects.resources.resource import (
-    create_resource,
-    get_resource_response,
-)
+from cmem_client.client import Client
+from cmem_client.models.dataset import Dataset, DatasetData
+from cmem_client.models.project import Project
 from cmem_plugin_base.testing import TestExecutionContext
 
 from {{ package_dir }}.example_transform import Lifetime
@@ -38,23 +36,25 @@ class BuildProject:
 def build_project() -> Generator[BuildProject]:
     """Provide the DI build project incl. assets."""
     _ = BuildProject()
-    make_new_project(_.project_name)
-    make_new_dataset(
-        project_name=_.project_name,
-        dataset_name=_.dataset_name,
-        dataset_type=_.dataset_type,
-        parameters={"file": _.resource_name},
-        autoconfigure=False,
-    )
-    with io.StringIO(_.dataset_content) as response_file:
-        create_resource(
-            project_name=_.project_name,
-            resource_name=_.resource_name,
-            file_resource=response_file,
-            replace=True,
+    client = Client.from_env()
+    client.projects.delete_item(_.project_name, skip_if_missing=True)
+    client.projects.create_item(Project(name=_.project_name))
+    client.datasets.create_item(
+        Dataset(
+            id=_.dataset_name,
+            project_id=_.project_name,
+            data=DatasetData(type=_.dataset_type, parameters={"file": _.resource_name}),
         )
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as tmp:
+        tmp.write(_.dataset_content)
+        tmp_path = Path(tmp.name)
+    try:
+        client.files.import_item(path=tmp_path, key=f"{_.project_name}:{_.resource_name}")
+    finally:
+        tmp_path.unlink()
     yield _
-    delete_project(_.project_name)
+    client.projects.delete_item(_.project_name)
 
 
 @needs_cmem
@@ -85,5 +85,8 @@ def test_transform_execution_with_inputs() -> None:
 @needs_cmem
 def test_integration_placeholder(build_project: BuildProject) -> None:
     """Placeholder to write integration testcase with cmem"""
-    with get_resource_response(build_project.project_name, build_project.resource_name) as response:
-        assert response.text == build_project.dataset_content
+    client = Client.from_env()
+    with client.datasets.get_file_resource(
+        build_project.project_name, build_project.resource_name
+    ) as response:
+        assert response.read().decode() == build_project.dataset_content
