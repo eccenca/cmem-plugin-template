@@ -56,9 +56,10 @@ projects and runs *their* checks:
    `<case>_dir` directory at the repository root and git-inits it.
 2. `check:validate:cases` runs `poetry update && task check` inside each one.
 
-The `tests/*.yml` files are copier answer files, one per supported
-configuration (`plugin`, `plugin-github-pypi`, `generic-project`). `task clean`
-removes the `*_dir` directories.
+The `tests/*.yml` files are copier answer files covering the full two-by-two of
+`project_type` against `github_page`/`pypi`: `plugin`, `plugin-github-pypi`,
+`generic-project` and `generic-github-pypi`. `task clean` removes the `*_dir`
+directories.
 
 Note the blind spot this creates: the generated projects only exercise the
 example code that ships in `src/`. A lint rule tightened for plugin source code,
@@ -225,17 +226,52 @@ It does cost two things, both accepted:
 Note that closing an unwanted dependabot pull request is not free — dependabot
 reads it as "ignore this release" and will not offer that version again.
 
-### The generated `actions/cache` key is knowingly constant
+### Both Trivy caches rotate, but their paths deliberately differ
 
-`src/.github/workflows/check.yml` caches the Trivy DB under a constant key with
-no `restore-keys`, so after the first save the cache is a permanent hit and is
-never refreshed. Trivy manages its own database TTL and re-downloads a stale DB,
-so the step is closer to inert than harmful. It is recorded in `TASKS.md` rather
-than fixed inline, because changing the key changes CI behaviour in every
-generated project.
+Both `check.yml` files now cache the Trivy DB under a rotating
+`${{ github.run_id }}` key with `restore-keys`. The generated workflow used a
+constant key until 8.8.0, which meant the database was saved once and never
+replaced; `TASKS.md` carried that as a known item until it was fixed.
 
-The root `.github/workflows/check.yml` deliberately does *not* copy that pattern:
-it uses a rotating `${{ github.run_id }}` key with `restore-keys`. The root
-workflow also caches the Trivy DB for a second reason — it keeps `actions/cache`
-in use here, so that its version bumps are proven green by this repository
-instead of shipping unexercised.
+What must *not* be unified is the `path`. The root workflow needs an absolute
+`${{ github.workspace }}/.trivycache` because `task check` runs trivy from
+inside each generated `*_dir`, while a generated project runs it from its own
+repository root and a relative `.trivycache` is correct there. A future tidy-up
+that makes the two steps identical will break one of them.
+
+The root workflow also caches the Trivy DB for a second reason — it keeps
+`actions/cache` in use here, so that its version bumps are proven green by this
+repository instead of shipping unexercised.
+
+Note that `task check` cannot verify any of this: it runs each generated
+project's *Taskfile* and never executes the generated `check.yml`.
+
+### `co` in `src/.gitignore` is CMEM orchestration, not a typo
+
+The project-specific block at the end of `src/.gitignore` contains a bare `co`
+line. It reads exactly like a two-character typo and was described as one in
+`TASKS.md` until 8.8.0, when the surrounding stale entries (`version.py` and the
+unanchored `*.xml` / `*.html` patterns) were removed and it was deliberately
+kept.
+
+`co` is CMEM orchestration output, which is sometimes part of a project's build
+plan. The line now carries a comment saying so. Do not re-derive it as a typo
+from its appearance.
+
+### The copier requirement is a support policy, not a technical floor
+
+`copier.yml` sets `_min_copier_version: "9.0.0"` and the README requires
+copier >= v9, but the template does not technically need 9.
+
+`TASKS.md` used to justify the requirement by claiming `validator:` needs
+copier 9. That is wrong — `validator:` was added in copier **6.2.0**. The
+highest genuine requirement is **8.1.0**, for the computed values that
+`package_name` and `package_dir` express as `when: false` questions; the CLI
+usage documented in the README needs 8.0.0. copier 9.0.0's only breaking change
+was a return code for unsafe templates, which does not affect this template.
+
+The floor is set at 9.0.0 on purpose: 9.x is the only major this template is
+actually tested against, and declaring 8.1.0 would claim support for a 2023
+release that CI has never exercised. If the floor is ever revisited, revisit it
+as a support decision — do not "correct" it downward on the grounds that the
+template renders under copier 8.
