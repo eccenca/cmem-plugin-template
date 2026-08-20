@@ -1,7 +1,28 @@
 ---
 version: 2
 updates:
+  # the template's own CI - never seen by template users
   - package-ecosystem: "github-actions"
     directory: "/"
+    target-branch: "develop"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # the workflows rendered into generated projects
+  #
+  # the path is the workflow directory itself. The github-actions ecosystem
+  # does NOT append '.github/workflows' to a configured directory - pointing
+  # this at '/src' finds nothing and fails silently.
+  - package-ecosystem: "github-actions"
+    directory: "/src/.github/workflows"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "github"
+    groups:
+      actions:
+        patterns: ["*"]
