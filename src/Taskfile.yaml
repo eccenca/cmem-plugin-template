@@ -1,7 +1,7 @@
 # https://taskfile.dev
 #
-# This is a generated file. We dot not suggest to edit it.
-# Instead, create a file `TaskfileCustom.yml` and add your additions there.
+# This is a generated file. We do not suggest to edit it.
+# Instead, create a file `TaskfileCustom.yaml` and add your additions there.
 ---
 version: '3'
 

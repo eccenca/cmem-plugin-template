@@ -12,7 +12,7 @@ tasks:
       - poetry run cmemc admin workspace python list-plugins
 
   uninstall:
-    desc: Unnstall plugin package in Corporate Memory
+    desc: Uninstall plugin package in Corporate Memory
     cmds:
       - task build
       - poetry run cmemc admin workspace python uninstall {{ package_name }}
