@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier
+_src_path: .
+author_mail: anonymous@example.org
+author_name: Anonymous Person
+github_page: https://github.com/eccenca/generic-published
+project_description: My generic project, published to PyPI.
+project_slug: generic-published
+project_type: generic
+pypi: true
