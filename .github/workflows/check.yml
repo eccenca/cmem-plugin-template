@@ -23,7 +23,7 @@ jobs:
     concurrency: testing_environment
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Task
         uses: arduino/setup-task@v2
