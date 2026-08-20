@@ -104,7 +104,7 @@ Please also have a look at the [copier documentation](https://copier.readthedocs
 
 ### Other Tasks
 
-The available tasks for your project can be listed like this (note that there are more tasks, prefixed with `plugin:` in case you started a plugin project):
+The available tasks for your project can be listed like this (note that `install` and `uninstall` are only available in case you started a plugin project):
 
 ```shell-session
 ∴ task
@@ -112,13 +112,17 @@ task: Available tasks for this project:
 * build:                   Build a tarball and a wheel package
 * check:                   Run whole test suite incl. unit and integration tests
 * clean:                   Removes dist, *.pyc and some caches
+* install:                 Install plugin package in Corporate Memory
+* uninstall:               Uninstall plugin package in Corporate Memory
+* check:deptry:            Complain about unused or missing dependencies
 * check:linters:           Run all linter and static code analysis tests
 * check:mypy:              Complain about typing errors
 * check:pytest:            Run unit and integration tests
 * check:ruff:              Complain about everything else
-* check:trivy:             Complain about vulnerabilities in dependencies
+* check:trivy:             Scan for vulnerabilities using Trivy
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
+* poetry:install:          Install dependencies managed by Poetry
 ```
 
 You can extend this task list by creating a file `TaskfileCustom.yaml` in your repository root:
@@ -146,7 +150,7 @@ The following tools are needed for local task execution:
 - Python 3.13.x
 - [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering and updating
 - [task](https://taskfile.dev/) (>= v3.29) for running build tasks (make sure to follow the installation instructions to avoid confusion with taskwarrior)
-- [poetry](https://python-poetry.org/) (>= v1.7) for packaging and dependency managing (+ [dynamic versioning plugin](https://github.com/mtkennerly/poetry-dynamic-versioning))
+- [poetry](https://python-poetry.org/) (>= v2.1) for packaging and dependency managing (needed plugins such as [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning) are declared with `[tool.poetry.requires-plugins]` and installed automatically)
 - [pre-commit](https://pre-commit.com/) (>= v2.20) for managing pre-commit hooks (optional)
 
 Example installation of the requirements with [pipx](https://pipx.pypa.io/) on Ubuntu:
@@ -158,7 +162,6 @@ python3 -m pipx ensurepath
 pipx install copier
 pipx install pre-commit
 pipx install poetry
-poetry self add "poetry-dynamic-versioning[plugin]"
 ```
 
 ### Integration Tests
