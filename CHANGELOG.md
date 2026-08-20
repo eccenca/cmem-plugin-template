@@ -7,7 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- github: update actions/cache to v6 in the generated check workflow
+  - v5 moved to the node24 runtime and needs an Actions Runner >= 2.327.1
+  - only relevant for projects building on self-hosted runners
 
 
 ## [8.6.0] 2026-08-20
