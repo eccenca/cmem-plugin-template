@@ -47,6 +47,21 @@ and report the specific reason; do not attempt to fix it silently.
    followed by at least one `### Added|Changed|Deprecated|Removed|Fixed|Security`
    section with at least one bullet. A section containing only the `TODO:`
    placeholder means the changelog was never filled in: stop.
+
+   Then check that it actually *covers* the user-visible changes. Everything
+   under `src/` is rendered into generated projects, so anything listed by this
+   needs a changelog entry:
+
+   ```bash
+   git diff --name-only "$(git describe --tags --abbrev=0)"..develop -- src/
+   ```
+
+   This matters most for dependabot's `/src/.github/workflows` entry, whose
+   merged pull requests bump actions in every generated project but write no
+   changelog line of their own. Batch them into one entry in the established
+   form — `github: update actions in generated workflows` with a nested bullet
+   listing the versions, as in the 8.6.0 entry. Changes *outside* `src/` are
+   template-internal and are normally not listed at all.
 7. **Signing works.** Verify gpg can sign non-interactively *now*, rather than
    discovering it cannot after the release commit exists:
 
