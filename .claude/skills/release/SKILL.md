@@ -143,6 +143,25 @@ git push origin "vX.Y.Z"
 `--ff-only` is deliberate: it fails loudly rather than creating a merge commit
 if the branch state is not what step 1 asserted.
 
+### The push to main reports a bypassed rule — this is expected
+
+`main` carries classic branch protection requiring a pull request with one
+approving review, but `enforce_admins` is disabled, so a maintainer pushing the
+release directly is permitted by design. Git will print:
+
+```text
+remote: Bypassed rule violations for refs/heads/main:
+remote: - Changes must be made through a pull request.
+```
+
+This is not an error and the push succeeds. Do not stop, do not retry, and do
+not open a pull request instead. The protection exists to prevent casual direct
+pushes by non-maintainers; `main` here is a release pointer rather than a review
+target, and routing the release through a PR would create a merge commit on
+`main` and break the fast-forward model this procedure depends on. Force pushes
+and branch deletion remain blocked for everyone, which are the rules that
+actually protect history.
+
 ## 6. Open the next cycle
 
 After the tag is pushed, add a fresh empty section on `develop` so the tagged

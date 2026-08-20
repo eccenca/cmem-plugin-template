@@ -162,3 +162,21 @@ projects created in that window may contain a `TaskfileCustom.yml` that is
 silently ignored. A fallback include for the `.yml` spelling was considered and
 rejected: the feature is rarely used, and one canonical spelling is preferable
 to two.
+
+### Releases push directly to `main`, bypassing its branch protection
+
+`main` has classic branch protection requiring a pull request with one approving
+review, so pushing a release to it prints `Bypassed rule violations for
+refs/heads/main`. This is intended, not an oversight: `enforce_admins` is
+disabled on that protection, meaning the configuration deliberately permits
+maintainers to push directly.
+
+`main` is a release pointer that fast-forwards onto `develop`, not a branch that
+receives reviewed work — the review already happened on `develop`, and the
+commit being fast-forwarded to is one CI has built. Routing releases through a
+pull request would create a merge commit on `main` and break the invariant that
+`main` never carries commits of its own.
+
+The rules that protect history are still enforced for everyone: force pushes and
+branch deletion are both blocked. The pull request requirement exists to stop
+casual direct pushes, not releases.
