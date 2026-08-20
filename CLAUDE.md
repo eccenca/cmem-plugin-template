@@ -118,3 +118,36 @@ list.
 Because `select = ["ALL"]` is used, a ruff upgrade can enable newly stabilised
 rules and break generated projects. Adding the new rule to `ignore` is a normal
 part of a ruff version bump.
+
+## Deliberate decisions — please do not re-raise these
+
+The following look like oversights during a review, but are intentional. They
+have each been considered and left as they are.
+
+### The GitLab `build` job does not need `ruff`
+
+In `src/.gitlab-ci.yml`, `build` declares
+`needs: [mypy, pytest, trivy, deptry]` while `pypi` declares
+`needs: [ruff, build]`. A lint failure therefore does not stop artifacts from
+being built, but does stop them from being published.
+
+This is accepted. A lint failure is already visible as a red `ruff` job in the
+same pipeline, and is caught again before anything reaches PyPI, so adding
+`ruff` to `build.needs` would change the pipeline of every downstream project
+in exchange for a failure that is not actually escaping.
+
+### The GitLab `pypi` job is manual, not tag-restricted
+
+`pypi` is gated only by `when: manual`; there is no `rules` clause limiting it
+to tag pipelines, unlike the GitHub `publish.yml` workflow which triggers on
+tags. It previously carried a comment claiming tag-only behaviour, which was
+removed in 8.6.0 because the comment was wrong, not the pipeline.
+
+### Custom task files must be named `TaskfileCustom.yaml`
+
+Only the `.yaml` spelling is included by the generated `Taskfile.yaml`. The
+header comment wrongly said `TaskfileCustom.yml` from 3.1.0 until 8.6.0, so
+projects created in that window may contain a `TaskfileCustom.yml` that is
+silently ignored. A fallback include for the `.yml` spelling was considered and
+rejected: the feature is rarely used, and one canonical spelling is preferable
+to two.
