@@ -107,5 +107,8 @@ pypi:
       > This information is used to add more badges to the READMEs.
       >
 
+# A support policy, not a technical floor: this template renders with copier
+# 8.1 and up, but only 9.x is exercised. See README.md for the requirement.
+_min_copier_version: "9.0.0"
 _subdirectory: src
 

@@ -58,7 +58,7 @@ jobs:
 
       - name: install copier
         run: |
-          python3 -m pip install --user copier>=8.3.0
+          python3 -m pip install --user copier>=9
 
       - name: create projects with default answers and run check
         env:
