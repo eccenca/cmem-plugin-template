@@ -68,6 +68,23 @@ and report the specific reason; do not attempt to fix it silently.
    commits nothing has built. If the run is missing, in progress, or failed,
    stop and say which, with the run URL. Do not wait or poll; releasing is not
    urgent.
+9. **No other CI run is occupying the concurrency group.**
+
+   ```bash
+   gh run list --workflow check.yml --limit 20 --json status,headBranch,url \
+     -q '[.[] | select(.status != "completed")]'
+   ```
+
+   This must be empty. The `check` job declares `concurrency:
+   testing_environment`, a static group shared by **every** branch, and GitHub
+   keeps only one *pending* job per group — a newly queued run cancels the one
+   already waiting. Releasing pushes two branches in quick succession, so if a
+   foreign run already holds the group, one of them is evicted and shows as
+   cancelled.
+
+   If a run is in flight, stop and say which branch holds the group. It is
+   cosmetic, not a correctness problem, but a cancelled run on `main` is what
+   the README's build badge displays.
 
 ## 2. Determine the version
 
@@ -116,7 +133,7 @@ for ordinary changelog edits and does not identify a release.
 
 ## 4. Create the signed tag
 
-Tag before pushing anything, so a signing failure leaves only a local commit:
+Tag before pushing anything, so a signing failure leaves only local commits:
 
 ```bash
 git tag -s "vX.Y.Z" -m "vX.Y.Z"
@@ -126,22 +143,54 @@ The tag name and message are both exactly `vX.Y.Z`. If signing fails despite the
 preflight, stop and ask the user to create the tag themselves. The release
 commit already exists and is harmless; nothing needs undoing.
 
-## 5. Push
+## 5. Open the next cycle — commit, but do not push yet
 
-In this order, so that an interruption never leaves a tag pointing at a commit
-no branch reaches:
+Add a fresh empty section on `develop` so the tagged changelog stays clean and
+the next contributor has a heading to write under. Insert it directly above the
+version heading just released:
+
+```markdown
+## [Unreleased]
+
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+```
+
+```bash
+git add CHANGELOG.md
+git commit -m "open next development cycle"
+```
+
+This commit is made **before** pushing on purpose — see step 6. The tag already
+points at the release commit, which is now `develop~1`, so the tagged changelog
+is unaffected by it.
+
+## 6. Push — exactly two branch pushes
 
 ```bash
 git push origin develop
 git checkout main
-git merge --ff-only develop
+git merge --ff-only "vX.Y.Z"
 git push origin main
 git checkout develop
 git push origin "vX.Y.Z"
 ```
 
-`--ff-only` is deliberate: it fails loudly rather than creating a merge commit
-if the branch state is not what step 1 asserted.
+`develop` is pushed **once**, carrying both the release commit and the
+next-cycle commit. This matters: each branch push queues a CI run into the
+shared `testing_environment` concurrency group, and GitHub holds only one
+pending run per group, so a third push would cancel whichever run was waiting.
+Two pushes means one run in progress and one pending — nothing is evicted. The
+tag push triggers nothing, since the workflow filters on
+`branches: [main, develop]`.
+
+`main` fast-forwards onto the **tag**, not onto `develop` — at this point
+`develop` is one commit ahead, and `main` must point at the released commit.
+Using the tag name rather than `develop~1` makes that unambiguous. `--ff-only`
+is deliberate: it fails loudly rather than creating a merge commit if the branch
+state is not what step 1 asserted.
+
+`develop` now sits one commit ahead of `main`, which is the normal resting
+state. The next release fast-forwards `main` again.
 
 ### The push to main reports a bypassed rule — this is expected
 
@@ -162,27 +211,6 @@ target, and routing the release through a PR would create a merge commit on
 and branch deletion remain blocked for everyone, which are the rules that
 actually protect history.
 
-## 6. Open the next cycle
-
-After the tag is pushed, add a fresh empty section on `develop` so the tagged
-changelog stays clean and the next contributor has a heading to write under.
-Insert directly above the version heading just released:
-
-```markdown
-## [Unreleased]
-
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
-```
-
-```bash
-git add CHANGELOG.md
-git commit -m "open next development cycle"
-git push origin develop
-```
-
-`develop` is now one commit ahead of `main`, which is the normal resting state.
-The next release fast-forwards `main` again.
-
 ## 7. Report
 
 Tell the user the version, the tagged commit, and that `main`, `develop` and the
@@ -194,3 +222,10 @@ The tagged commit is not byte-identical to the commit CI verified in step 1 — 
 differs by the changelog-only release commit. This is inherent to renaming the
 heading at release time and is how every previous release worked. It is
 acceptable because no check depends on `CHANGELOG.md`.
+
+It also resolves itself shortly afterwards: the push in step 6 sends `main` to
+the tagged commit, so the run triggered on `main` builds exactly what was
+tagged. The run triggered on `develop` builds the next-cycle commit, which is
+the tagged tree plus one more changelog edit. Between them, both sides of the
+release get built — which is the reason preflight check 9 exists, since a
+cancelled `main` run would silently remove that coverage.
