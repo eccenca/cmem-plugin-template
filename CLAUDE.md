@@ -1,0 +1,120 @@
+<!-- markdownlint-disable MD013 -->
+# Working on this repository
+
+This is a [copier](https://copier.readthedocs.io/) template that generates
+Python project skeletons. Nothing here is an application — almost every file is
+either template input or template output. The notes below cover the parts of
+that structure that are easy to get wrong.
+
+## The root / `src/` split is the most important distinction
+
+`copier.yml` sets `_subdirectory: src`, so **only `src/` is rendered into
+generated projects**. Everything at the repository root belongs to the template
+itself and is never seen by template users.
+
+This split has bitten before. Concrete example: the GitHub Action versions in
+`.github/workflows/check.yml` (root, the template's own CI) and in
+`src/.github/workflows/check.yml` (rendered into user projects) are entirely
+independent, and they drift apart silently. Before concluding that a change
+affects template users, check which side of the split it is on.
+
+Several names exist on both sides with unrelated contents and unrelated
+purposes: `CHANGELOG.md`, `Taskfile.yaml`, `README.md`, `LICENSE`, `.github/`
+and `tests/`. The `tests/` pair is the sharpest trap — root `tests/` holds
+copier answer files driving the template's own checks, while `src/tests/` holds
+the example test code rendered into user projects.
+
+## Files in `src/` are Jinja, including their names
+
+Filenames themselves carry Jinja conditionals, which is why `find src` returns
+paths like:
+
+```text
+src/tests/{% if project_type == 'plugin' %}test_example.py{% endif %}.jinja
+src/{{ package_dir }}/{% if project_type == 'plugin' %}example_workflow.py{% endif %}.jinja
+```
+
+A file whose name renders empty is simply not created. Quote these paths in
+shell commands — the braces and spaces will otherwise be mangled.
+
+## Two project types
+
+The first copier question, `project_type`, selects between:
+
+- `plugin` — an eccenca Corporate Memory plugin, depending on `cmem-plugin-base`
+- `generic` — a plain Python project using only the build plan and config
+
+Most conditionals in `src/` branch on this. When changing anything under `src/`,
+consider whether it applies to one type or both.
+
+## How to test a change
+
+There is no test suite for the template itself. `task check` generates real
+projects and runs *their* checks:
+
+1. `check:generate:cases` renders every test case in `tests/*.yml` into a
+   `<case>_dir` directory at the repository root and git-inits it.
+2. `check:validate:cases` runs `poetry update && task check` inside each one.
+
+The `tests/*.yml` files are copier answer files, one per supported
+configuration (`plugin`, `plugin-github-pypi`, `generic-project`). `task clean`
+removes the `*_dir` directories.
+
+Note the blind spot this creates: the generated projects only exercise the
+example code that ships in `src/`. A lint rule tightened for plugin source code,
+for instance, will pass here as long as the example plugin does not happen to
+violate it — while still breaking real downstream projects.
+
+Never edit files inside a `*_dir` directory. They are generated output and are
+deleted by `task clean`.
+
+## Dependency automation belongs to the template, not to generated projects
+
+Generated projects intentionally ship without `dependabot.yml` or any other
+self-updating configuration. Template users are expected to pick up new
+dependency and action versions by updating to the latest template release
+(`copier update`), not by drifting forward independently. If each generated
+project self-updated, the template would stop describing what a current project
+looks like.
+
+The corollary is that pinned versions inside `src/` — action versions in
+`src/.github/workflows/`, dependency constraints in `src/pyproject.toml.jinja` —
+must be bumped deliberately as part of a release. The root
+`.github/dependabot.yml` is scoped to `directory: "/"` and does not cover them.
+See `TASKS.md` for the open work item on this.
+
+## Changelog conventions
+
+`CHANGELOG.md` (the root one) follows Keep a Changelog and has established
+conventions worth matching:
+
+- `cmem-plugin-base` bumps name the matching Corporate Memory release, e.g.
+  `use cmem-plugin-base v4.20.0 (Corporate Memory 26.2)`. This is the entry
+  template users care about most — it determines plugin API compatibility.
+- A `github:` or `gitlab:` prefix means the **generated** pipeline. Changes to
+  the template's own CI are not usually listed at all.
+- A `plugin:` prefix marks entries that apply only to `project_type == 'plugin'`.
+- Fixes to code that was never released are folded into the entry describing the
+  change, not listed separately under `### Fixed`.
+- Nested bullets are used to warn about consequences, e.g. a lint rule that may
+  start failing checks in existing projects.
+
+Releasing is a one-line commit renaming `## [Unreleased]` to
+`## [X.Y.Z] YYYY-MM-DD`, followed by a signed tag `vX.Y.Z`.
+
+Historically, major versions were reserved for toolchain-level changes — a
+Python version switch, replacing the linter, a `cmem-plugin-base` major bump.
+Dependency bumps and lint configuration changes are minor releases.
+
+## Ruff configuration
+
+Lint rules for generated projects live in `src/pyproject.toml.jinja` under
+`[tool.ruff.lint]`, which selects `ALL` and then subtracts. Keep the `ignore`
+list alphabetically sorted, and keep the trailing `#` comment explaining why
+each rule is off. Rules that should only relax inside tests belong in
+`[tool.ruff.lint.per-file-ignores]` under `"tests/**/*.py"`, not in the global
+list.
+
+Because `select = ["ALL"]` is used, a ruff upgrade can enable newly stabilised
+rules and break generated projects. Adding the new rule to `ignore` is a normal
+part of a ruff version bump.
