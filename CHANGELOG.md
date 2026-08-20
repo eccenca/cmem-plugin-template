@@ -9,7 +9,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- ruff: allow asserts and unused args in test files
+- use cmem-plugin-base v4.20.0 (Corporate Memory 26.2)
+- plugin: example test code now uses cmem-client instead of cmem-cmempy
+- github: update actions in generated workflows
+  - checkout v7, setup-task v3, setup-python v7, action-junit-report v6
+- ruff: asserts (S101) are now allowed in `tests/` only
+  - previously allowed everywhere; `assert` in plugin code is now reported
+- ruff: unused args (ARG) are now allowed in `tests/`
+- ruff: ignore CPY001 (missing copyright notice)
 - update dependencies esp. trivy (0.73.0.1) and ruff (0.16.2)
 
 
