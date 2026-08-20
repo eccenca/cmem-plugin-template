@@ -25,6 +25,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
+      # Every generated test case runs trivy, so the vulnerability database is
+      # worth caching. This step also exists to keep actions/cache in use here:
+      # it is the only action in src/.github/workflows that this workflow would
+      # otherwise not run, and an unused action is one whose version bumps
+      # nothing in this repository ever proves green.
+      - name: Cache Trivy DB
+        uses: actions/cache@v6
+        with:
+          path: ${{ github.workspace }}/.trivycache
+          key: ${{ runner.os }}-trivydb-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-trivydb-
+
       - name: Install Task
         uses: arduino/setup-task@v3
         with:
@@ -50,6 +62,8 @@ jobs:
 
       - name: create projects with default answers and run check
         env:
+          # absolute, because task check runs trivy from inside each *_dir
+          TRIVY_CACHE_DIR: ${{ github.workspace }}/.trivycache
           CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
           OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
         run: |
