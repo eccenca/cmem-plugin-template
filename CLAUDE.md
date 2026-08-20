@@ -77,11 +77,31 @@ dependency and action versions by updating to the latest template release
 project self-updated, the template would stop describing what a current project
 looks like.
 
-The corollary is that pinned versions inside `src/` — action versions in
-`src/.github/workflows/`, dependency constraints in `src/pyproject.toml.jinja` —
-must be bumped deliberately as part of a release. The root
-`.github/dependabot.yml` is scoped to `directory: "/"` and does not cover them.
-See `TASKS.md` for the open work item on this.
+The corollary is that pinned versions inside `src/` must be bumped deliberately
+as part of a release, by the *template's* automation rather than by the
+generated project. `.github/dependabot.yml` therefore carries two
+`github-actions` entries: one for `/` (the template's own CI) and one for
+`/src/.github/workflows` (the workflows rendered into user projects).
+
+Two things about that second entry are easy to get wrong.
+
+**The path is the workflow directory itself.** The `github-actions` ecosystem
+does *not* append `.github/workflows` to a configured directory — it treats the
+directory as the place the workflow files already are. `directory: "/src"`
+therefore matches nothing and fails **silently**: dependabot reports zero
+dependencies rather than an error. This was verified with a local
+`dependabot update github_actions eccenca/cmem-plugin-template -d <path> -b develop`
+dry run, which is the cheapest way to re-check it if the behaviour ever changes.
+
+**A green check on such a pull request is not evidence.** `task check` renders
+the test cases and runs each generated project's *Taskfile*; it never executes
+the generated `.github/workflows/check.yml`. CI therefore passes regardless of
+whether a bumped action actually works. Review these bumps by reading the
+upstream release notes, not by trusting the check mark.
+
+Dependency constraints in `src/pyproject.toml.jinja` are still bumped entirely
+by hand — no ecosystem entry covers them, because the file is Jinja and not
+valid TOML.
 
 ## Changelog conventions
 
@@ -180,3 +200,42 @@ pull request would create a merge commit on `main` and break the invariant that
 The rules that protect history are still enforced for everyone: force pushes and
 branch deletion are both blocked. The pull request requirement exists to stop
 casual direct pushes, not releases.
+
+### `main` stays the default branch, so dependabot needs `target-branch`
+
+`main` is the GitHub default branch even though it only ever fast-forwards onto
+`develop`. That is a deliberate choice about what the repository landing page
+shows, and it is safe for template users: copier resolves
+`copier copy gh:eccenca/cmem-plugin-template` to the latest PEP 440 **tag**, not
+to the default branch, and `check.yml` lists `branches: [main, develop]`
+explicitly, so neither depends on which branch is default.
+
+It does cost two things, both accepted:
+
+- Dependabot reads `.github/dependabot.yml` from the **default branch only**, so
+  a change to that file is inert until a release fast-forwards `main`. Editing
+  it and expecting an immediate effect will not work.
+- Every entry therefore sets `target-branch: develop`, without which dependabot
+  opens pull requests against `main` — a branch the release model forbids
+  merging into. Setting `target-branch` to a non-default branch also disables
+  dependabot **security** updates for that ecosystem. This is a nominal loss:
+  security updates only ever target the default branch anyway, so they would
+  land on `main`, where they could not be merged.
+
+Note that closing an unwanted dependabot pull request is not free — dependabot
+reads it as "ignore this release" and will not offer that version again.
+
+### The generated `actions/cache` key is knowingly constant
+
+`src/.github/workflows/check.yml` caches the Trivy DB under a constant key with
+no `restore-keys`, so after the first save the cache is a permanent hit and is
+never refreshed. Trivy manages its own database TTL and re-downloads a stale DB,
+so the step is closer to inert than harmful. It is recorded in `TASKS.md` rather
+than fixed inline, because changing the key changes CI behaviour in every
+generated project.
+
+The root `.github/workflows/check.yml` deliberately does *not* copy that pattern:
+it uses a rotating `${{ github.run_id }}` key with `restore-keys`. The root
+workflow also caches the Trivy DB for a second reason — it keeps `actions/cache`
+in use here, so that its version bumps are proven green by this repository
+instead of shipping unexercised.
