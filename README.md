@@ -27,9 +27,11 @@ You can use it to bootstrap the following types of project:
     * [CI Build Plan](#ci-build-plan)
     * [Editor / IDE Support](#editor--ide-support)
         * [PyCharm](#pycharm)
+* [Agent Support](#agent-support)
+    * [Plugin Skills](#plugin-skills)
+    * [Corporate Memory MCP Servers](#corporate-memory-mcp-servers)
 * [Plugins Only](#plugins-only)
     * [Corporate Memory Environment](#corporate-memory-environment)
-    * [Agent Support](#agent-support)
 
 <!-- vim-markdown-toc -->
 </details>
@@ -201,6 +203,38 @@ In order to have the best PyCharm experience, when starting a project with this 
 - [Ruff](https://plugins.jetbrains.com/plugin/20574-ruff) will provide the linting hints which will be raised by the pipeline anyway.
 - [Taskfile](https://plugins.jetbrains.com/plugin/17058-taskfile) will allow for starting tasks.
 
+## Agent Support
+
+Generated projects ship a `.claude/` directory for [Claude Code](https://claude.com/claude-code). It is maintained in the template and updated with `copier update`.
+
+- `.claude/rules/` holds the instructions an agent reads in every session: which files belong to the template and are lost on the next update, that lint findings are fixed rather than silenced, and that user-visible changes need a `CHANGELOG.md` entry.
+- `.claude/settings.json` allows the everyday commands (`task check`, `task format:fix`, `task build`, `pytest`, `ruff`, `mypy`) without a prompt, and formats edited files with `task format:fix`. `task install` and `task uninstall`, which change what is installed in a Corporate Memory deployment, are deliberately not allowed, so an agent has to ask for those. Note that the allowed `task check` runs the integration tests, which create and delete their own assets in the deployment configured in `.env`.
+- `.claude/skills/` holds the procedures an agent loads when it needs them: `release` and `copier-update` in every project.
+
+The template never writes a `CLAUDE.md`. That file belongs to your project - put your own instructions there, and they are read alongside the rules above. This also means an existing `CLAUDE.md` is never touched when you update the template.
+
+Personal settings belong in `.claude/settings.local.json`, which is git-ignored.
+
+Note that the allowed commands and the formatting hook only take effect once the workspace is trusted, which happens when you start Claude Code interactively in the project for the first time.
+
+### Plugin Skills
+
+Plugin projects additionally receive:
+
+- `plugin-documentation` - how to write the text a user reads in Corporate Memory: what belongs in the task documentation as opposed to a parameter description, how choice parameters explain their values, and how tasks refer to each other.
+- `plugin-testing` - what can be tested standalone, when a test needs a deployment and how to mark it, and how test assets are created and cleaned up.
+
+They also receive a rules file covering `cmem-plugin-base`, the `needs_cmem` marker and the fact that `task install` and `task uninstall` change a running deployment.
+
+### Corporate Memory MCP Servers
+
+An agent can talk to your deployment directly through the MCP servers Corporate Memory provides. These describe *your* deployment rather than a project, so they are not shipped with generated projects - add them once, for yourself:
+
+``` shell-session
+$ claude mcp add --transport http cmem-build "$CMEM_BASE_URI/dataintegration/mcp"
+$ claude mcp add --transport http cmem-explore "$CMEM_BASE_URI/dataplatform/mcp/streamable"
+```
+
 ## Plugins Only
 
 The following applies to plugin projects only. Generic Python projects are created without these files and settings.
@@ -226,13 +260,6 @@ OAUTH_CLIENT_SECRET="..."
 OAUTH_GRANT_TYPE="client_credentials"
 ```
 
-### Agent Support
-
-Plugin projects ship a [Claude Code](https://claude.com/claude-code) skill at `.claude/skills/plugin-documentation/SKILL.md`.
-
-When an agent adds or edits a task, the skill tells it how to write the user-facing text: what belongs in the task documentation, what belongs in a parameter description, and how choice parameters explain their values.
-
-The skill is maintained in the template and updated with `copier update`.
 
 [version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
 [changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md

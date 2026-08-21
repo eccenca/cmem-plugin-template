@@ -1,0 +1,27 @@
+{
+    "permissions": {
+        "allow": [
+            "Bash(task build:*)",
+            "Bash(task check:*)",
+            "Bash(task format:fix:*)",
+            "Bash(poetry install:*)",
+            "Bash(poetry run mypy:*)",
+            "Bash(poetry run pytest:*)",
+            "Bash(poetry run ruff:*)"
+        ]
+    },
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "task format:fix",
+                        "timeout": 180
+                    }
+                ]
+            }
+        ]
+    }
+}

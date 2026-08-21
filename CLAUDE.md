@@ -24,6 +24,12 @@ and `tests/`. The `tests/` pair is the sharpest trap — root `tests/` holds
 copier answer files driving the template's own checks, while `src/tests/` holds
 the example test code rendered into user projects.
 
+The `release` skill is a seventh twin, and the only one where following the
+wrong copy would do real damage. `.claude/skills/release/` releases *this*
+repository — no PyPI package, no GitHub Release, a `main` that fast-forwards
+onto `develop`. The rendered one under `src/` releases a *generated* project,
+where pushing a tag publishes to PyPI and is irreversible.
+
 ## Files in `src/` are Jinja, including their names
 
 Filenames themselves carry Jinja conditionals, which is why `find src` returns
@@ -36,6 +42,13 @@ src/{{ package_dir }}/{% if project_type == 'plugin' %}example_workflow.py{% end
 
 A file whose name renders empty is simply not created. Quote these paths in
 shell commands — the braces and spaces will otherwise be mangled.
+
+The agent support directory uses the same mechanism for a different reason. It
+is named `src/{{ '.claude' }}/`, an expression that always renders to
+`.claude`, because a literal `src/.claude/` would be picked up by Claude Code
+*in this repository*: sessions working on the template would silently load the
+generated project's rules and skills, including a `release` skill describing a
+release procedure this repository does not follow.
 
 ## Two project types
 
@@ -245,6 +258,59 @@ repository instead of shipping unexercised.
 
 Note that `task check` cannot verify any of this: it runs each generated
 project's *Taskfile* and never executes the generated `check.yml`.
+
+### Generated projects get `.claude/rules/`, never a `CLAUDE.md`
+
+Agent support is delivered as `.claude/rules/`, `.claude/settings.json` and
+`.claude/skills/`. The template writes no `CLAUDE.md`, no `AGENTS.md` and no
+`.mcp.json` into a generated project, and this is not an oversight.
+
+Claude Code auto-loads `*.md` under `.claude/rules/` as project documentation —
+verified against 2.1.226 by answering a question from a rules file in a
+repository with no `CLAUDE.md` at all. That buys three things a shipped
+`CLAUDE.md` cannot:
+
+- **No collisions.** Six eccenca plugin repositories already carry a
+  hand-written `CLAUDE.md` (`cmem-plugin-llm`, `cmem-plugin-email`,
+  `cmem-plugin-loopwf`, `cmem-plugin-random`, `cmem-plugin-claudetest`,
+  `rdf-canonicalization`). A template-owned `CLAUDE.md` would land on a file
+  that exists in the destination but not in the previous render, which copier
+  resolves with conflict markers. `.claude/rules/` is a path no project has.
+- **Agent writes are harmless.** The `#` memory shortcut and `/init` write to
+  `CLAUDE.md` by name, whatever a "do not edit, this is generated" header says.
+  Leaving that file to the project means those writes cannot become update
+  conflicts. Nothing in Claude Code writes to `.claude/rules/`.
+- **Both are read.** A project's own `CLAUDE.md` is loaded alongside the rules,
+  so nobody has to choose.
+
+The cost is accepted: rules are Claude-Code-specific (Codex and Cursor read
+`AGENTS.md`), and they are in context on *every* request, which is why the two
+rules files stay short and carry only things an agent cannot read off the
+repository — copier ownership, the lint policy, the changelog convention.
+
+The MCP servers are documented in `README.md` rather than shipped as
+`.mcp.json` for a related reason: their URL describes the developer's own
+deployment, `.mcp.json` expands variables from the process environment rather
+than from the project's `.env`, and their browser OAuth cannot reuse the
+`client_credentials` service account that `.env` holds.
+
+### Nothing verifies the shipped agent files
+
+`task check` renders the test cases and runs each generated project's
+*Taskfile*. It never starts an agent, so a conditional directory name that
+renders empty removes a skill silently and every check stays green — the same
+failure mode as the dependabot `directory:` bug above.
+
+Verification is manual, at authoring time, in a rendered case:
+
+```bash
+TEST_CASE=plugin task check:generate:case
+cd plugin_dir && claude -p "Which files in this repository belong to the template?"
+```
+
+The answer has to come from `.claude/rules/`. Check the generic case too — it
+must contain `.claude/settings.json`, `.claude/rules/copier-template.md` and
+exactly two skills, with no plugin material.
 
 ### `co` in `src/.gitignore` is CMEM orchestration, not a typo
 

@@ -60,9 +60,9 @@ cannot know it.
 The test belongs next to the existing example, as
 `src/tests/{% if project_type == 'plugin' %}test_plugin_documentation.py{% endif %}.jinja`.
 The skill it complements is delivered from
-`src/{% if project_type == 'plugin' %}.claude{% endif %}/skills/` - note that the
-existing `.claude/skills/release` sits outside `src` and is therefore not
-delivered to generated projects.
+`src/{{ '.claude' }}/skills/{% if project_type == 'plugin' %}plugin-documentation{% endif %}/`
+- note that the root `.claude/skills/release` sits outside `src` and belongs to
+the template itself, unlike the `release` skill of the same name under `src/`.
 
 The real cost is not the test. It is that `example_workflow.DollyPlugin` and
 `example_transform.Lifetime` have to satisfy it, otherwise every freshly

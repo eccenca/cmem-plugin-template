@@ -9,9 +9,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- plugin projects ship a `plugin-documentation` skill in `.claude/skills/`
-  - it describes how to write the user-facing text of a task, its parameters and its actions
-  - generic projects are unaffected and receive no `.claude` directory
+- generated projects ship a `.claude/` directory with agent support for [Claude Code](https://claude.com/claude-code)
+  - `.claude/rules/` is read in every session: which files belong to the template, that lint findings are fixed instead of silenced, and that user-visible changes need a changelog entry
+  - `.claude/settings.json` allows the everyday commands (`task check`, `task format:fix`, `task build`, `pytest`, `ruff`, `mypy`) without a prompt, while `task install` and `task uninstall` still have to be confirmed
+  - it also formats edited files by running `task format:fix` after each agent edit - remove the `hooks` block from `.claude/settings.json` if you do not want that
+  - `release` and `copier-update` skills describe how to cut a release and how to take a new template version
+  - plugin projects additionally receive the `plugin-documentation` and `plugin-testing` skills, plus a rules file about `cmem-plugin-base`, the `needs_cmem` marker and the tasks that change a running deployment
+- no `CLAUDE.md` is written into generated projects
+  - that file belongs to your project, is never touched by `copier update`, and is read alongside the shipped rules
 
 
 ## [8.8.0] 2026-08-21
