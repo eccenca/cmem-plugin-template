@@ -6,9 +6,9 @@ template and stays connected to it through `copier update`.
 
 ## Some files belong to the template
 
-`Taskfile.yaml`, `.pre-commit-config.yaml`, the pipeline definitions
-(`.gitlab-ci.yml`, and `.github/workflows/` where it exists) and everything
-under `.claude/` are rendered from the template. Edits there are not preserved:
+`Taskfile.yaml`, `.pre-commit-config.yaml`, the pipeline definition for this
+project's host (`.github/workflows/` or `.gitlab-ci.yml`) and everything under
+`.claude/` are rendered from the template. Edits there are not preserved:
 the next `copier update` either reverts them or turns them into a merge
 conflict.
 

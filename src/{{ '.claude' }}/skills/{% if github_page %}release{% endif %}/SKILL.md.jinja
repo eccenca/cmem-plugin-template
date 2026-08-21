@@ -1,6 +1,6 @@
 ---
 name: release
-description: Cut a release of this project - check the changelog, rename the Unreleased heading, commit, tag vX.Y.Z and push, which publishes the package to PyPI. Use when asked to release, tag, version or publish this project.
+description: Cut a release of this project - check the changelog, rename the Unreleased heading, commit, tag vX.Y.Z and push{% if pypi %}, which publishes the package to PyPI{% endif %}. Use when asked to release, tag, version or publish this project.
 ---
 
 # Releasing {{ package_name }}
@@ -9,11 +9,19 @@ The version is never written into a file. `poetry-dynamic-versioning` derives
 it from the git tag, so **the annotated tag is the release**. `pyproject.toml`
 keeps `version = "0.0.0"` forever; changing it there does nothing.
 
+{% if pypi -%}
 Pushing a tag triggers `.github/workflows/publish.yml`, which builds the
-package and publishes it to PyPI with the `PYPI_TOKEN` secret. That workflow
-ships with every generated project and fires on *any* tag, so a tag is never a
-private bookmark: it either publishes a release or fails the pipeline. Publish
-it once and that version is gone - PyPI does not allow replacing it.
+package and publishes it to PyPI with the `PYPI_TOKEN` secret. It fires on
+*any* tag, so a tag is never a private bookmark: it either publishes a release
+or fails the pipeline. Publish it once and that version is gone - PyPI does not
+allow replacing it.
+{%- else -%}
+Nothing is published automatically. This project has no publish workflow, so
+the tag and the changelog entry it points at *are* the release, and users
+install the package from the source they already use. If it should be published
+to PyPI, set `pypi` in `.copier-answers.yml` and run `copier update` - that
+generates the workflow - rather than publishing by hand from a laptop.
+{%- endif %}
 
 Accepts an optional version argument, e.g. `/release 1.4.0`. Without one,
 derive it in step 2 and confirm with the user before tagging.
@@ -83,5 +91,10 @@ git tag -a -m "release 1.4.0" v1.4.0
 git push && git push --tags
 ```
 
+{% if pypi -%}
 Then watch the publish workflow at {{ github_page }}/actions and confirm the
 new version appeared on [PyPI](https://pypi.org/project/{{ package_name }}/).
+{%- else -%}
+Then confirm the tag is on {{ github_page }} and that the check workflow is
+green for it.
+{%- endif %}

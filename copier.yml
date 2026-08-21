@@ -97,11 +97,13 @@ github_page:
       > will be used as a base for icons and the homepage link in
       > the project toml.
       >
-      > It also decides whether GitHub files are generated at all:
-      > leaving it blank creates no .github directory, so there is
-      > no check workflow, no publish workflow and no release skill.
+      > It also decides which pipeline is generated. With a URL,
+      > you get .github/workflows and the release skill, and no
+      > .gitlab-ci.yml. Left blank, you get .gitlab-ci.yml and no
+      > .github directory.
       >
-      > Leave blank only if your project is not on github.
+      > Leave blank if your project is built on gitlab, even when
+      > a github mirror or page exists.
       >
 
 pypi:
@@ -109,8 +111,14 @@ pypi:
     default: false
     help: |
 
-      > pypi: Is your plugin published on pypi.org?
-      > This information is used to add more badges to the READMEs.
+      > pypi: Is this package published on pypi.org?
+      >
+      > This decides whether the publish path is generated: the
+      > github publish workflow, or the manual pypi job of the
+      > gitlab pipeline. It also adds badges to the READMEs.
+      >
+      > Answer yes if the package is on pypi.org, even when you
+      > publish it by hand today.
       >
 
 # A support policy, not a technical floor: this template renders with copier

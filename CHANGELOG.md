@@ -20,10 +20,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- github: the `.github` directory is only generated when `github_page` is answered
-  - **set `github_page` before updating**, otherwise `copier update` removes the generated `check.yml` and `publish.yml` from your project
-  - this affects projects that are hosted on github but left `github_page` blank, since it used to control nothing but badges and the homepage link
-  - the `release` skill is delivered under the same condition: it describes pushing a tag to trigger `publish.yml`, which is not how a gitlab hosted project publishes
+- a project is now generated with the pipeline it actually uses, not with both
+  - `github_page` decides the host: with a URL you get `.github/workflows/` and no `.gitlab-ci.yml`, left blank you get `.gitlab-ci.yml` and no `.github` directory
+  - `pypi` decides the publish path: the github `publish.yml`, or the manual `pypi` job of the gitlab pipeline, are only generated when it is answered yes
+  - **check both answers before updating**, because `copier update` removes the files they no longer select
+  - both questions used to be documented as badge and link decoration, so a stale answer is likely: their help texts now say what they generate
+  - if you are built on gitlab but keep a github page, clear `github_page` - a mirror is not a build host, and the badges are not worth the pipeline
+  - the `release` skill follows the same answers: it is delivered for github hosted projects only, and describes the tag triggered publish only when `pypi` is set
 
 
 ## [8.8.0] 2026-08-21

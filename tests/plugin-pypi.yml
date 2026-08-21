@@ -1,0 +1,10 @@
+# Changes here will be overwritten by Copier
+_src_path: .
+author_mail: anonymous@example.org
+author_name: Anonymous Person
+github_page: ''
+project_description: Create awesome Knowledge Graphs with eccenca Corporate Memory
+    :-)
+project_slug: jq
+project_type: plugin
+pypi: true

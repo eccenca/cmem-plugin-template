@@ -17,7 +17,9 @@ default:
 stages:
   - test
   - build
+{%- if pypi %}
   - publish
+{%- endif %}
 
 ruff:
   stage: test
@@ -86,7 +88,7 @@ build:
     paths:
       - dist/*.tar.gz
       - dist/*.whl
-
+{% if pypi %}
 pypi:
   stage: publish
   needs:
@@ -97,4 +99,4 @@ pypi:
   script:
     - poetry config pypi-token.pypi $PYPI_TOKEN
     - poetry publish
-
+{% endif %}

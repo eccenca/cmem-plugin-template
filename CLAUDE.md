@@ -70,10 +70,13 @@ projects and runs *their* checks:
    `<case>_dir` directory at the repository root and git-inits it.
 2. `check:validate:cases` runs `poetry update && task check` inside each one.
 
-The `tests/*.yml` files are copier answer files covering the full two-by-two of
-`project_type` against `github_page`/`pypi`: `plugin`, `plugin-github-pypi`,
-`generic-project` and `generic-github-pypi`. `task clean` removes the `*_dir`
-directories.
+The `tests/*.yml` files are copier answer files. `plugin`,
+`plugin-github-pypi`, `generic-project` and `generic-github-pypi` cover
+`project_type` against `github_page`/`pypi` answered together; `plugin-github` and
+`plugin-pypi` split them apart, because since 9.0.0 the two questions select
+different files: `plugin-github` is the only case rendering a github project
+with no publish workflow, and `plugin-pypi` the only one rendering the gitlab
+pipeline's manual `pypi` job. `task clean` removes the `*_dir` directories.
 
 Note the blind spot this creates: the generated projects only exercise the
 example code that ships in `src/`. A lint rule tightened for plugin source code,
@@ -156,6 +159,12 @@ Historically, major versions were reserved for toolchain-level changes — a
 Python version switch, replacing the linter, a `cmem-plugin-base` major bump.
 Dependency bumps and lint configuration changes are minor releases.
 
+Changes to *delivery scope* — which files a generated project receives at all —
+are major as well, and 9.0.0 is the precedent: gating the pipelines on
+`github_page` and `pypi` removed working workflows from projects whose answers
+were merely stale. The test is whether `copier update` can take something away,
+not how large the diff is.
+
 ## Ruff configuration
 
 Lint rules for generated projects live in `src/pyproject.toml.jinja` under
@@ -176,7 +185,7 @@ have each been considered and left as they are.
 
 ### The GitLab `build` job does not need `ruff`
 
-In `src/.gitlab-ci.yml`, `build` declares
+In the generated `.gitlab-ci.yml`, `build` declares
 `needs: [mypy, pytest, trivy, deptry]` while `pypi` declares
 `needs: [ruff, build]`. A lint failure therefore does not stop artifacts from
 being built, but does stop them from being published.

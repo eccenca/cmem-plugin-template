@@ -44,9 +44,9 @@ You can use it to bootstrap the following types of project:
   - [mypy](http://mypy-lang.org/) as type checker,
   - [deptry](https://deptry.com/) as dependency issue checker, and
   - [trivy](https://trivy.dev/) as dependency vulnerability scanner.
-- Build plans for
-  - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
-  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src) (only when a github URL is given), and
+- A build plan for the host you name, never both
+  - [gitlab](https://github.com/eccenca/cmem-plugin-template/tree/main/src) when `github_page` is left blank,
+  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src) when it is given, and
   - locally with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW).
   - Including
     - badge generation,
@@ -185,14 +185,14 @@ $ task check:pytest
 
 ### CI Build Plan
 
-The gitlab workflow as well as the github action pipelines need the same environment variables as secrets:
+Whichever pipeline your project received needs the same environment variables as secrets:
 
 - For github, go to Settings > Secret > Actions > [New Repository Secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - For gitlab, go to Settings > CI/CD > Variables (Expand) > [Add Variable (protected, masked, all environments)](https://docs.gitlab.com/ee/ci/variables/)
 
 An example github pipeline can be seen [at this github project](https://github.com/eccenca/cmem-plugin-yaml/actions).
 
-In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret can be set in order to use the `publish` task/workflow.
+In addition to the eccenca Corporate Memory credential secrets, a `PYPI_TOKEN` secret is needed by the publish path, which is generated only when the `pypi` question is answered yes.
 
 ### Editor / IDE Support
 
