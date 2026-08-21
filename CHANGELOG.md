@@ -7,7 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- plugin projects ship a `plugin-documentation` skill in `.claude/skills/`
+  - it describes how to write the user-facing text of a task, its parameters and its actions
+  - generic projects are unaffected and receive no `.claude` directory
 
 
 ## [8.8.0] 2026-08-21

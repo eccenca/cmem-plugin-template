@@ -29,3 +29,47 @@ resulting artifacts.
 
 This rewrites the metadata block of every generated project, so it deserves to
 be the headline of its own release rather than a line item in a dependency bump.
+
+## Enforce the documentation conventions in generated plugin projects
+
+The conventions for user-facing plugin text - what belongs in the task
+documentation versus a parameter description, how choice parameters explain
+their values, one vocabulary per package - now ship with plugin projects as the
+`plugin-documentation` skill. A skill only reaches authors who drive an agent,
+and it can only advise. The mechanically checkable part of the ruleset should
+ship as a test instead, so it holds in every generated project regardless of how
+the code was written.
+
+`cmem_plugin_base.dataintegration.discovery.discover_plugins("{{ package_dir }}")`
+returns a descriptor per plugin carrying `label`, `description`, `documentation`,
+`parameters` and `actions`, and each parameter descriptor carries `name`,
+`label`, `description`, `param_type`, `default_value`, `advanced` and `visible`.
+That is enough to assert the whole mechanical half without a running CMEM, so
+unlike `test_example.py` the new test needs no `needs_cmem` marker and costs
+nothing in CI.
+
+Worth asserting: every plugin has a non-empty `description` and a `documentation`
+block longer than a couple of lines; every parameter and every action has a
+non-empty description; the label of a `ChoiceParameterType` value is not merely
+its key restated, which is what catches a dropdown that explains nothing; and no
+user-facing string contains a term from a per-project list of retired words.
+That last one has to read an optional list supplied by the project rather than
+hardcode anything, since the vocabulary is domain-specific and the template
+cannot know it.
+
+The test belongs next to the existing example, as
+`src/tests/{% if project_type == 'plugin' %}test_plugin_documentation.py{% endif %}.jinja`.
+The skill it complements is delivered from
+`src/{% if project_type == 'plugin' %}.claude{% endif %}/skills/` - note that the
+existing `.claude/skills/release` sits outside `src` and is therefore not
+delivered to generated projects.
+
+The real cost is not the test. It is that `example_workflow.DollyPlugin` and
+`example_transform.Lifetime` have to satisfy it, otherwise every freshly
+generated project starts with a red suite and the author's first act is to
+delete the test. Writing the example plugins up to the standard is the larger
+half of this work, and it doubles as the worked example the skill can point at.
+
+**Verification:** render `tests/plugin.yml` and `tests/plugin-github-pypi.yml`
+and run `task check` in both, confirming the suite is green before any of the
+example files are removed.

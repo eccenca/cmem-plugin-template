@@ -24,10 +24,12 @@ You can use it to bootstrap the following types of project:
 * [Setup](#setup)
     * [Local Requirements](#local-requirements)
     * [Integration Tests](#integration-tests)
-    * [Plugins only: Corporate Memory Environment](#plugins-only-corporate-memory-environment)
     * [CI Build Plan](#ci-build-plan)
     * [Editor / IDE Support](#editor--ide-support)
         * [PyCharm](#pycharm)
+* [Plugins Only](#plugins-only)
+    * [Corporate Memory Environment](#corporate-memory-environment)
+    * [Agent Support](#agent-support)
 
 <!-- vim-markdown-toc -->
 </details>
@@ -48,6 +50,7 @@ You can use it to bootstrap the following types of project:
     - badge generation,
     - JUnit XML file and
     - coverage stat generation.
+- Plugin projects only: a [Claude Code](https://claude.com/claude-code) skill which describes the [task documentation conventions](#agent-support).
 
 ## Usage
 
@@ -169,34 +172,13 @@ pipx install poetry
 This template uses the [pytest](https://pytest.org) testing framework.
 Testing your plugin is crucial and should be done locally as well as  integrated with eccenca Corporate Memory.
 
-In order to setup access to a Corporate Memory deployment, you need to provide correct environment variables.
+In order to setup access to a Corporate Memory deployment, you need to provide correct environment variables (see [Corporate Memory Environment](#corporate-memory-environment)).
 Without these variables, only standalone tests can be executed (see `1 skipped`):
 
 ``` shell-session
 $ task check:pytest
 ...
 ... ===== 3 passed, 1 skipped in 0.09s =====
-```
-
-### Plugins only: Corporate Memory Environment
-
-By providing the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/latest/automate/cmemc-command-line-interface/configuration/environment-based-configuration/) in an `.env` file or directly in your environment, your plugin can be tested in an integrated way:
-
-``` shell-session
-# Environment as direct variables:
-$ export CMEM_BASE_URI="https://cmem.example.org"
-$ export OAUTH_CLIENT_ID="cmem-service-account"
-$ export OAUTH_CLIENT_SECRET="..."
-$ export OAUTH_GRANT_TYPE="client_credentials"
-```
-
-``` shell-session
-# Environment as .env files
-$ cat .env
-CMEM_BASE_URI="https://cmem.example.org"
-OAUTH_CLIENT_ID="cmem-service-account"
-OAUTH_CLIENT_SECRET="..."
-OAUTH_GRANT_TYPE="client_credentials"
 ```
 
 ### CI Build Plan
@@ -218,6 +200,39 @@ In order to have the best PyCharm experience, when starting a project with this 
 
 - [Ruff](https://plugins.jetbrains.com/plugin/20574-ruff) will provide the linting hints which will be raised by the pipeline anyway.
 - [Taskfile](https://plugins.jetbrains.com/plugin/17058-taskfile) will allow for starting tasks.
+
+## Plugins Only
+
+The following applies to plugin projects only. Generic Python projects are created without these files and settings.
+
+### Corporate Memory Environment
+
+By providing the correct [cmemc](https://eccenca.com/go/cmemc) [environment variables](https://documentation.eccenca.com/latest/automate/cmemc-command-line-interface/configuration/environment-based-configuration/) in an `.env` file or directly in your environment, your plugin can be tested in an integrated way:
+
+``` shell-session
+# Environment as direct variables:
+$ export CMEM_BASE_URI="https://cmem.example.org"
+$ export OAUTH_CLIENT_ID="cmem-service-account"
+$ export OAUTH_CLIENT_SECRET="..."
+$ export OAUTH_GRANT_TYPE="client_credentials"
+```
+
+``` shell-session
+# Environment as .env files
+$ cat .env
+CMEM_BASE_URI="https://cmem.example.org"
+OAUTH_CLIENT_ID="cmem-service-account"
+OAUTH_CLIENT_SECRET="..."
+OAUTH_GRANT_TYPE="client_credentials"
+```
+
+### Agent Support
+
+Plugin projects ship a [Claude Code](https://claude.com/claude-code) skill at `.claude/skills/plugin-documentation/SKILL.md`.
+
+When an agent adds or edits a task, the skill tells it how to write the user-facing text: what belongs in the task documentation, what belongs in a parameter description, and how choice parameters explain their values.
+
+The skill is maintained in the template and updated with `copier update`.
 
 [version-shield]: https://img.shields.io/github/v/tag/eccenca/cmem-plugin-template?label=version&sort=semver
 [changelog]: https://github.com/eccenca/cmem-plugin-template/blob/main/CHANGELOG.md
