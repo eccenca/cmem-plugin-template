@@ -27,7 +27,7 @@ jobs:
 
       # Every generated test case runs trivy, so the vulnerability database is
       # worth caching. This step also exists to keep actions/cache in use here:
-      # it is the only action in src/.github/workflows that this workflow would
+      # it is the only action in the rendered workflows that this workflow would
       # otherwise not run, and an unused action is one whose version bumps
       # nothing in this repository ever proves green.
       - name: Cache Trivy DB

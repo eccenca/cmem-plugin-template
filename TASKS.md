@@ -3,6 +3,34 @@
 
 Backlog of known work items that are not tied to a specific release.
 
+## The template knows about github, but only assumes gitlab
+
+`github_page` now decides whether the `.github` directory and the `release`
+skill are generated, which makes the github side of the template explicit. The
+gitlab side is not: `.gitlab-ci.yml` is delivered to *every* generated project,
+including ones that are demonstrably on github, because there is no question
+that asks where the project is hosted.
+
+Two consequences follow, and neither is urgent.
+
+A gitlab hosted project now receives no release guidance at all. Its release
+procedure genuinely differs — the `pypi` job is `when: manual` with no tag
+trigger, so publishing is a button in the pipeline view rather than a
+consequence of pushing a tag — and the shipped `release` skill would be wrong
+if it were delivered there. A `gitlab_page` question, or a `hosting` choice
+question, would let a gitlab variant of the skill be written and would let
+`.gitlab-ci.yml` be gated the same way `.github` now is.
+
+Whether that is worth a new question is the actual decision. Every question is
+asked again on every `copier update` of every project, and the current default
+of shipping both pipelines has the merit that a project moving between hosts
+keeps working. Adding a host question would also need a migration story for the
+projects that already answered `github_page` — they are on github, but nothing
+records that gitlab is unused.
+
+**Verification:** whatever is chosen, render all four test cases and confirm
+that a project gets exactly the pipeline files it can run.
+
 ## Migrate the generated `pyproject.toml` to PEP 621 `[project]` metadata
 
 `src/pyproject.toml.jinja` still declares `name`, `version`, `description`,

@@ -95,7 +95,13 @@ github_page:
 
       > github_page: This URL (e.g. https://github.com/user/repo)
       > will be used as a base for icons and the homepage link in
-      > the project toml. Leave blank if your project is not on github.
+      > the project toml.
+      >
+      > It also decides whether GitHub files are generated at all:
+      > leaving it blank creates no .github directory, so there is
+      > no check workflow, no publish workflow and no release skill.
+      >
+      > Leave blank only if your project is not on github.
       >
 
 pypi:

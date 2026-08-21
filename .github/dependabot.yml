@@ -16,8 +16,13 @@ updates:
   # the path is the workflow directory itself. The github-actions ecosystem
   # does NOT append '.github/workflows' to a configured directory - pointing
   # this at '/src' finds nothing and fails silently.
+  #
+  # the directory name is a jinja expression, because the workflows are only
+  # generated when github_page is answered. The literal name below is what is
+  # on disk; it can only be verified after pushing, since the dependabot dry
+  # run resolves against the remote branch.
   - package-ecosystem: "github-actions"
-    directory: "/src/.github/workflows"
+    directory: "/src/{% if github_page %}.github{% endif %}/workflows"
     target-branch: "develop"
     schedule:
       interval: "weekly"

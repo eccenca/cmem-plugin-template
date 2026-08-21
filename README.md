@@ -46,7 +46,7 @@ You can use it to bootstrap the following types of project:
   - [trivy](https://trivy.dev/) as dependency vulnerability scanner.
 - Build plans for
   - [gitlab](https://github.com/eccenca/cmem-plugin-template/blob/main/src/.gitlab-ci.yml),
-  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src/.github/workflows), and
+  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src) (only when a github URL is given), and
   - locally with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW).
   - Including
     - badge generation,
@@ -209,7 +209,7 @@ Generated projects ship a `.claude/` directory for [Claude Code](https://claude.
 
 - `.claude/rules/` holds the instructions an agent reads in every session: which files belong to the template and are lost on the next update, that lint findings are fixed rather than silenced, and that user-visible changes need a `CHANGELOG.md` entry.
 - `.claude/settings.json` allows the everyday commands (`task check`, `task format:fix`, `task build`, `pytest`, `ruff`, `mypy`) without a prompt, and formats edited files with `task format:fix`. `task install` and `task uninstall`, which change what is installed in a Corporate Memory deployment, are deliberately not allowed, so an agent has to ask for those. Note that the allowed `task check` runs the integration tests, which create and delete their own assets in the deployment configured in `.env`.
-- `.claude/skills/` holds the procedures an agent loads when it needs them: `release` and `copier-update` in every project.
+- `.claude/skills/` holds the procedures an agent loads when it needs them: `copier-update` in every project, and `release` in projects with a github URL, since the release procedure it describes is the tag-triggered GitHub one.
 
 The template never writes a `CLAUDE.md`. That file belongs to your project - put your own instructions there, and they are read alongside the rules above. This also means an existing `CLAUDE.md` is never touched when you update the template.
 

@@ -56,7 +56,7 @@ and report the specific reason; do not attempt to fix it silently.
    git diff --name-only "$(git describe --tags --abbrev=0)"..develop -- src/
    ```
 
-   This matters most for dependabot's `/src/.github/workflows` entry, whose
+   This matters most for dependabot's rendered-workflows entry, whose
    merged pull requests bump actions in every generated project but write no
    changelog line of their own. Batch them into one entry in the established
    form — `github: update actions in generated workflows` with a nested bullet

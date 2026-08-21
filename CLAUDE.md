@@ -14,7 +14,8 @@ itself and is never seen by template users.
 
 This split has bitten before. Concrete example: the GitHub Action versions in
 `.github/workflows/check.yml` (root, the template's own CI) and in
-`src/.github/workflows/check.yml` (rendered into user projects) are entirely
+`src/{% if github_page %}.github{% endif %}/workflows/check.yml` (rendered
+into user projects) are entirely
 independent, and they drift apart silently. Before concluding that a change
 affects template users, check which side of the split it is on.
 
@@ -95,7 +96,9 @@ The corollary is that pinned versions inside `src/` must be bumped deliberately
 as part of a release, by the *template's* automation rather than by the
 generated project. `.github/dependabot.yml` therefore carries two
 `github-actions` entries: one for `/` (the template's own CI) and one for
-`/src/.github/workflows` (the workflows rendered into user projects).
+`/src/{% if github_page %}.github{% endif %}/workflows` (the workflows rendered
+into user projects — the directory name is a Jinja expression because they are
+only generated when `github_page` is answered).
 
 Two things about that second entry are easy to get wrong.
 
@@ -106,6 +109,8 @@ therefore matches nothing and fails **silently**: dependabot reports zero
 dependencies rather than an error. This was verified with a local
 `dependabot update github_actions eccenca/cmem-plugin-template -d <path> -b develop`
 dry run, which is the cheapest way to re-check it if the behaviour ever changes.
+Note that the dry run resolves the path against the **remote** branch, so a
+change to that path can only be verified after it has been pushed.
 
 **A green check on such a pull request is not evidence.** `task check` renders
 the test cases and runs each generated project's *Taskfile*; it never executes
