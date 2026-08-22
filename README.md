@@ -222,9 +222,10 @@ Note that the allowed commands and the formatting hook only take effect once the
 Plugin projects additionally receive:
 
 - `plugin-documentation` - how to write the text a user reads in Corporate Memory: what belongs in the task documentation as opposed to a parameter description, how choice parameters explain their values, and how tasks refer to each other.
+- `plugin-implementation` - the conventions the eccenca plugin fleet converged on for the code itself: reaching a deployment with [`cmem-client`](https://pypi.org/project/cmem-client/), logging through `self.log`, referencing the icon, declaring ports, honouring workflow cancellation, reporting progress while the task runs, typing secrets as `Password`, and writing custom parameter types with autocompletion.
 - `plugin-testing` - what can be tested standalone, when a test needs a deployment and how to mark it, and how test assets are created and cleaned up.
 
-They also receive a rules file covering `cmem-plugin-base`, the `needs_cmem` marker and the fact that `task install` and `task uninstall` change a running deployment.
+They also receive a rules file covering `cmem-plugin-base`, that `cmem.cmempy.*` is deprecated in favour of `cmem-client`, the `needs_cmem` marker, and the fact that `task install` and `task uninstall` change a running deployment.
 
 ### Corporate Memory MCP Servers
 
