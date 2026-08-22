@@ -1,6 +1,6 @@
 ---
 name: plugin-implementation
-description: Write or change the code of a DataIntegration task - reaching a Corporate Memory deployment, logging, the plugin icon, declaring ports, honouring cancellation and reporting progress. Use whenever a WorkflowPlugin or TransformPlugin body, its @Plugin block or its ports are added or edited.
+description: Write or change the code of a DataIntegration task - reaching a Corporate Memory deployment, logging, the plugin icon, declaring ports, honouring cancellation, reporting progress, and writing custom parameter types with autocompletion. Use whenever a WorkflowPlugin or TransformPlugin body, its @Plugin block, its ports or its parameter types are added or edited.
 ---
 
 # Implementing a DataIntegration task
@@ -133,3 +133,93 @@ PluginParameter(
 The value arrives as a `Password`; call `.decrypt()` only where it is used.
 Typing it as `str` puts the secret in plain text in the task configuration and
 in the project export.
+
+## Custom parameter types
+
+Reach for a shipped type first - `ChoiceParameterType`, `GraphParameterType`,
+`DatasetParameterType`, `PasswordParameterType`, and the `code`, `multiline`
+and `resource` types. Write your own only when the value is a thing the user
+should pick from a list that only your plugin can produce: a folder on a
+remote host, a collection in a store, a model offered by an API.
+
+Subclass `StringParameterType`, not `ParameterType` directly - the value is
+carried as a string and `StringParameterType` already handles that:
+
+```python
+from typing import Any, ClassVar
+
+from cmem_plugin_base.dataintegration.context import PluginContext
+from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
+
+
+class CollectionParameterType(StringParameterType):
+    """Autocomplete the collections available on the configured server."""
+
+    allow_only_autocompleted_values: bool = True
+
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
+        """Return the collections matching all query terms."""
+        results = [
+            Autocompletion(value=name, label=f"{title} ({name})")
+            for name, title in self._fetch(context)
+        ]
+        if not query_terms:
+            return results
+        return [
+            r
+            for r in results
+            if all(term.lower() in (r.label or r.value).lower() for term in query_terms)
+        ]
+```
+
+- An **empty `query_terms` must return everything**. That is the list the user
+  sees before typing, and returning nothing looks like a broken parameter.
+- Match against every term, not any of them - the UI splits what the user typed
+  on whitespace.
+- Return a **stable order**. Sort at the end; do not deduplicate with `set()`
+  after sorting, because that throws the ordering away again.
+
+### The flags
+
+- `allow_only_autocompleted_values = True` makes the parameter a closed
+  vocabulary: the UI refuses values that did not come from your list. Set it
+  when a value the server does not know is always an error.
+- `autocomplete_value_with_labels = True` tells the UI the labels matter and
+  must be shown instead of the raw values.
+- Implement `label()` when a stored value is not human-readable on its own. A
+  saved task shows the raw value until `label()` resolves it, so a task
+  configured last week displays an opaque id without it.
+
+### Depending on other parameters
+
+An autocompletion that needs a hostname, or credentials, declares the
+parameters it reads:
+
+```python
+autocompletion_depends_on_parameters: ClassVar[list[str]] = [
+    "hostname",
+    "port",
+    "password",
+]
+```
+
+Their values arrive in `depend_on_parameter_values` **positionally, in exactly
+this order** - `depend_on_parameter_values[2]` is `password` only because it is
+third in the list. Reordering the list silently repoints every index, so read
+them once at the top of `autocomplete()` and unpack by name:
+
+```python
+hostname, port, password = depend_on_parameter_values
+```
+
+A dependency that is itself a secret arrives as a `Password`, not a string, and
+needs `password.decrypt()` before use.
+
+Until every declared parameter has a value, no autocompletion happens at all -
+so keep the list to what you genuinely need. Each extra entry is one more field
+the user must fill before the list appears.
