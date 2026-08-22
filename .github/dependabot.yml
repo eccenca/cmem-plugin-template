@@ -17,12 +17,13 @@ updates:
   # does NOT append '.github/workflows' to a configured directory - pointing
   # this at '/src' finds nothing and fails silently.
   #
-  # the directory name is a jinja expression, because the workflows are only
-  # generated when github_page is answered. The literal name below is what is
-  # on disk; it can only be verified after pushing, since the dependabot dry
-  # run resolves against the remote branch.
+  # it must also be a literal path: dependabot rejects a 'directory' containing
+  # glob characters, and jinja braces count. Which of these files a generated
+  # project receives is therefore decided by _exclude in copier.yml, not by a
+  # conditional directory name. Both files keep a plain '.yml' name because
+  # dependabot only scans those.
   - package-ecosystem: "github-actions"
-    directory: "/src/{% if github_page %}.github{% endif %}/workflows"
+    directory: "/src/.github/workflows"
     target-branch: "develop"
     schedule:
       interval: "weekly"

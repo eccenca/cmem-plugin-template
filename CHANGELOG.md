@@ -7,7 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the template's own dependabot configuration, which 9.0.0 broke
+  - the jinja directory name it pointed at reads as a glob to dependabot, which rejected the whole file - so no dependency updates were opened at all, not even for the template's own CI
+  - the condition moved to `_exclude` in `copier.yml`, so the generated workflows keep a literal path
+  - **nothing changes for generated projects**: updating to 9.0.1 renders exactly the same files as 9.0.0
 
 
 ## [9.0.0] 2026-08-22

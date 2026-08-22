@@ -41,8 +41,14 @@ src/tests/{% if project_type == 'plugin' %}test_example.py{% endif %}.jinja
 src/{{ package_dir }}/{% if project_type == 'plugin' %}example_workflow.py{% endif %}.jinja
 ```
 
-A file whose name renders empty is simply not created. Quote these paths in
-shell commands — the braces and spaces will otherwise be mangled.
+A file whose name renders empty is simply not created, and a *directory* whose
+name renders empty takes its whole subtree with it. Quote these paths in shell
+commands — the braces and spaces will otherwise be mangled.
+
+`src/.github/` is the one deliberate exception. Its delivery is gated by
+`_exclude` in `copier.yml` rather than by its name, because dependabot has to
+address `src/.github/workflows` by a literal path and rejects braces in a
+`directory:` as a glob. See the dependency automation section below.
 
 The agent support directory uses the same mechanism for a different reason. It
 is named `src/{{ '.claude' }}/`, an expression that always renders to
@@ -99,11 +105,9 @@ The corollary is that pinned versions inside `src/` must be bumped deliberately
 as part of a release, by the *template's* automation rather than by the
 generated project. `.github/dependabot.yml` therefore carries two
 `github-actions` entries: one for `/` (the template's own CI) and one for
-`/src/{% if github_page %}.github{% endif %}/workflows` (the workflows rendered
-into user projects — the directory name is a Jinja expression because they are
-only generated when `github_page` is answered).
+`/src/.github/workflows` (the workflows rendered into user projects).
 
-Two things about that second entry are easy to get wrong.
+Three things about that second entry are easy to get wrong.
 
 **The path is the workflow directory itself.** The `github-actions` ecosystem
 does *not* append `.github/workflows` to a configured directory — it treats the
@@ -114,6 +118,28 @@ dependencies rather than an error. This was verified with a local
 dry run, which is the cheapest way to re-check it if the behaviour ever changes.
 Note that the dry run resolves the path against the **remote** branch, so a
 change to that path can only be verified after it has been pushed.
+
+**The path must be a literal, and both workflows must end in `.yml`.**
+Dependabot rejects a `directory:` containing glob characters, and Jinja braces
+count — 9.0.0 pointed the entry at
+`/src/{% if github_page %}.github{% endif %}/workflows` and dependabot answered
+`The property '#/updates/1/directory' must not include a glob pattern`, which
+invalidates the **whole file**: even the `/` entry stopped producing updates.
+That is why `src/.github/` and `src/.github/workflows/publish.yml` are literal
+paths whose delivery is gated by `_exclude` in `copier.yml`, instead of by the
+conditional directory and file names used everywhere else in `src/`. The
+`_exclude` entries are Jinja and are evaluated per answer, so a generated
+project receives exactly what the conditional names delivered before — verified
+across all six test cases, byte for byte, against the 9.0.0 render.
+
+Two details make that safe to touch. Setting `_exclude` normally replaces
+copier's built-in defaults, but this template sets `_subdirectory`, and copier
+only applies `DEFAULT_EXCLUDE` when the subdirectory is the repository root
+(`_template.py`) — so the defaults were never active here and nothing is lost by
+overriding them. And `publish.yml` needs its literal name for a second reason:
+the `github-actions` ecosystem only scans `*.yml`/`*.yaml`, so under its old
+name `{% if pypi %}publish.yml{% endif %}` it was never scanned at all, even
+before the path broke.
 
 **A green check on such a pull request is not evidence.** `task check` renders
 the test cases and runs each generated project's *Taskfile*; it never executes

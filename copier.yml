@@ -126,3 +126,12 @@ pypi:
 _min_copier_version: "9.0.0"
 _subdirectory: src
 
+# Delivery of the github workflows is gated here rather than by a jinja
+# directory name, because dependabot addresses .github/workflows by path and
+# rejects a `directory:` containing braces as a glob. See CLAUDE.md.
+#
+# Setting _exclude replaces copier's defaults - but those are already inactive,
+# since copier only applies them when _subdirectory is unset.
+_exclude:
+    - "{% if not github_page %}.github{% endif %}"
+    - "{% if not pypi %}.github/workflows/publish.yml{% endif %}"
