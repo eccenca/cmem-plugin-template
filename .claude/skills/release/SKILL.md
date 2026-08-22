@@ -139,12 +139,14 @@ anything else is staged, stop:
 
 ```bash
 git add CHANGELOG.md
-git commit -m "release X.Y.Z"
+git commit -S -m "release X.Y.Z"
 ```
 
-Commits are not signed in this repository (`commit.gpgsign` is unset); only tags
-are. Note the subject is `release X.Y.Z`, not `change log` — the latter is used
-for ordinary changelog edits and does not identify a release.
+Sign the commit. `commit.gpgsign` is unset in this repository, so `-S` has to be
+passed explicitly — but every commit here is signed, and 9.0.0's two commits are
+the only unsigned ones, made when this step wrongly said signing did not apply.
+Note the subject is `release X.Y.Z`, not `change log` — the latter is used for
+ordinary changelog edits and does not identify a release.
 
 ## 4. Create the signed tag
 
@@ -172,7 +174,7 @@ TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security se
 
 ```bash
 git add CHANGELOG.md
-git commit -m "open next development cycle"
+git commit -S -m "open next development cycle"
 ```
 
 This commit is made **before** pushing on purpose — see step 6. The tag already
