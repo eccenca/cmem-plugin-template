@@ -324,7 +324,8 @@ cd plugin_dir && claude -p "Which files in this repository belong to the templat
 
 The answer has to come from `.claude/rules/`. Check the generic case too — it
 must contain `.claude/settings.json`, `.claude/rules/copier-template.md` and
-exactly two skills, with no plugin material.
+only the `copier-update` skill, plus `release` when `github_page` is answered,
+with no plugin material.
 
 ### `co` in `src/.gitignore` is CMEM orchestration, not a typo
 
