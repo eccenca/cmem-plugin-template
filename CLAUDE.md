@@ -338,6 +338,27 @@ kept.
 plan. The line now carries a comment saying so. Do not re-derive it as a typo
 from its appearance.
 
+### The mypy badge is mypy's own, not a shields.io imitation
+
+In the badge rows of `README.md`, `src/README.md.jinja` and
+`src/README-public.md.jinja`, `mypy-shield` points at
+`https://www.mypy-lang.org/static/mypy_badge.svg`. It is the only badge not
+served by shields.io, so it renders flat — no gradient, no logo — while
+`poetry`, `ruff` and `copier` beside it have both. This reads as an oversight
+and is not one.
+
+That SVG is the badge mypy itself publishes for exactly this use. Replacing it
+with a hand-rolled `img.shields.io/badge/mypy-checked-...` would trade an
+upstream-maintained asset for an imitation this repository would then own, and
+because the same link pair ships in both `src/` READMEs, every generated project
+would see a badge diff on its next `copier update` — for a purely cosmetic
+gain. Leave it alone.
+
+The Corporate Memory badge next to it is a different case and *was* changed: it
+used to read its endpoint from `dev.documentation.eccenca.com` and now reads it
+from `https://documentation.eccenca.com/latest/badge.json`. Both serve identical
+JSON, so nothing about the rendered badge moved.
+
 ### The copier requirement is a support policy, not a technical floor
 
 `copier.yml` sets `_min_copier_version: "9.0.0"` and the README requires

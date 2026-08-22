@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - both questions used to be documented as badge and link decoration, so a stale answer is likely: their help texts now say what they generate
   - if you are built on gitlab but keep a github page, clear `github_page` - a mirror is not a build host, and the badges are not worth the pipeline
   - the `release` skill follows the same answers: it is delivered for github hosted projects only, and describes the tag triggered publish only when `pypi` is set
+- the Corporate Memory badge is now served from the production documentation instead of `dev.documentation.eccenca.com`
+  - the badge itself is unchanged - the development host served the same JSON, but is not a deployment anybody promises to keep up
 
 
 ## [8.8.0] 2026-08-21

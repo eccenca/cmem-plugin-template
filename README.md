@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD012 MD013 MD024 MD033 -->
 # cmem-plugin-template
 
-[![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python-shield]
+[![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python][python-shield]
 [![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier]
 [![eccenca Corporate Memory][cmem-shield]][cmem]
 
@@ -41,25 +41,25 @@ You can use it to bootstrap the following types of project:
 - [Python / poetry](https://python-poetry.org/) project with
   - [pytest](https://www.pytest.org/) (incl. [memray](https://bloomberg.github.io/memray/) + [pytest-dotenv](https://github.com/quiqua/pytest-dotenv) + [code coverage](https://github.com/pytest-dev/pytest-cov)) as the testing framework,
   - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
-  - [mypy](http://mypy-lang.org/) as type checker,
+  - [mypy](https://mypy-lang.org/) as type checker,
   - [deptry](https://deptry.com/) as dependency issue checker, and
   - [trivy](https://trivy.dev/) as dependency vulnerability scanner.
 - A build plan for the host you name, never both
-  - [gitlab](https://github.com/eccenca/cmem-plugin-template/tree/main/src) when `github_page` is left blank,
-  - [github](https://github.com/eccenca/cmem-plugin-template/tree/main/src) when it is given, and
+  - gitlab when `github_page` is left blank,
+  - github when it is given, and
   - locally with [task](https://taskfile.dev/) (tested for Linux, MacOS and Windows/MinGW).
   - Including
     - badge generation,
     - JUnit XML file and
     - coverage stat generation.
-- Plugin projects only: a [Claude Code](https://claude.com/claude-code) skill which describes the [task documentation conventions](#agent-support).
+- Agent support for [Claude Code](https://claude.com/claude-code): [rules, permissions and skills](#agent-support) in every project, with extra skills for plugin projects.
 
 ## Usage
 
 ### Project Initialization
 
 The following command will create a new project directory with the latest released template.
-This produces a plugin which is compatible the [latest release of eccenca Corporate Memory](https://documentation.eccenca.com/latest/).
+This produces a plugin which is compatible with the [latest release of eccenca Corporate Memory](https://documentation.eccenca.com/latest/).
 
 Note: Select 'Generic Python Project' as an answer to the initial question to skip creation of plugin specific code.
 
@@ -68,7 +68,7 @@ $ copier copy gh:eccenca/cmem-plugin-template cmem-plugin-my
 ```
 
 The following command will use the latest develop version of the template:
-This produces a plugin which is compatible the latest development snapshot of eccenca Corporate Memory.
+This produces a plugin which is compatible with the latest development snapshot of eccenca Corporate Memory.
 
 ```shell-session
 $ copier copy -r develop gh:eccenca/cmem-plugin-template cmem-plugin-my
@@ -172,15 +172,15 @@ pipx install poetry
 ### Integration Tests
 
 This template uses the [pytest](https://pytest.org) testing framework.
-Testing your plugin is crucial and should be done locally as well as  integrated with eccenca Corporate Memory.
+Testing your plugin is crucial and should be done locally as well as integrated with eccenca Corporate Memory.
 
 In order to setup access to a Corporate Memory deployment, you need to provide correct environment variables (see [Corporate Memory Environment](#corporate-memory-environment)).
-Without these variables, only standalone tests can be executed (see `1 skipped`):
+Without these variables, only standalone tests can be executed (see `2 skipped`):
 
 ``` shell-session
 $ task check:pytest
 ...
-... ===== 3 passed, 1 skipped in 0.09s =====
+... ===== 2 passed, 2 skipped in 0.09s =====
 ```
 
 ### CI Build Plan
@@ -269,7 +269,7 @@ OAUTH_GRANT_TYPE="client_credentials"
 [copier]: https://copier.readthedocs.io/
 [copier-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/copier-org/copier/master/img/badge/badge-grayscale-inverted-border-purple.json
 [cmem]: https://documentation.eccenca.com
-[cmem-shield]: https://img.shields.io/endpoint?url=https://dev.documentation.eccenca.com/badge.json
+[cmem-shield]: https://img.shields.io/endpoint?url=https://documentation.eccenca.com/latest/badge.json
 [python-shield]: https://img.shields.io/badge/python-v3.13-blue
 [mypy-link]: https://mypy-lang.org/
 [mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
