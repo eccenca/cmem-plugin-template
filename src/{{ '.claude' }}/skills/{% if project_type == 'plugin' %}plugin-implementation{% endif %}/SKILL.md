@@ -1,0 +1,135 @@
+---
+name: plugin-implementation
+description: Write or change the code of a DataIntegration task - reaching a Corporate Memory deployment, logging, the plugin icon, declaring ports, honouring cancellation and reporting progress. Use whenever a WorkflowPlugin or TransformPlugin body, its @Plugin block or its ports are added or edited.
+---
+
+# Implementing a DataIntegration task
+
+These are the conventions the eccenca plugin fleet converged on. They are not
+style preferences - each one exists because the obvious alternative behaves
+worse inside a running workflow.
+
+## Reaching a Corporate Memory deployment
+
+Use [`cmem-client`](https://pypi.org/project/cmem-client/), declared as
+`cmem-client = "^1.0.0"`. Build it from the context you were handed rather than
+from configuration:
+
+```python
+from cmem_client.client import Client
+
+def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
+    client = Client.from_context(context=context)
+```
+
+`Client.from_context()` carries the executing user's identity. In tests, where
+there is no execution context, use `Client.from_env()` instead.
+
+Sub-APIs live under the same package, for example
+`from cmem_client.repositories.graphs import ImportConflictPolicy`.
+
+**`cmempy` is deprecated.** Do not add imports from `cmem.cmempy.*`, and do not
+use `setup_cmempy_user_access()`. Plenty of existing plugins still call it -
+that is legacy, not a pattern to copy. `cmem-plugin-base` continues to depend
+on `cmem-cmempy` transitively, which does not make it available for new code.
+
+## Logging
+
+The base class already provides a logger as `self.log`. Use it:
+
+```python
+self.log.info("Fetched %s records", count)
+```
+
+Do not create a module logger with `logging.getLogger(__name__)`. `self.log` is
+a `PluginLogger` that routes into DataIntegration under
+`plugins.python.<plugin_id>`, so its output is visible where an operator looks
+for it; a private logger is not.
+
+## The icon
+
+Ship an SVG beside the plugin module and reference it by package:
+
+```python
+@Plugin(
+    label="My task",
+    icon=Icon(file_name="my_task.svg", package=__package__),
+    ...
+)
+```
+
+Always `package=__package__` rather than a hard-coded package name - it keeps
+working when the module moves or the project is renamed.
+
+## Declaring ports
+
+Say what the task accepts and produces; do not leave it implicit.
+
+```python
+input_ports=FixedNumberOfInputs([FixedSchemaPort(schema=MY_SCHEMA)]),
+output_port=FixedSchemaPort(schema=MY_SCHEMA),
+```
+
+Use `UnknownSchemaPort` when the schema is only known at runtime, and
+`FlexibleNumberOfInputs` when the task genuinely accepts any number of inputs.
+A task that consumes nothing declares `FixedNumberOfInputs([])`.
+
+## Honouring cancellation
+
+A long-running task must stop when the user cancels the workflow. Check the
+status inside the entity loop, and guard the access:
+
+```python
+from contextlib import suppress
+
+for entity in inputs[0].entities:
+    with suppress(AttributeError):
+        if context.workflow.status() == "Canceling":
+            break
+    ...
+```
+
+The `suppress(AttributeError)` is required, not defensive noise:
+`context.workflow` is absent in some contexts - notably the test contexts - and
+an unguarded check raises there while working in production.
+
+## Reporting progress
+
+Report through the execution context so the workflow UI can show what is
+happening:
+
+```python
+context.report.update(
+    ExecutionReport(
+        entity_count=processed,
+        operation="write",
+        operation_desc="entities written",
+    )
+)
+```
+
+- `operation` is a short label. Use **`read`**, **`write`**, **`wait`** or
+  **`done`**; do not invent new verbs, and do not use past tense.
+- `operation_desc` describes the counted thing in plural, so it reads correctly
+  after the number: `"entities written"`, `"files uploaded"`.
+- Update **inside** the loop, not only once at the end. A report emitted after
+  the work is finished shows a user nothing while the task is running, which is
+  exactly when they are looking.
+
+## Parameters that carry secrets
+
+A password, token or API key is typed, never a plain string:
+
+```python
+from cmem_plugin_base.dataintegration.parameter.password import Password, PasswordParameterType
+
+PluginParameter(
+    name="api_key",
+    label="API key",
+    param_type=PasswordParameterType(),
+)
+```
+
+The value arrives as a `Password`; call `.decrypt()` only where it is used.
+Typing it as `str` puts the secret in plain text in the task configuration and
+in the project export.

@@ -14,7 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `.claude/settings.json` allows the everyday commands (`task check`, `task format:fix`, `task build`, `pytest`, `ruff`, `mypy`) without a prompt, while `task install` and `task uninstall` still have to be confirmed
   - it also formats edited files by running `task format:fix` after each agent edit - remove the `hooks` block from `.claude/settings.json` if you do not want that
   - a `copier-update` skill describes how to take a new template version, and a `release` skill how to cut a release - the latter only in github hosted projects, see below
-  - plugin projects additionally receive the `plugin-documentation` and `plugin-testing` skills, plus a rules file about `cmem-plugin-base`, the `needs_cmem` marker and the tasks that change a running deployment
+  - plugin projects additionally receive the `plugin-documentation`, `plugin-testing` and `plugin-implementation` skills, plus a rules file about `cmem-plugin-base`, the `needs_cmem` marker and the tasks that change a running deployment
+  - the `plugin-implementation` skill records the conventions the plugin fleet converged on: reaching a deployment with `cmem-client` (and that `cmem.cmempy.*` is deprecated), logging through `self.log`, `Icon(package=__package__)`, explicit port declarations, honouring workflow cancellation, reporting progress from inside the entity loop, and typing secrets as `Password`
 - no `CLAUDE.md` is written into generated projects
   - that file belongs to your project, is never touched by `copier update`, and is read alongside the shipped rules
 

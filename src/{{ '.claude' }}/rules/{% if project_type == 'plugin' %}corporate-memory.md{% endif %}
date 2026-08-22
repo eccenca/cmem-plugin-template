@@ -12,7 +12,18 @@ add or edit one of those blocks.
 
 Tests follow the conventions in the `plugin-testing` skill.
 
+The code itself - reaching a deployment, logging, the icon, port declarations,
+cancellation and progress reporting - follows the `plugin-implementation`
+skill. Use it whenever you write or change a task body, its `@Plugin` block or
+its ports.
+
 ## Talking to a deployment
+
+Plugin code reaches a deployment through
+[`cmem-client`](https://pypi.org/project/cmem-client/), built from the context
+it was handed: `Client.from_context(context=context)`. **`cmem.cmempy.*` is
+deprecated** - existing calls to it are legacy, and no new code should import
+it. The `plugin-implementation` skill has the detail.
 
 Integration tests and the install tasks talk to a real Corporate Memory
 deployment, configured through `cmemc` environment variables in `.env`:
