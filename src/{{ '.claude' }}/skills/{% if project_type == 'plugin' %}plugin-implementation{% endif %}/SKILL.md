@@ -61,6 +61,21 @@ Ship an SVG beside the plugin module and reference it by package:
 Always `package=__package__` rather than a hard-coded package name - it keeps
 working when the module moves or the project is renamed.
 
+What the SVG contains matters as much as where it lives, and neither
+`task check` nor plugin discovery says a word about it - a wrong icon is only
+found by somebody looking at the workspace.
+
+Give the mark no colour of its own: put `fill="currentColor"` (or
+`stroke="currentColor"`) on the root `svg` and name no `fill` on the shapes, so
+it follows the surrounding text colour and stays legible on a light and a dark
+workspace alike. Hard-coding a brand colour produces the one icon in the task
+list that looks broken when the theme changes. Leave the background
+transparent - no full-size `<rect>` - because every other icon in that list is,
+and an opaque tile reads as a coloured block among them.
+
+`cmem-plugin-parameters` and `cmem-plugin-pyshacl` are the icons to copy the
+shape of.
+
 ## Declaring ports
 
 Say what the task accepts and produces; do not leave it implicit.

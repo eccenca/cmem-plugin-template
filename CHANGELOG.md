@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - the ban on `# noqa`, on growing the `ignore` list and on loosening mypy left no permitted resolution for the rare rule that is wrong in context - `S701` demands HTML autoescaping, which corrupts a Jinja template rendering JSON, so obeying it writes the bug it exists to prevent
   - the permitted resolution, once a human has agreed, is a `# noqa` carrying its reason - never a new `ignore` entry, which would silence the rule for unexamined code as well
 
+- plugin: the `plugin-implementation` skill says what a plugin icon has to look like, not only where to put it
+  - no colour of its own (`currentColor` on the root `svg`) so the mark follows the workspace theme, and a transparent background so it does not sit as a coloured tile among icons that are
+  - nothing in `task check` or plugin discovery complains about either, so both were previously found only by looking at the running workspace
+
 ### Fixed
 
 - the session end check no longer reports the `copier update` that installs it
