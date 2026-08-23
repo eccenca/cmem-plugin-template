@@ -72,8 +72,34 @@ tasks:
           Test case directory ${TEST_CASE}.yml does not exist.
           Please use check:generate* tasks to create directories.
     cmds:
+      - task: check:hook:case
+        vars: {TEST_CASE: '{{.TEST_CASE}}'}
       - cd {{.TEST_CASE}}_dir && poetry update
       - cd {{.TEST_CASE}}_dir && task check
+
+  check:hook:case:
+    desc: smoke test the Stop hook a generated project ships
+    summary: |
+      Nothing else here ever executes the shipped agent files, and this one is
+      a blocking Stop hook: if it spoke when it should not, or ignored the
+      loop guard, every session in every generated project would stop being
+      able to end. Both cases are asserted against a freshly generated, clean
+      working tree.
+
+      This cannot tell you the hook fires on the right evidence. That is still
+      a hand run in a rendered case - see CLAUDE.md.
+    internal: true
+    cmds:
+      - >
+        cd {{.TEST_CASE}}_dir &&
+        out=$(printf '%s' '{"hook_event_name":"Stop","session_id":"smoke-{{.TEST_CASE}}-quiet","stop_hook_active":false}'
+        | task template:feedback-check) &&
+        { [ -z "$out" ] || { echo "hook spoke on a clean tree: $out"; exit 1; }; }
+      - >
+        cd {{.TEST_CASE}}_dir &&
+        out=$(printf '%s' '{"hook_event_name":"Stop","session_id":"smoke-{{.TEST_CASE}}-loop","stop_hook_active":true}'
+        | task template:feedback-check) &&
+        { [ -z "$out" ] || { echo "hook ignored stop_hook_active: $out"; exit 1; }; }
 
   check:validate:cases:
     desc: validate all test cases
