@@ -83,19 +83,24 @@ For each accepted issue:
    conventions in `CLAUDE.md` - a `plugin:` prefix when it only applies to
    plugin projects, `github:`/`gitlab:` for the generated pipelines, and nested
    bullets when downstream projects will notice a consequence.
-3. Commit both together, referencing the issue:
+3. Commit both together, closing the issue from the subject:
 
    ```bash
-   git commit -S -m "<what changed> (#<issue>)"
+   git commit -S -m "<what changed>, fixes #<issue>"
    ```
+
+   The closing keyword has to be in the commit subject. A `Fixes #…` line in a
+   pull request body does nothing here, because the pull request targets
+   `develop` and GitHub only creates closing references against the default
+   branch.
 
 Do not tag and do not release. Releasing is `/release`, and it is a separate,
 deliberate step.
 
-Referencing the issue in the commit does not close it. A pull request against
-`develop` creates no closing reference, because `develop` is not the default
-branch - so comment on each issue with the pull request number, and close it by
-hand once that pull request is merged.
+Note when the issue actually closes: the keyword fires when the commit reaches
+`main`, which happens at release time, not when the pull request is merged into
+`develop`. Say so when reporting, so nobody reads the delay as broken
+automation. Anything that needs closing sooner has to be closed by hand.
 
 ## Decline an issue
 
