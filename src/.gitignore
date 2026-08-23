@@ -141,6 +141,23 @@ cython_debug/
 # Claude code specifics
 .claude/settings.local.json
 
+# JetBrains IDEs - most of .idea/ is shared, which is what PyCharm's own
+# generated .idea/.gitignore already assumes: vcs.xml, modules.xml, the project
+# .iml, inspectionProfiles/ and runConfigurations/ describe the project, not the
+# machine. These entries follow github/gitignore's Global/JetBrains.gitignore,
+# plus misc.xml, which names the local Python interpreter, and sonarlint/, whose
+# binary index files neither list covers.
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/misc.xml
+.idea/sonarlint/
+
 # project build plan specific ignores
 # 'co' is CMEM orchestration output, which is sometimes part of a build plan.
 co

@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- `.gitignore` now says what a project does with `.idea/`, following [github/gitignore](https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore)
+  - only the machine specific parts are ignored - `workspace.xml`, `tasks.xml`, `usage.statistics.xml`, `dictionaries`, `shelf`, the data source files - plus `misc.xml`, which names the local Python interpreter, and `.idea/sonarlint/`, whose binary index files neither that list nor PyCharm covers
+  - `vcs.xml`, `modules.xml`, the project `.iml`, `inspectionProfiles/` and `runConfigurations/` stay shared, which is what PyCharm's own generated `.idea/.gitignore` already assumes: they describe the project, not the machine
+  - until 8.8.0 an unanchored `*.xml` pattern hid all of these; removing it left them untracked, so **your first update may show a handful of new untracked `.idea` files** - committing them once is the intended resolution, and it makes the project's inspection profile and run configurations available to everyone who opens it
+  - nothing is untracked by this: ignoring never removes a file git already follows
+
 - plugin: the `plugin-implementation` skill says how a task constructor answers `PLR0913` and `PLR0917`
   - a constructor takes one argument per `PluginParameter`, so its arity follows the task's configuration surface and neither of ruff's escapes is available: keyword-only arguments change the signature DataIntegration instantiates, and folding parameters into an object breaks the one-argument-per-parameter mapping
   - **`PLR0917` became stable in ruff 0.16**, so a task with six or more parameters can start failing `task check` without anything in the task having changed - the projects that already carry `# noqa: PLR0913` there need the code widened to `# noqa: PLR0913, PLR0917`
