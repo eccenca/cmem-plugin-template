@@ -7,7 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the session end check no longer reports a `copier update` through its content signals either
+  - 9.2.0 stopped the update tripping the changed-files signal, but the `# noqa` signal read the same diff and matched the template's own **prose about** `# noqa` - so updating to 9.2.0 was reported by the very text that fixed the previous round of this
+  - diff lines are now attributed to their file, and a suppression inside a template owned file is ignored: it was written by the template, so it can never be this project working around anything. One written by hand while resolving an update conflict still counts, since it lands in this project's own source
+  - the ruff ignore list signal is likewise off during an update, where a new entry arrived with the template rather than being chosen here
+  - conflict markers keep being reported everywhere, including in template owned files, since that is exactly the "the update could not be merged" case worth hearing about
 
 
 ## [9.2.0] 2026-08-23
