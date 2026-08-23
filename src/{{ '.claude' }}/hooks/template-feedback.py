@@ -82,6 +82,26 @@ def git(*args: str) -> str:
     return ANSI.sub("", result.stdout) if result.returncode == 0 else ""
 
 
+def attributed(diff: str) -> list[tuple[str, str]]:
+    """Pair every diff line with the file it belongs to.
+
+    A flat scan of a diff cannot tell a project's own code from a template
+    owned file that merely *writes about* the thing being looked for - the
+    rules file discusses `# noqa`, and matching that prose reports the template
+    to itself.
+    """
+    pairs = []
+    path = ""
+    for line in diff.splitlines():
+        if line.startswith("+++ b/"):
+            # Git pads the path with a tab, and quotes it when it contains
+            # spaces - which template owned paths do not, in a rendered project.
+            path = line[6:].split("\t")[0].strip().strip('"')
+        else:
+            pairs.append((path, line))
+    return pairs
+
+
 def marker_for(session_id: str) -> Path:
     """Return the once-per-session marker file for a session id."""
     safe = re.sub(r"[^A-Za-z0-9_-]", "", session_id)[:64] or "unknown"
@@ -97,9 +117,10 @@ def collect_evidence() -> list[str]:
     diff_lines = diff.splitlines()
 
     # A `copier update` rewrites every template owned path by definition. Do not
-    # report the act of taking a new template version as friction with it - the
-    # signals below stay on, since a `# noqa` written while resolving an update
-    # conflict is still a real finding.
+    # report the act of taking a new template version as friction with it - a
+    # suppression written by hand while resolving an update conflict is still a
+    # real finding, and is caught below because it lands in this project's own
+    # source rather than in a template owned file.
     updating = any(COPIER_UPDATE.match(line) for line in diff_lines)
 
     touched = sorted(
@@ -119,12 +140,27 @@ def collect_evidence() -> list[str]:
     if rejects:
         evidence.append(f"a copier update left rejected hunks behind: {', '.join(rejects)}")
 
-    if any(SILENCER.match(line) for line in diff_lines):
+    # Only in code this project actually authored. A `# noqa` inside a template
+    # owned file was written by the template, so it can never be evidence of
+    # this project working around anything.
+    if any(
+        SILENCER.match(line)
+        for path, line in attributed(diff)
+        if not path.startswith(TEMPLATE_OWNED)
+    ):
         evidence.append("a '# noqa' or '# type: ignore' was added")
+
+    # Conflict markers are the opposite case: one inside a template owned file
+    # is precisely the "the update could not be merged" report worth having.
     if any(CONFLICT.match(line) for line in diff_lines):
         evidence.append("conflict markers are still in the working tree")
 
-    if any(RUFF_RULE.match(line) for line in git("diff", "HEAD", "--", "pyproject.toml").splitlines()):
+    # `pyproject.toml` is not template owned, but its lint configuration is
+    # rendered - so during an update a new ignore entry arrived with the
+    # template rather than being chosen here.
+    if not updating and any(
+        RUFF_RULE.match(line) for line in git("diff", "HEAD", "--", "pyproject.toml").splitlines()
+    ):
         evidence.append("a lint rule was added to the ignore list in pyproject.toml")
 
     return evidence

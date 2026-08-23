@@ -266,6 +266,16 @@ same pipeline, and is caught again before anything reaches PyPI, so adding
 `ruff` to `build.needs` would change the pipeline of every downstream project
 in exchange for a failure that is not actually escaping.
 
+Report #67 re-raised this on a new argument: that the artifacts are consumable
+by things other than the `pypi` job — a downstream job, a manual download, a
+Marketplace package build — so a lint failure does escape after all. That does
+not change the decision, because in the pipeline the template actually ships,
+`pypi` is the **only** consumer of `build`, and it declares `needs: [ruff,
+build]`. Every other consumer named is one a project adds itself, or a person
+choosing to download from a pipeline that is visibly red. A project that does
+add such a consumer and wants the stricter gate can add `ruff` to `build.needs`
+in its own repository; that is not a reason to change it for everyone.
+
 ### The GitLab `pypi` job is manual, not tag-restricted
 
 `pypi` is gated only by `when: manual`; there is no `rules` clause limiting it
