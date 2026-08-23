@@ -7,7 +7,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- the lint rules in `.claude/rules/` now say what to do when a rule cannot be satisfied
+  - the ban on `# noqa`, on growing the `ignore` list and on loosening mypy left no permitted resolution for the rare rule that is wrong in context - `S701` demands HTML autoescaping, which corrupts a Jinja template rendering JSON, so obeying it writes the bug it exists to prevent
+  - the permitted resolution, once a human has agreed, is a `# noqa` carrying its reason - never a new `ignore` entry, which would silence the rule for unexamined code as well
+- plugin: the `plugin-implementation` skill says what a plugin icon has to look like, not only where to put it
+  - no colour of its own (`currentColor` on the root `svg`) so the mark follows the workspace theme, and a transparent background so it does not sit as a coloured tile among icons that are
+  - nothing in `task check` or plugin discovery complains about either, so both were previously found only by looking at the running workspace
+- plugin: the `plugin-implementation` skill warns that a union type annotation on a parameter breaks discovery
+  - without an explicit `param_type`, the type is derived from the annotation, and a union raises `TypeError: issubclass() arg 1 must be a class` at import time - which removes **every** plugin in the package from the workspace while `task check` stays green
+- plugin: the `plugin-implementation` skill records that DataIntegration clears a dependent parameter when one of its dependencies changes
+  - the clearing propagates along a chain, so a chained parameter never holds a value from an earlier selection - there is no stale combination to defend against, and such a parameter can safely be mandatory
+
+### Fixed
+
+- the session end check no longer reports the `copier update` that installs it
+  - `.claude/hooks/template-feedback.py` counted any changed template owned file as a finding, and an update changes all of them - so taking a new template version made the check accuse you of the act of taking it
+  - when the working tree carries a changed `_commit` in `.copier-answers.yml`, those paths are the update and no longer count; an added `# noqa`, a grown ruff ignore list and leftover conflict markers still do, since those are real findings even mid-update
 
 
 ## [9.1.0] 2026-08-23

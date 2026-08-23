@@ -92,6 +92,11 @@ For each accepted issue:
 Do not tag and do not release. Releasing is `/release`, and it is a separate,
 deliberate step.
 
+Referencing the issue in the commit does not close it. A pull request against
+`develop` creates no closing reference, because `develop` is not the default
+branch - so comment on each issue with the pull request number, and close it by
+hand once that pull request is merged.
+
 ## Decline an issue
 
 Declining is not just closing. Add the reasoning to the *Deliberate decisions -

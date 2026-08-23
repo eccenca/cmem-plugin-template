@@ -61,6 +61,21 @@ Ship an SVG beside the plugin module and reference it by package:
 Always `package=__package__` rather than a hard-coded package name - it keeps
 working when the module moves or the project is renamed.
 
+What the SVG contains matters as much as where it lives, and neither
+`task check` nor plugin discovery says a word about it - a wrong icon is only
+found by somebody looking at the workspace.
+
+Give the mark no colour of its own: put `fill="currentColor"` (or
+`stroke="currentColor"`) on the root `svg` and name no `fill` on the shapes, so
+it follows the surrounding text colour and stays legible on a light and a dark
+workspace alike. Hard-coding a brand colour produces the one icon in the task
+list that looks broken when the theme changes. Leave the background
+transparent - no full-size `<rect>` - because every other icon in that list is,
+and an opaque tile reads as a coloured block among them.
+
+`cmem-plugin-parameters` and `cmem-plugin-pyshacl` are the icons to copy the
+shape of.
+
 ## Declaring ports
 
 Say what the task accepts and produces; do not leave it implicit.
@@ -135,6 +150,19 @@ Typing it as `str` puts the secret in plain text in the task configuration and
 in the project export.
 
 ## Custom parameter types
+
+A `PluginParameter` without an explicit `param_type` gets one derived from the
+constructor's type annotation, and **that derivation cannot handle a union**.
+An annotation like `JinjaCode | str` or `str | Password` raises
+`TypeError: issubclass() arg 1 must be a class` while the module is imported,
+which aborts discovery for the **whole package** - every plugin the package
+ships disappears from the workspace, `task check` stays green, and the
+traceback only shows up in `PluginDiscoveryResult.errors`.
+
+So annotate a single type, or pass `param_type` explicitly. Writing a union is
+almost always the moment you needed `param_type` anyway: `cmem-plugin-ssh`
+declares `private_key: str | Password` and works only because it also passes
+`param_type=PasswordParameterType()`.
 
 Reach for a shipped type first - `ChoiceParameterType`, `GraphParameterType`,
 `DatasetParameterType`, `PasswordParameterType`, and the `code`, `multiline`
@@ -223,3 +251,13 @@ needs `password.decrypt()` before use.
 Until every declared parameter has a value, no autocompletion happens at all -
 so keep the list to what you genuinely need. Each extra entry is one more field
 the user must fill before the list appears.
+
+DataIntegration also **clears** a dependent parameter's own value whenever one
+of the parameters it declares changes, and that propagates: in a chain of
+token -> resource -> sub-resource, changing the token clears the resource,
+which clears the sub-resource. Two things follow, and both change how such a
+chain is designed. A chained parameter never holds a value left over from an
+earlier selection, so there is no stale combination to validate against and no
+caveat to write into the task documentation about one. And a chained parameter
+can safely be made mandatory, because a user who invalidates it is asked to
+choose again rather than being stranded on a value they cannot correct.
