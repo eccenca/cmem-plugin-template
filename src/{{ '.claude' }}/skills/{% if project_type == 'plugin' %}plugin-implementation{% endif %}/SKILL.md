@@ -131,6 +131,31 @@ context.report.update(
   the work is finished shows a user nothing while the task is running, which is
   exactly when they are looking.
 
+## A constructor with six or more parameters
+
+Ruff's `PLR0913` and `PLR0917` both complain about a long argument list, and a
+task's constructor takes one argument per `PluginParameter` - so its arity is
+decided by the configuration surface the task offers, not by a style choice.
+Neither escape ruff suggests is available: keyword-only arguments change the
+signature DataIntegration instantiates, and folding parameters into one object
+breaks the one-argument-per-parameter mapping the framework depends on.
+
+This is the standing exception the lint rules describe, so it needs no fresh
+decision. Suppress both codes on the `def`, with the reason above it:
+
+```python
+# A plugin constructor takes one argument per PluginParameter, so its arity is
+# fixed by the plugin's configuration surface, not by a style choice here.
+def __init__(  # noqa: PLR0913, PLR0917
+    self,
+    ...
+```
+
+`PLR0917` became a stable rule in ruff 0.16, so a task that passed before may
+start failing on it without anything in the task changing. Suppress it on the
+constructor only - it stays a real finding on an ordinary function, which is
+why it is not in the `ignore` list in `pyproject.toml`.
+
 ## Parameters that carry secrets
 
 A password, token or API key is typed, never a plain string:

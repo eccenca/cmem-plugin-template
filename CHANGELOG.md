@@ -7,7 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- plugin: the `plugin-implementation` skill says how a task constructor answers `PLR0913` and `PLR0917`
+  - a constructor takes one argument per `PluginParameter`, so its arity follows the task's configuration surface and neither of ruff's escapes is available: keyword-only arguments change the signature DataIntegration instantiates, and folding parameters into an object breaks the one-argument-per-parameter mapping
+  - **`PLR0917` became stable in ruff 0.16**, so a task with six or more parameters can start failing `task check` without anything in the task having changed - the projects that already carry `# noqa: PLR0913` there need the code widened to `# noqa: PLR0913, PLR0917`
+  - it stays out of the `ignore` list in `pyproject.toml` on purpose, since it is a real finding on an ordinary function
 
 
 ## [9.2.1] 2026-08-23
