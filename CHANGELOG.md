@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Changed
+
+- the lint rules in `.claude/rules/` now say what to do when a rule cannot be satisfied
+  - the ban on `# noqa`, on growing the `ignore` list and on loosening mypy left no permitted resolution for the rare rule that is wrong in context - `S701` demands HTML autoescaping, which corrupts a Jinja template rendering JSON, so obeying it writes the bug it exists to prevent
+  - the permitted resolution, once a human has agreed, is a `# noqa` carrying its reason - never a new `ignore` entry, which would silence the rule for unexamined code as well
+
 ### Fixed
 
 - the session end check no longer reports the `copier update` that installs it

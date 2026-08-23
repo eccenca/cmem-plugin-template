@@ -39,6 +39,16 @@ Ruff is configured in `pyproject.toml` with `select = ["ALL"]` and a curated
 extend the `ignore` list and do not loosen a mypy setting to make a check pass;
 if a rule really is wrong for this project, say so and let a human decide.
 
+A few rules cannot be satisfied at all in the right context, and obeying them
+then writes the bug they exist to prevent - `S701` asks for HTML autoescaping,
+which corrupts a Jinja template that renders JSON. When that happens, do not
+guess: describe why the rule is wrong here and let a human decide. If they
+agree, the resolution is a `# noqa` on the offending line with the reason in a
+comment above it - never a new entry in the `ignore` list, which would also
+silence the rule for code nobody has looked at. Report it with the
+`template-feedback` skill too, since a rule that is wrong here is usually wrong
+in other projects as well.
+
 ## Every user visible change gets a changelog entry
 
 `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/). Add an
