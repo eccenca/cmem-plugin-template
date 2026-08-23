@@ -17,6 +17,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - no colour of its own (`currentColor` on the root `svg`) so the mark follows the workspace theme, and a transparent background so it does not sit as a coloured tile among icons that are
   - nothing in `task check` or plugin discovery complains about either, so both were previously found only by looking at the running workspace
 
+- plugin: the `plugin-implementation` skill warns that a union type annotation on a parameter breaks discovery
+  - without an explicit `param_type`, the type is derived from the annotation, and a union raises `TypeError: issubclass() arg 1 must be a class` at import time - which removes **every** plugin in the package from the workspace while `task check` stays green
+
 ### Fixed
 
 - the session end check no longer reports the `copier update` that installs it

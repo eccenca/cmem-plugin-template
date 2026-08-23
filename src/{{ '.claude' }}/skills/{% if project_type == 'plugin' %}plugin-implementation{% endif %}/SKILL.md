@@ -151,6 +151,19 @@ in the project export.
 
 ## Custom parameter types
 
+A `PluginParameter` without an explicit `param_type` gets one derived from the
+constructor's type annotation, and **that derivation cannot handle a union**.
+An annotation like `JinjaCode | str` or `str | Password` raises
+`TypeError: issubclass() arg 1 must be a class` while the module is imported,
+which aborts discovery for the **whole package** - every plugin the package
+ships disappears from the workspace, `task check` stays green, and the
+traceback only shows up in `PluginDiscoveryResult.errors`.
+
+So annotate a single type, or pass `param_type` explicitly. Writing a union is
+almost always the moment you needed `param_type` anyway: `cmem-plugin-ssh`
+declares `private_key: str | Password` and works only because it also passes
+`param_type=PasswordParameterType()`.
+
 Reach for a shipped type first - `ChoiceParameterType`, `GraphParameterType`,
 `DatasetParameterType`, `PasswordParameterType`, and the `code`, `multiline`
 and `resource` types. Write your own only when the value is a thing the user
