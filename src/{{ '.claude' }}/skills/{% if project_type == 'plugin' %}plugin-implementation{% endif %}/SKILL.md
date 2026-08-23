@@ -251,3 +251,13 @@ needs `password.decrypt()` before use.
 Until every declared parameter has a value, no autocompletion happens at all -
 so keep the list to what you genuinely need. Each extra entry is one more field
 the user must fill before the list appears.
+
+DataIntegration also **clears** a dependent parameter's own value whenever one
+of the parameters it declares changes, and that propagates: in a chain of
+token -> resource -> sub-resource, changing the token clears the resource,
+which clears the sub-resource. Two things follow, and both change how such a
+chain is designed. A chained parameter never holds a value left over from an
+earlier selection, so there is no stale combination to validate against and no
+caveat to write into the task documentation about one. And a chained parameter
+can safely be made mandatory, because a user who invalidates it is asked to
+choose again rather than being stranded on a value they cannot correct.
