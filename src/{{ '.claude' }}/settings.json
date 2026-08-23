@@ -7,7 +7,9 @@
             "Bash(poetry install:*)",
             "Bash(poetry run mypy:*)",
             "Bash(poetry run pytest:*)",
-            "Bash(poetry run ruff:*)"
+            "Bash(poetry run ruff:*)",
+            "Bash(gh issue list:*)",
+            "Bash(gh search issues:*)"
         ]
     },
     "hooks": {
@@ -19,6 +21,17 @@
                         "type": "command",
                         "command": "task format:fix",
                         "timeout": 180
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "task template:feedback-check",
+                        "timeout": 30
                     }
                 ]
             }

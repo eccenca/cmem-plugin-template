@@ -25,6 +25,10 @@ and `tests/`. The `tests/` pair is the sharpest trap — root `tests/` holds
 copier answer files driving the template's own checks, while `src/tests/` holds
 the example test code rendered into user projects.
 
+`template-triage` and `release` exist only at the root and have no `src/`
+counterpart at all: triage works through the feedback arriving from generated
+projects and edits `src/`, which would be nonsense inside a generated project.
+
 The `release` skill is a seventh twin, and the only one where following the
 wrong copy would do real damage. `.claude/skills/release/` releases *this*
 repository — no PyPI package, no GitHub Release, a `main` that fast-forwards
@@ -151,6 +155,47 @@ Dependency constraints in `src/pyproject.toml.jinja` are still bumped entirely
 by hand — no ecosystem entry covers them, because the file is Jinja and not
 valid TOML.
 
+## Feedback from generated projects
+
+Generated projects report findings back through the `template-feedback` skill
+shipped in `src/{{ '.claude' }}/skills/`. Two things point at it: the rule in
+`src/{{ '.claude' }}/rules/copier-template.md`, which names the moments worth
+reporting, and a blocking `Stop` hook that speaks only when the working tree
+shows evidence of template friction — a template owned file was edited, a
+`# noqa` or `# type: ignore` was added, a rule joined the ruff ignore list, a
+`copier update` left conflicts behind. The hook is
+`src/{{ '.claude' }}/hooks/template-feedback.py`, run through the generated
+`template:feedback-check` task; a project switches it off with an empty
+`.claude/no-template-feedback` file, which is project owned and therefore
+survives `copier update`.
+
+Nothing is filed unattended. The skill drafts, shows the user the exact title
+and body, and only then files — and `gh issue create` is deliberately left out
+of the shipped permission allowlist, so the harness prompts as well. The two
+gates are independent on purpose, because filing is the one irreversible,
+public thing this feature does.
+
+Reports arrive as issues labelled `template-feedback`, through
+`.github/ISSUE_TEMPLATE/template-feedback.yml`. They deliberately **do not name
+the project they came from**: most generated projects are private and some are
+customer specific, while this tracker is public. They carry `_commit`,
+`project_type` and whether `github_page`/`pypi` are answered instead, which is
+what a fix actually needs. Do not ask a reporter to identify their repository.
+
+Work through them with the `template-triage` skill. The loop only converges if
+both halves happen:
+
+- **Accepted** — change `src/` on a feature branch, one commit per issue with
+  its `CHANGELOG.md` entry, green `task check`, no tag.
+- **Declined** — close the issue **and** add the reasoning to *Deliberate
+  decisions — please do not re-raise these* below.
+
+That section is consequently no longer just a note to reviewers. The reporting
+skill tells every generated project's agent to read it before filing, so it is
+both the public answer to "why was this rejected" and the only thing keeping
+the same finding from arriving again from the next repository. Keep writing it
+for someone who has never seen this repository.
+
 ## Changelog conventions
 
 `CHANGELOG.md` (the root one) follows Keep a Changelog and has established
@@ -268,7 +313,9 @@ It does cost two things, both accepted:
 
 - Dependabot reads `.github/dependabot.yml` from the **default branch only**, so
   a change to that file is inert until a release fast-forwards `main`. Editing
-  it and expecting an immediate effect will not work.
+  it and expecting an immediate effect will not work. The same is true of
+  `.github/ISSUE_TEMPLATE/`: the template-feedback form does not appear on the
+  new-issue page until a release has carried it onto `main`.
 - Every entry therefore sets `target-branch: develop`, without which dependabot
   opens pull requests against `main` — a branch the release model forbids
   merging into. Setting `target-branch` to a non-default branch also disables
@@ -334,12 +381,20 @@ deployment, `.mcp.json` expands variables from the process environment rather
 than from the project's `.env`, and their browser OAuth cannot reuse the
 `client_credentials` service account that `.env` holds.
 
-### Nothing verifies the shipped agent files
+### Almost nothing verifies the shipped agent files
 
 `task check` renders the test cases and runs each generated project's
 *Taskfile*. It never starts an agent, so a conditional directory name that
 renders empty removes a skill silently and every check stays green — the same
 failure mode as the dependabot `directory:` bug above.
+
+The one exception is `check:hook:case`, which pipes both `stop_hook_active`
+states into `task template:feedback-check` inside each generated project and
+asserts silence. It covers the single agent file whose failure would be loud
+rather than invisible: a blocking `Stop` hook that speaks when it should not
+stops every session in every generated project from ending. It says nothing
+about whether the hook fires on the *right* evidence — that is still a hand
+run.
 
 Verification is manual, at authoring time, in a rendered case:
 

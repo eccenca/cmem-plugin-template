@@ -64,6 +64,18 @@ tasks:
       - poetry run ruff format tests {{.PACKAGE}}
       - poetry run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
 
+  template:feedback-check:
+    desc: Look for findings worth reporting to the cmem-plugin-template
+    summary: |
+      Reads a Claude Code Stop hook payload on stdin and asks the agent to
+      consider reporting upstream when this working tree shows that a template
+      owned file got in the way. Prints nothing when there is nothing to say.
+
+      Create an empty .claude/no-template-feedback file to switch it off.
+    silent: true
+    cmds:
+      - python3 .claude/hooks/template-feedback.py
+
   clean:
     desc: Removes dist, *.pyc and some caches
     cmds:

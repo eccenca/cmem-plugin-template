@@ -19,7 +19,14 @@ is read alongside these rules. Personal tool permissions belong in
 `.claude/settings.local.json`, which is git-ignored.
 
 When something in a template owned file is genuinely wrong, fix it upstream in
-the template and update, rather than patching the generated copy.
+the template and update, rather than patching the generated copy. The way to
+do that is to report it: use the `template-feedback` skill, which checks what
+the template has already decided and drafts an issue for you to confirm. Reach
+for it when you wanted to edit a template owned file, when a lint or typing
+rule had to be worked around, when a `copier update` conflict will recur for
+everyone, or when something these rules or the shipped skills claim turns out
+to be wrong. A finding that only applies to this project is not template
+feedback.
 
 ## Checks are not negotiable
 

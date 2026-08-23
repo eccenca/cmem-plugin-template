@@ -7,7 +7,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- generated projects can report findings back to the template
+  - a `template-feedback` skill checks what the template has already decided, drafts a GitHub issue and files it on [eccenca/cmem-plugin-template](https://github.com/eccenca/cmem-plugin-template) - always after showing you the exact text, never on its own
+  - it never names your repository and never pastes code from it, since the template tracker is public while most generated projects are not: an issue carries the template version, `project_type` and whether `github_page`/`pypi` are answered
+  - `gh issue create` is deliberately **not** in the pre-approved commands, so filing always asks for permission; the read-only `gh issue list` and `gh search issues` are pre-approved
+  - a new `Stop` hook, `.claude/hooks/template-feedback.py`, run through the new `task template:feedback-check`, reminds the agent at the end of a session - but only when this working tree shows that something in the template got in the way: a template owned file was edited, a `# noqa` or `# type: ignore` was added, a rule joined the ruff ignore list, or a `copier update` left conflicts behind
+    - **this hook can hold a session open for one extra turn** when it finds such evidence, so that the agent can decide whether the finding is worth reporting. Answering "this is specific to this project" ends the session, and it asks at most once per session
+    - create an empty `.claude/no-template-feedback` file to switch it off - that file belongs to your project, so `copier update` will not take it away
 
 
 ## [9.0.1] 2026-08-22
