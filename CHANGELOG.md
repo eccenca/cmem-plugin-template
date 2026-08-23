@@ -7,7 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the session end check no longer reports the `copier update` that installs it
+  - `.claude/hooks/template-feedback.py` counted any changed template owned file as a finding, and an update changes all of them - so taking a new template version made the check accuse you of the act of taking it
+  - when the working tree carries a changed `_commit` in `.copier-answers.yml`, those paths are the update and no longer count; an added `# noqa`, a grown ruff ignore list and leftover conflict markers still do, since those are real findings even mid-update
 
 
 ## [9.1.0] 2026-08-23

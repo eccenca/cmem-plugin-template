@@ -49,6 +49,11 @@ RUFF_RULE = re.compile(r'^\+\s*"[A-Z]{1,4}[0-9]{1,4}"')
 # What copier leaves behind when an update could not be merged.
 CONFLICT = re.compile(r"^\+?<{7} ")
 
+# A changed `_commit` in the copier answers file. Its presence means the
+# working tree *is* a copier update, so the template owned files it rewrote
+# were not edited by anyone and are not evidence of anything.
+COPIER_UPDATE = re.compile(r"^\+_commit:")
+
 # Colour codes git writes when the user configured `color.diff = always`, which
 # it does even when the output is a pipe.
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
@@ -88,6 +93,15 @@ def collect_evidence() -> list[str]:
     evidence = []
 
     status = git("status", "--porcelain")
+    diff = git("diff", "HEAD")
+    diff_lines = diff.splitlines()
+
+    # A `copier update` rewrites every template owned path by definition. Do not
+    # report the act of taking a new template version as friction with it - the
+    # signals below stay on, since a `# noqa` written while resolving an update
+    # conflict is still a real finding.
+    updating = any(COPIER_UPDATE.match(line) for line in diff_lines)
+
     touched = sorted(
         {
             path
@@ -96,7 +110,7 @@ def collect_evidence() -> list[str]:
             if path.startswith(TEMPLATE_OWNED)
         }
     )
-    if touched:
+    if touched and not updating:
         evidence.append(f"template owned files were changed here: {', '.join(touched)}")
 
     rejects = [
@@ -105,10 +119,9 @@ def collect_evidence() -> list[str]:
     if rejects:
         evidence.append(f"a copier update left rejected hunks behind: {', '.join(rejects)}")
 
-    diff = git("diff", "HEAD")
-    if any(SILENCER.match(line) for line in diff.splitlines()):
+    if any(SILENCER.match(line) for line in diff_lines):
         evidence.append("a '# noqa' or '# type: ignore' was added")
-    if any(CONFLICT.match(line) for line in diff.splitlines()):
+    if any(CONFLICT.match(line) for line in diff_lines):
         evidence.append("conflict markers are still in the working tree")
 
     if any(RUFF_RULE.match(line) for line in git("diff", "HEAD", "--", "pyproject.toml").splitlines()):
