@@ -316,6 +316,12 @@ It does cost two things, both accepted:
   it and expecting an immediate effect will not work. The same is true of
   `.github/ISSUE_TEMPLATE/`: the template-feedback form does not appear on the
   new-issue page until a release has carried it onto `main`.
+- A pull request against `develop` gets **no closing reference** for the issues
+  it fixes. `Fixes #59` in the body of a PR targeting a non-default branch
+  creates no link at all — `gh pr view --json closingIssuesReferences` comes
+  back empty — so `template-feedback` issues have to be closed by hand after
+  the merge. Since every pull request here targets `develop`, this applies to
+  all of them.
 - Every entry therefore sets `target-branch: develop`, without which dependabot
   opens pull requests against `main` — a branch the release model forbids
   merging into. Setting `target-branch` to a non-default branch also disables
