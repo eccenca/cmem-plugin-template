@@ -51,13 +51,20 @@ on `cmem-cmempy` transitively, which does not make it available for new code.
 The base class already provides a logger as `self.log`. Use it:
 
 ```python
-self.log.info("Fetched %s records", count)
+self.log.info(f"Fetched {count} records")
 ```
 
 Do not create a module logger with `logging.getLogger(__name__)`. `self.log` is
 a `PluginLogger` that routes into DataIntegration under
 `plugins.python.<plugin_id>`, so its output is visible where an operator looks
 for it; a private logger is not.
+
+`PluginLogger` is **not** a `logging.Logger`, it only resembles one. It offers
+`debug()`, `info()`, `warning()` and `error()`, and each takes a single, already
+formatted string. The `logging` idiom `self.log.info("Fetched %s records", count)`
+raises `TypeError` at runtime, so an f-string is the form to use - the ruff rule
+`G004` (logging statement uses f-string) is in the `ignore` list accordingly.
+The same gap is why `self.log` cannot be passed as a `logger` argument.
 
 ## The icon
 

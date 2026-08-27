@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- plugin: the logging example in the agent guidance now uses an f-string
+    - it showed the `logging` idiom `self.log.info("...%s...", count)`, which
+      raises `TypeError`: `self.log` is a `PluginLogger`, whose methods take a
+      single already formatted string, not a format string plus arguments
 - plugin: agent guidance now names `get_client(context)` as the way to reach a
   deployment, instead of `Client.from_context(context=context)`
     - the two are the same call - `get_client()` adds a `UserContext` guard and
