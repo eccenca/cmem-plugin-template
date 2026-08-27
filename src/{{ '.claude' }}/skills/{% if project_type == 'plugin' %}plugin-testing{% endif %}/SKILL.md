@@ -1,13 +1,13 @@
 ---
 name: plugin-testing
-description: Write or fix tests for a DataIntegration task - what can be tested standalone, when a test needs a Corporate Memory deployment and how to mark it, and how to create and clean up test assets. Use when adding, changing or debugging tests in this project.
+description: Write or fix tests for a DataIntegration task - what can be tested standalone, when a test needs an eccenca Corporate Memory deployment and how to mark it, and how to create and clean up test assets. Use when adding, changing or debugging tests in this project.
 ---
 
 # Testing a DataIntegration task
 
 Tests run with `task check:pytest`, which collects coverage and a memray
-report. `pytest-dotenv` loads `.env`, so the same Corporate Memory credentials
-the plugin uses are available to the tests.
+report. `pytest-dotenv` loads `.env`, so the same eccenca Corporate Memory
+credentials the plugin uses are available to the tests.
 
 ## Two kinds of test, and the line between them
 
@@ -18,7 +18,8 @@ Everything else needs a deployment and is marked:
 
 ```python
 needs_cmem = pytest.mark.skipif(
-    os.environ.get("CMEM_BASE_URI", "") == "", reason="Needs CMEM configuration"
+    os.environ.get("CMEM_BASE_URI", "") == "",
+    reason="Needs eccenca Corporate Memory configuration",
 )
 ```
 

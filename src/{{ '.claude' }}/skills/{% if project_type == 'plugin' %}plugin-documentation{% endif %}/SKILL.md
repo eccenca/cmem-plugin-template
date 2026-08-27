@@ -5,7 +5,7 @@ description: Write or revise the user-facing text of a DataIntegration task - th
 
 # Documenting a DataIntegration task
 
-This governs the text a user reads inside Corporate Memory: the `label`,
+This governs the text a user reads inside eccenca Corporate Memory: the `label`,
 `description` and `documentation` of the `@Plugin` decorator, and the
 `description` of every `PluginParameter` and `PluginAction`. It does not govern
 Python docstrings, error messages or identifiers. Those are read by developers
@@ -102,6 +102,31 @@ Refer to sibling tasks by their label in bold, matching how they appear in the
 task list, and do not link them. The label is what the user is looking at, and
 nothing can rot. Links to documentation outside the package are fine where a
 stable URL exists.
+
+## Naming the product
+
+eccenca Marketing governs how the product is named in anything a user can read.
+
+- The **first mention in each block of user-visible text** is the full name,
+  **eccenca Corporate Memory**. The block is the unit, not the file: a user may
+  meet a `documentation` block, a `description` or a README without having seen
+  any of the others.
+- **Plain "Corporate Memory" afterwards.** Repeating the full name in every
+  sentence reads badly, and naming the product more often than the text needs
+  reads worse.
+- **"CMEM" is never acceptable** in prose, at any position.
+- **Identifiers are exempt everywhere** and stay verbatim - `cmem-plugin-base`,
+  `cmem_plugin_*` module paths, `CMEM_BASE_URI`, `documentation.eccenca.com`.
+  `cmemc` is exempt for a stronger reason: it is the separately branded eccenca
+  command line client, a product name of its own rather than an abbreviation, so
+  it is never expanded.
+
+In practice a short text - a `description`, a parameter description - is usually
+better with no product name in it at all. The task is already running inside the
+product, so naming it there spends words on context the reader has, and the
+question of which form applies does not come up. The `example_workflow.py` this
+project shipped with is the model: its documentation block never names the
+product.
 
 ## Vocabulary
 

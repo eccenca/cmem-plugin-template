@@ -9,6 +9,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- plugin: the `plugin-documentation` skill now states how the product is named
+  in user-visible text: **eccenca Corporate Memory** on the first mention of
+  each block, plain "Corporate Memory" afterwards, never "CMEM", identifiers
+  exempt
+    - the shipped prose follows it: the `README-public.md` sentence is now a
+      single [eccenca Corporate Memory] link rather than two links splitting the
+      name, and the sample skipif reason reads
+      `Needs eccenca Corporate Memory configuration`
+    - projects that answer `pypi` carry the `README-public.md` wording onto
+      their public package page, so this is visible on the next release
 - plugin: the logging example in the agent guidance now uses an f-string
     - it showed the `logging` idiom `self.log.info("...%s...", count)`, which
       raises `TypeError`: `self.log` is a `PluginLogger`, whose methods take a

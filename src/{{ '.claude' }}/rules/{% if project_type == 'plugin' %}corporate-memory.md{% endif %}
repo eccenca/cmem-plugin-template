@@ -1,4 +1,4 @@
-# This project is a Corporate Memory plugin
+# This project is an eccenca Corporate Memory plugin
 
 The package provides one or more DataIntegration tasks built on
 [cmem-plugin-base](https://github.com/eccenca/cmem-plugin-base). A task is a
