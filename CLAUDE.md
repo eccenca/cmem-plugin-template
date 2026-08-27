@@ -477,3 +477,36 @@ actually tested against, and declaring 8.1.0 would claim support for a 2023
 release that CI has never exercised. If the floor is ever revisited, revisit it
 as a support decision — do not "correct" it downward on the grounds that the
 template renders under copier 8.
+
+### `task check` does not check documentation links
+
+Generated projects ship user-facing documentation full of external links — the
+eccenca documentation, PyPI, GitHub, and whatever a `@Plugin` `documentation=`
+block points at — and nothing verifies that those links still resolve. Adding a
+`check:links` task built on a link checker such as lychee, wired into
+`task check`, has been proposed (report #73) and declined.
+
+Link rot is real, but a link checker is the wrong instrument here because it
+makes a check that must be deterministic depend on things the project does not
+control. `task check` is the gate every contributor and every pipeline runs, and
+it is documented as non-negotiable. A link checker fails it when the developer
+is offline, when GitHub or PyPI rate-limit unauthenticated requests from a CI
+runner, and when somebody else's site has a bad afternoon. A required check that
+goes red for reasons unrelated to the change gets disabled or `--force`d, and
+then it protects nothing — the same reasoning that kept an automated
+product-name check out of `task check` in report #74.
+
+It also costs more than it looks. The toolchain is otherwise entirely Poetry
+managed, so every generated project, every contributor machine and every runner
+would need a non-Python binary installed for it.
+
+And most of the links in a freshly generated project are the template's own —
+`documentation.eccenca.com`, the badge endpoints, `python-poetry.org`,
+`taskfile.dev`. Those are fixed here, once, for everybody. Checking them again
+in each of fifty downstream projects re-verifies the template's URLs fifty
+times over and still says nothing about the one link a plugin author actually
+added.
+
+A project that wants the check can add a `check:links` task to its own
+`TaskfileCustom.yaml`, which is exactly what that file is for, and run it on a
+schedule rather than on every commit — which is the cadence link rot deserves.
