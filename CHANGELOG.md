@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- the `LICENSE` of a generated project now names that project's own copyright
+  holder, rendered from the `author_name` answer, instead of the hardcoded
+  `Copyright 2021 CMEM` every project inherited unchanged
+    - the year is dropped rather than templated: copier cannot compute one
+      without the deprecated `jinja2-time` extension, and a fixed `2021` is
+      wrong for every project generated since
+    - existing projects see the line change on their next `copier update`
 - plugin: the `plugin-documentation` skill now states how the product is named
   in user-visible text: **eccenca Corporate Memory** on the first mention of
   each block, plain "Corporate Memory" afterwards, never "CMEM", identifiers
