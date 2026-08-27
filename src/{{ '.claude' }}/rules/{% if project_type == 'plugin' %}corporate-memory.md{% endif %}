@@ -1,4 +1,4 @@
-# This project is a Corporate Memory plugin
+# This project is an eccenca Corporate Memory plugin
 
 The package provides one or more DataIntegration tasks built on
 [cmem-plugin-base](https://github.com/eccenca/cmem-plugin-base). A task is a
@@ -21,7 +21,7 @@ its ports.
 
 Plugin code reaches a deployment through
 [`cmem-client`](https://pypi.org/project/cmem-client/), built from the context
-it was handed: `Client.from_context(context=context)`. **`cmem.cmempy.*` is
+it was handed: `get_client(context)`. **`cmem.cmempy.*` is
 deprecated** - existing calls to it are legacy, and no new code should import
 it. The `plugin-implementation` skill has the detail.
 

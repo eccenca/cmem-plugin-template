@@ -1,6 +1,6 @@
 ---
 name: plugin-implementation
-description: Write or change the code of a DataIntegration task - reaching a Corporate Memory deployment, logging, the plugin icon, declaring ports, honouring cancellation, reporting progress, and writing custom parameter types with autocompletion. Use whenever a WorkflowPlugin or TransformPlugin body, its @Plugin block, its ports or its parameter types are added or edited.
+description: Write or change the code of a DataIntegration task - reaching an eccenca Corporate Memory deployment, logging, the plugin icon, declaring ports, honouring cancellation, reporting progress, and writing custom parameter types with autocompletion. Use whenever a WorkflowPlugin or TransformPlugin body, its @Plugin block, its ports or its parameter types are added or edited.
 ---
 
 # Implementing a DataIntegration task
@@ -9,24 +9,37 @@ These are the conventions the eccenca plugin fleet converged on. They are not
 style preferences - each one exists because the obvious alternative behaves
 worse inside a running workflow.
 
-## Reaching a Corporate Memory deployment
+## Reaching an eccenca Corporate Memory deployment
 
-Use [`cmem-client`](https://pypi.org/project/cmem-client/), declared as
-`cmem-client = "^1.0.0"`. Build it from the context you were handed rather than
-from configuration:
+Build the client from the context you were handed rather than from
+configuration, using `get_client()`:
 
 ```python
-from cmem_client.client import Client
+from cmem_plugin_base.dataintegration.client import get_client
 
 def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
-    client = Client.from_context(context=context)
+    client = get_client(context)
 ```
 
-`Client.from_context()` carries the executing user's identity. In tests, where
-there is no execution context, use `Client.from_env()` instead.
+What comes back is a [`cmem-client`](https://pypi.org/project/cmem-client/)
+`Client` carrying the executing user's identity. In tests, where there is no
+execution context, use `Client.from_env()` instead.
 
-Sub-APIs live under the same package, for example
-`from cmem_client.repositories.graphs import ImportConflictPolicy`.
+**`get_client()` and `Client.from_context()` are the same call.** `get_client()`
+is `Client.from_context(context=context)` with a guard in front of it: a context
+without a `UserContext` raises `Context has no UserContext.` rather than failing
+further downstream, and it is reached through `cmem-plugin-base`, which every
+plugin already depends on. Prefer it in new code - but a plugin already calling
+`Client.from_context()` is correct and must not be "brought in line", since
+rewriting it the other way is the direction that loses the check.
+
+Do not pass `self.log` to the `logger` argument of either call. Both want a
+`logging.Logger` and `self.log` only resembles one - see *Logging* below.
+
+Sub-APIs live under the cmem-client package, for example
+`from cmem_client.repositories.graphs import ImportConflictPolicy`. A project
+importing from `cmem_client` directly declares `cmem-client = "^1.0.0"`, so that
+deptry sees a direct dependency rather than a transitive one.
 
 **`cmempy` is deprecated.** Do not add imports from `cmem.cmempy.*`, and do not
 use `setup_cmempy_user_access()`. Plenty of existing plugins still call it -
@@ -38,13 +51,21 @@ on `cmem-cmempy` transitively, which does not make it available for new code.
 The base class already provides a logger as `self.log`. Use it:
 
 ```python
-self.log.info("Fetched %s records", count)
+self.log.info(f"Fetched {count} records")
 ```
 
 Do not create a module logger with `logging.getLogger(__name__)`. `self.log` is
 a `PluginLogger` that routes into DataIntegration under
 `plugins.python.<plugin_id>`, so its output is visible where an operator looks
 for it; a private logger is not.
+
+`PluginLogger` is **not** a `logging.Logger`, it only resembles one. It offers
+`debug()`, `info()`, `warning()` and `error()`, and each takes a single, already
+formatted string. The `logging` idiom
+`self.log.info("Fetched %s records", count)` raises `TypeError` at runtime, so
+an f-string is the form to use - the ruff rule
+`G004` (logging statement uses f-string) is in the `ignore` list accordingly.
+The same gap is why `self.log` cannot be passed as a `logger` argument.
 
 ## The icon
 

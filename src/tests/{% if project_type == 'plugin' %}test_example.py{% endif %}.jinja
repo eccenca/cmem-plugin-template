@@ -84,7 +84,7 @@ def test_transform_execution_with_inputs() -> None:
 
 @needs_cmem
 def test_integration_placeholder(build_project: BuildProject) -> None:
-    """Placeholder to write integration testcase with cmem"""
+    """Placeholder to write an integration test case"""
     client = Client.from_env()
     with client.datasets.get_file_resource(
         build_project.project_name, build_project.resource_name

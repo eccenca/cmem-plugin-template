@@ -7,7 +7,37 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- the `LICENSE` of a generated project now names that project's own copyright
+  holder, rendered from the `author_name` answer, instead of the hardcoded
+  `Copyright 2021 CMEM` every project inherited unchanged
+    - the year is dropped rather than templated: copier cannot compute one
+      without the deprecated `jinja2-time` extension, and a fixed `2021` is
+      wrong for every project generated since
+    - existing projects see the line change on their next `copier update`
+- plugin: the `plugin-documentation` skill now states how the product is named
+  in user-visible text: **eccenca Corporate Memory** on the first mention of
+  each block, plain "Corporate Memory" afterwards, never "CMEM", identifiers
+  exempt
+    - the shipped prose follows it: the `README-public.md` sentence is now a
+      single [eccenca Corporate Memory] link rather than two links splitting the
+      name, and the sample skipif reason reads
+      `Needs eccenca Corporate Memory configuration`
+    - projects that answer `pypi` carry the `README-public.md` wording onto
+      their public package page, so this is visible on the next release
+- plugin: the logging example in the agent guidance now uses an f-string
+    - it showed the `logging` idiom `self.log.info("...%s...", count)`, which
+      raises `TypeError`: `self.log` is a `PluginLogger`, whose methods take a
+      single already formatted string, not a format string plus arguments
+- plugin: agent guidance now names `get_client(context)` as the way to reach a
+  deployment, instead of `Client.from_context(context=context)`
+    - the two are the same call - `get_client()` adds a `UserContext` guard and
+      is reached through `cmem-plugin-base`, which every plugin already depends
+      on
+    - the guidance says explicitly that existing `Client.from_context()` calls
+      are correct and must not be rewritten, since that direction is the one
+      that drops the guard
 
 
 ## [9.3.0] 2026-08-23
