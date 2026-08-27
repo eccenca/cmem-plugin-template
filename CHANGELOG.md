@@ -7,7 +7,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- plugin: agent guidance now names `get_client(context)` as the way to reach a
+  deployment, instead of `Client.from_context(context=context)`
+    - the two are the same call - `get_client()` adds a `UserContext` guard and
+      is reached through `cmem-plugin-base`, which every plugin already depends
+      on
+    - the guidance says explicitly that existing `Client.from_context()` calls
+      are correct and must not be rewritten, since that direction is the one
+      that drops the guard
 
 
 ## [9.3.0] 2026-08-23

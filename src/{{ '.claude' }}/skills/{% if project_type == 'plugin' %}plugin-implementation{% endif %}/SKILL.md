@@ -11,22 +11,35 @@ worse inside a running workflow.
 
 ## Reaching a Corporate Memory deployment
 
-Use [`cmem-client`](https://pypi.org/project/cmem-client/), declared as
-`cmem-client = "^1.0.0"`. Build it from the context you were handed rather than
-from configuration:
+Build the client from the context you were handed rather than from
+configuration, using `get_client()`:
 
 ```python
-from cmem_client.client import Client
+from cmem_plugin_base.dataintegration.client import get_client
 
 def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
-    client = Client.from_context(context=context)
+    client = get_client(context)
 ```
 
-`Client.from_context()` carries the executing user's identity. In tests, where
-there is no execution context, use `Client.from_env()` instead.
+What comes back is a [`cmem-client`](https://pypi.org/project/cmem-client/)
+`Client` carrying the executing user's identity. In tests, where there is no
+execution context, use `Client.from_env()` instead.
 
-Sub-APIs live under the same package, for example
-`from cmem_client.repositories.graphs import ImportConflictPolicy`.
+**`get_client()` and `Client.from_context()` are the same call.** `get_client()`
+is `Client.from_context(context=context)` with a guard in front of it: a context
+without a `UserContext` raises `Context has no UserContext.` rather than failing
+further downstream, and it is reached through `cmem-plugin-base`, which every
+plugin already depends on. Prefer it in new code - but a plugin already calling
+`Client.from_context()` is correct and must not be "brought in line", since
+rewriting it the other way is the direction that loses the check.
+
+Do not pass `self.log` to the `logger` argument of either call. Both want a
+`logging.Logger` and `self.log` only resembles one - see *Logging* below.
+
+Sub-APIs live under the cmem-client package, for example
+`from cmem_client.repositories.graphs import ImportConflictPolicy`. A project
+importing from `cmem_client` directly declares `cmem-client = "^1.0.0"`, so that
+deptry sees a direct dependency rather than a transitive one.
 
 **`cmempy` is deprecated.** Do not add imports from `cmem.cmempy.*`, and do not
 use `setup_cmempy_user_access()`. Plenty of existing plugins still call it -
