@@ -7,7 +7,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- plugin: the `plugin-testing` skill now says how to name an environment
+  variable that a test introduces for an external system: `TESTING_<SERVICE>_<THING>`,
+  gated with the same `skipif` pattern as `needs_cmem`
+    - the prefix is what separates, in a `.env` file or a group level list of CI
+      variables, the entries that drive the test suite from those that configure
+      the product
+    - the eccenca Corporate Memory connection variables are named as the
+      exception: `CMEM_BASE_URI` and the `OAUTH_*` trio keep their established
+      `cmemc` names, because the plugin and `cmemc` read them too
 
 
 ## [9.4.0] 2026-08-27
