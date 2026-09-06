@@ -7,22 +7,29 @@ version: '3'
 
 dotenv: ['.copier-answers.env', '.env']
 
-# A task that declares its own `deps` cannot use this anchor: a YAML merge key
-# only supplies keys the mapping does not already have, so an explicit `deps`
-# wins outright and the two below are silently dropped. Such a task lists every
-# dependency it needs itself - see `build`.
+# A task that declares its own `deps` or `preconditions` cannot use this anchor:
+# a YAML merge key only supplies keys the mapping does not already have, so an
+# explicit one wins outright and everything below is silently dropped. Such a
+# task spells out what it needs itself - see `build`.
 .preparation: &preparation
   deps:
     - poetry:install
     - check:prepare
+  preconditions:
+    - sh: '[ -d "$package_dir" ]'
+      msg: >
+        The package directory does not exist. Its name comes from the
+        package_dir entry of .copier-answers.env, and an exported package_dir
+        of your own silently outranks that entry - unset it. Without this
+        check, an empty value dropped the package from every command line and
+        the checks passed having looked at nothing but tests.
 
 vars:
-  # Filled in by copier, not read from the environment. As a `$package_dir`
-  # shell expansion this picked up any exported variable of that name instead:
-  # a wrong one pointed every check at a directory that does not exist, and an
-  # empty one dropped the argument altogether, so `task check` passed without
-  # ever looking at the package.
-  PACKAGE: {{ package_dir }}{% raw %}
+  # $package_dir is expanded by the shell, from the .copier-answers.env entry
+  # that `dotenv` above loads. An exported package_dir of your own outranks that
+  # entry, which the precondition on the anchor above turns into a loud failure
+  # instead of a check that quietly looks at nothing.
+  PACKAGE: $package_dir
   DIST_DIR: dist
 
 includes:
@@ -206,5 +213,5 @@ tasks:
       - clean
     cmds:
       - poetry build
-      - poetry export --without=dev -f requirements.txt >dist/requirements.txt{% endraw %}
+      - poetry export --without=dev -f requirements.txt >dist/requirements.txt
 

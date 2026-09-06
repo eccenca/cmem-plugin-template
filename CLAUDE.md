@@ -61,15 +61,6 @@ is named `src/{{ '.claude' }}/`, an expression that always renders to
 generated project's rules and skills, including a `release` skill describing a
 release procedure this repository does not follow.
 
-`src/Taskfile.yaml.jinja` is a third special case. Task's own templating uses
-the same `{{` … `}}` delimiters as Jinja, so almost the whole file sits inside a
-single `{% raw %}` block — it opens at the end of the `PACKAGE:` line and closes
-at the end of the very last line. Only `PACKAGE` is rendered by copier, and
-anything added outside that block must therefore avoid Task's `{{.VAR}}` form.
-The trailing blank line is part of the file: keep `{% endraw %}` on the last
-content line rather than on one of its own, or every generated project sees a
-whitespace diff on its next update.
-
 ## Two project types
 
 The first copier question, `project_type`, selects between:
@@ -438,6 +429,31 @@ The answer has to come from `.claude/rules/`. Check the generic case too — it
 must contain `.claude/settings.json`, `.claude/rules/copier-template.md` and
 only the `copier-update` skill, plus `release` when `github_page` is answered,
 with no plugin material.
+
+### `src/Taskfile.yaml` is deliberately not a copier template
+
+It is the one file under `src/` that needs a copier answer — the package
+directory, for the ruff, mypy and coverage targets — and yet has no `.jinja`
+suffix. It takes the value the long way round instead: `.copier-answers.env` is
+rendered by copier, the Taskfile loads it through `dotenv:`, and `$package_dir`
+is expanded by the shell when a command runs.
+
+Renaming it to `Taskfile.yaml.jinja` and rendering the value in looks obviously
+better, and was tried. It is not, because a Taskfile already contains a
+templating language of its own: Task's `{{.PACKAGE}}` uses the same delimiters
+as Jinja, so every one of them has to be protected, in practice by wrapping
+almost the entire file in a `{% raw %}` block. A person editing the file then
+has to hold two templating languages in their head at once and remember which
+side of the raw block a new line falls on. Keeping the file readable by hand is
+worth more than rendering one value.
+
+The weakness of the long way round is that the shell reads `package_dir` from
+the process environment, where an exported variable of that name outranks the
+`dotenv` entry — and an empty one used to drop the package from every command
+line and let `task check` pass having looked at nothing. That is fixed **inside
+the Taskfile**, with a `preconditions:` guard on the `preparation` anchor, not
+by converting the file. Report #83 is the write-up. Any other file that already
+carries a second templating language gets the same treatment.
 
 ### `co` in `src/.gitignore` is CMEM orchestration, not a typo
 

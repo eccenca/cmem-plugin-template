@@ -83,17 +83,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - `git status` is parsed once, with `-uall -z`, so an entirely untracked
       directory no longer hides the `.rej` files and workflow paths inside it,
       and `core.quotePath` can no longer defeat the path tests
-- `task check` can no longer be narrowed by an environment variable
-    - the `PACKAGE` variable of the generated `Taskfile.yaml` was written as the
-      shell expansion `$package_dir`, so an exported `package_dir` from a shell
-      profile, a CI job or a direnv file outranked the `.copier-answers.env`
-      entry it was meant to come from
-    - an empty one was the damaging case: the argument vanished from the command
-      line, ruff and mypy saw only `tests`, and `task check` reported success
-      without ever looking at the package
-    - copier now renders the value into the file, so nothing in the environment
-      can reach it; `.copier-answers.env` is still generated and still loaded,
-      for custom tasks that want `$package_dir`
+- `task check` can no longer pass without having looked at the package
+    - `PACKAGE` is the shell expansion `$package_dir`, so an exported
+      `package_dir` from a shell profile, a CI job or a direnv file outranks the
+      `.copier-answers.env` entry it is meant to come from. An empty one was the
+      damaging case: the argument vanished from the command line, ruff and mypy
+      saw only `tests`, and the checks reported success
+    - the `preparation` anchor now carries a `preconditions:` guard asserting
+      that the package directory exists, so every check task stops with an
+      explanation instead. A wrong value was always loud; an empty one no longer
+      passes quietly
+    - the Taskfile stays un-templated on purpose - it already contains Task's own
+      `{{.VAR}}` templating, and a second layer would make it much harder to edit
+      by hand. See *Deliberate decisions* in `CLAUDE.md`
 - the `build` task now really depends on `poetry:install`
     - it carried both `<<: *preparation` and its own `deps: [clean]`, and a YAML
       merge key only supplies keys the mapping does not already have, so the
