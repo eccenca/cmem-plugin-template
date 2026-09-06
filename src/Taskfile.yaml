@@ -7,6 +7,10 @@ version: '3'
 
 dotenv: ['.copier-answers.env', '.env']
 
+# A task that declares its own `deps` cannot use this anchor: a YAML merge key
+# only supplies keys the mapping does not already have, so an explicit `deps`
+# wins outright and the two below are silently dropped. Such a task lists every
+# dependency it needs itself - see `build`.
 .preparation: &preparation
   deps:
     - poetry:install
@@ -172,8 +176,11 @@ tasks:
 
   build:
     desc: Build a tarball and a wheel package
-    <<: *preparation
+    # Not `<<: *preparation` - see the note at the anchor. `check:prepare` is
+    # left out on purpose: `build` does not write into dist/coverage, and it
+    # would race with `clean`, since Task runs deps in parallel.
     deps:
+      - poetry:install
       - clean
     cmds:
       - poetry build

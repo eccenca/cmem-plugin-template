@@ -7,7 +7,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the `build` task now really depends on `poetry:install`
+    - it carried both `<<: *preparation` and its own `deps: [clean]`, and a YAML
+      merge key only supplies keys the mapping does not already have, so the
+      explicit `deps` won and both preparation tasks were dropped
+    - plugin: `task install` starts with `task build` and then runs `poetry run
+      cmemc`, which failed on a fresh clone because no virtualenv had been created
+    - `check:prepare` is deliberately not added back: `build` does not write into
+      `dist/coverage`, and it would race with `clean`, since Task runs deps in parallel
 
 
 ## [9.5.0] 2026-09-02
