@@ -16,6 +16,7 @@ from cmem_plugin_base.dataintegration.entity import (
     EntitySchema,
 )
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
+from cmem_plugin_base.dataintegration.ports import FixedNumberOfInputs, FixedSchemaPort
 
 
 @Plugin(
@@ -58,6 +59,20 @@ class DollyPlugin(WorkflowPlugin):
         self.number_of_entities = number_of_entities
         self.number_of_values = number_of_values
 
+        # Say what this operator accepts and produces, rather than leaving it
+        # implicit. It generates its own rows, so it consumes nothing; the shape
+        # of what it emits follows the number_of_values parameter, which is why
+        # the schema is built here and the port can still be a fixed one.
+        self.schema = EntitySchema(
+            type_uri="https://example.org/vocab/RandomValueRow",
+            paths=[
+                EntityPath(path=f"https://example.org/vocab/RandomValuePath/{path_no}")
+                for path_no in range(number_of_values)
+            ],
+        )
+        self.input_ports = FixedNumberOfInputs([])
+        self.output_port = FixedSchemaPort(schema=self.schema)
+
     def execute(
         self,
         inputs: Sequence[Entities],  # noqa: ARG002
@@ -82,13 +97,5 @@ class DollyPlugin(WorkflowPlugin):
                     )
                 )
             entities.append(Entity(uri=entity_uri, values=values))
-        paths = []
-        for path_no in range(self.number_of_values):
-            path_uri = f"https://example.org/vocab/RandomValuePath/{path_no}"
-            paths.append(EntityPath(path=path_uri))
-        schema = EntitySchema(
-            type_uri="https://example.org/vocab/RandomValueRow",
-            paths=paths,
-        )
         self.log.info(f"Happy to serve {value_counter} random values.")
-        return Entities(entities=entities, schema=schema)
+        return Entities(entities=entities, schema=self.schema)

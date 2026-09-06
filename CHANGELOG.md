@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- plugin: the example workflow plugin declares its ports
+    - it declared none at all, while the skill beside it says not to leave them
+      implicit - and an agent copies the example, not the skill
+    - it consumes nothing, so `input_ports` is `FixedNumberOfInputs([])`; its
+      schema follows the `number_of_values` parameter, so it is built in
+      `__init__` and the output stays a `FixedSchemaPort`, which is also what a
+      port depending on a parameter looks like
 - plugin: the `plugin-implementation` skill separates the two things a port
   declaration says
     - arity (`FixedNumberOfInputs`, `FlexibleNumberOfInputs`) and schema
