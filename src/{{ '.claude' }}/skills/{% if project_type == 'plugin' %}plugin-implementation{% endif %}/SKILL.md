@@ -129,6 +129,23 @@ reads like a bug in the plugin rather than a schema negotiation that never
 happened. If a "process whatever arrives" task has to exist, say in its
 documentation that its input comes from another task rather than from a dataset.
 
+A port can also depend on a parameter's current value instead of being fixed
+at write time. Assign `input_ports`/`output_port` in `__init__` from a
+condition on `self`, and the port the editor shows follows the parameter:
+
+```python
+self.input_ports = (
+    FixedNumberOfInputs([])
+    if self.source_file.strip()
+    else FixedNumberOfInputs([FixedSchemaPort(schema=MY_SCHEMA)])
+)
+```
+
+This is the standard way to offer two mutually exclusive ways of supplying the
+same thing - a parameter here versus a connected input - rather than accepting
+both and picking one at runtime. A boolean or an enum parameter drives the same
+pattern with an `if`/`match` in place of the empty-string check.
+
 ## Honouring cancellation
 
 A long-running task must stop when the user cancels the workflow. Check the

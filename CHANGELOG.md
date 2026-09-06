@@ -21,6 +21,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - the `Stop` hook runs `.claude/hooks/template-feedback.py` directly instead of
   through `task`, whose output would corrupt the hook's JSON channel on
   stdout (#81)
+- plugin: the `plugin-implementation` skill documents ports that depend on a
+  parameter's value - the standard way to offer a parameter and a connected input
+  as mutually exclusive alternatives, rather than accepting both and choosing at
+  runtime (#78)
 - plugin: the `plugin-implementation` skill prefers fixed schema ports, and names
   the `array assignment index out of range: 0` abort that a flexible input schema
   can cause when the operator is fed by a file dataset (#79)
