@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- plugin: the `plugin-implementation` skill separates the two things a port
+  declaration says
+    - arity (`FixedNumberOfInputs`, `FlexibleNumberOfInputs`) and schema
+      (`FixedSchemaPort`, `FlexibleSchemaPort`, `UnknownSchemaPort`) are
+      independent, and the warning about flexible input schemas named only the
+      arity classes - so an author writing
+      `FixedNumberOfInputs([FlexibleSchemaPort()])`, the commonest spelling of
+      exactly that, read the warning as not applying
 - the `Stop` hook no longer reports a lint rule that was never silenced
     - it matched any quoted rule code added anywhere in `pyproject.toml`, so it
       fired on `extend-select`, which *tightens* linting, on a `[tool.deptry]`
