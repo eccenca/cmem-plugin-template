@@ -25,6 +25,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- an empty `[tool.pytest.ini_options]` table is back in the generated
+  `pyproject.toml`
+    - the table is what makes pytest treat the file as a configuration and stop
+      its upward search there; 9.0.0 dropped it together with the `addopts = ""`
+      it contained, on a check that did not include an ancestor configuration file
+    - without it, a `pytest.ini`, `tox.ini` or `setup.cfg` anywhere above the
+      project - a shared checkout directory, or `$HOME` - took over `rootdir` and
+      could inject `addopts` into the suite, with an error message pointing
+      nowhere near the cause
 - github: `check.yml` declares a least privilege `permissions:` block, and no
   longer goes red on a pull request from a fork
     - it declared none at all, so the two reporting steps ran on whatever the

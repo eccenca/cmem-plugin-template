@@ -58,6 +58,13 @@ bump = true
 warn_return_any = true
 ignore_missing_imports = true
 
+# Deliberately empty. pytest walks upward until a file *loads* a configuration,
+# and only the presence of this table makes pyproject.toml one - without it the
+# walk carries on into the parent directories, where any pytest.ini, tox.ini or
+# setup.cfg, even an empty one, would set this project's rootdir and could push
+# its own addopts into this test suite. Do not tidy it away.
+[tool.pytest.ini_options]
+
 [tool.coverage.report]
 exclude_also = [
     "def __repr__",
