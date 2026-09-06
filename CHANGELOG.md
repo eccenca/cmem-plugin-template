@@ -9,116 +9,57 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- plugin: the `plugin-implementation` skill now states a preference for fixed
-  schema ports, and records what a flexible input schema costs
-    - it presented fixed and flexible as a question of how much the author knows
-      in advance, when it also decides whether the task can be wired to a file
-      dataset at all
-    - an operator with a flexible input schema has been seen to abort before
-      receiving any entity, with `array assignment index out of range: 0` - a
-      message that reads like a bug in the plugin, so the section now names it
-      for whoever searches for it next
-- the `preparation` YAML anchor of the generated `Taskfile.yaml` is gone,
-  replaced by two internal tasks, `prepare` and `package:exists`
-    - a merge key only supplies keys the mapping does not already have, so any
-      task carrying `deps` of its own silently lost everything the anchor was
-      there to add - which is how `build` came to run without `poetry:install`
-    - naming a task in a `deps` list composes instead, so a task can have both
-      the shared preparation and dependencies of its own
-    - `check:prepare` is gone: `prepare` does what it did and pulls
-      `poetry:install` and `package:exists` with it. A `TaskfileCustom.yaml`
-      that depends on `check:prepare` by name has to be updated
-- the two Claude Code hooks a generated project ships no longer go through `task`
-    - the `Stop` hook runs `.claude/hooks/template-feedback.py` directly. The
-      script prints nothing unless it has something to say, because stdout is
-      the hook's JSON channel, and always exits 0 - `task` honours neither, and
-      answers an unknown task name or a broken `TaskfileCustom.yaml` with its own
-      output and its own exit code
-    - the `PostToolUse` hook still runs `task format:fix`, but neither format
-      task depends on `poetry:install` any more. `poetry install` refuses to run
-      once `pyproject.toml` has been edited without the lock file being
-      regenerated, so formatting stopped for the rest of the session during a
-      dependency bump or a template update - the work it is most needed for
-        - on a clone with no virtualenv yet, run `task check` or
-          `task poetry:install` before formatting
-    - `task template:feedback-check` is removed with it. It only ever wrapped the
-      same script, and running it the obvious way hung: the script reads its
-      payload from stdin, so with a terminal attached the task waited for input
-      that never came. The hand run is
+- the `preparation` YAML anchor of the generated `Taskfile.yaml` is replaced by
+  two internal tasks, `prepare` and `package:exists`
+    - a merge key is silently dropped by any task that declares `deps` of its
+      own, which is how `build` came to run without `poetry:install`
+- neither format task depends on `poetry:install` any more
+    - `poetry install` refuses to run against a stale lock file, which stopped
+      the `PostToolUse` hook formatting anything for the rest of a session
+    - on a clone with no virtualenv yet, run `task check` or `task poetry:install`
+      before formatting
+- the `Stop` hook runs `.claude/hooks/template-feedback.py` directly instead of
+  through `task`, whose output would corrupt the hook's JSON channel on stdout
+- plugin: the `plugin-implementation` skill prefers fixed schema ports, and names
+  the `array assignment index out of range: 0` abort that a flexible input schema
+  can cause when the operator is fed by a file dataset
+
+### Removed
+
+- the `template:feedback-check` and `check:prepare` tasks of the generated
+  `Taskfile.yaml`
+    - nothing calls either: the `Stop` hook runs its script directly, and
+      `prepare` does what `check:prepare` did
+    - a `TaskfileCustom.yaml` naming `check:prepare` as a dependency has to be
+      updated; the hand run of the hook is
       `echo '{}' | python3 .claude/hooks/template-feedback.py`
 
 ### Fixed
 
-- an empty `[tool.pytest.ini_options]` table is back in the generated
-  `pyproject.toml`
-    - the table is what makes pytest treat the file as a configuration and stop
-      its upward search there; 9.0.0 dropped it together with the `addopts = ""`
-      it contained, on a check that did not include an ancestor configuration file
-    - without it, a `pytest.ini`, `tox.ini` or `setup.cfg` anywhere above the
-      project - a shared checkout directory, or `$HOME` - took over `rootdir` and
-      could inject `addopts` into the suite, with an error message pointing
-      nowhere near the cause
-- github: `check.yml` declares a least privilege `permissions:` block, and no
-  longer goes red on a pull request from a fork
-    - it declared none at all, so the two reporting steps ran on whatever the
-      organisation default happens to be. They need `checks: write` and
-      `pull-requests: write`; everything else is `contents: read`
-    - a fork pull request gets a read-only token regardless of that block, and
-      the junit step carries `if: always()`, so it failed 403 and reddened the
-      whole check on every outside contribution. Both reporting steps are now
-      `continue-on-error: true`
-- github: `xportation/junit-coverage-report` is pinned to `v1.0.3` instead of the
-  mutable `@main`
-    - it was the only action in either generated workflow tracking a branch, so
-      whoever controls that repository could change what runs with the workflow
-      token between one pull request and the next, with no diff in the project
-    - `main` and `v1.0.3` are the same commit today, so nothing about the step
-      changes
-- the `Stop` hook of a generated project now looks at the right evidence
-    - a `copier update` that **added** the conflict-marker example of the
-      `copier-update` skill was reported as "conflict markers are still in the
-      working tree" - the marker was matched against the flat diff, so the
-      template's own documentation of a conflict blocked the session during the
-      one workflow the hook exists to support
-    - `# noqa` and `# type: ignore` are now looked for in Python files only, and
-      only when a file ends up with more of them than it started with. A changelog
-      entry or a `CLAUDE.md` naming the comment no longer counts as using one, nor
-      does a functional edit to a line that always carried one
-    - a suppression in a **new, untracked** module is now seen. `git diff HEAD`
-      never lists untracked files, so whether the hook noticed depended on staging
-      state rather than on what was done
-    - the diff parser no longer assumes a `b/` prefix. With `diff.noprefix`,
-      `diff.mnemonicPrefix` or a quoted path it attributed every line to no file
-      at all, which switched the template-owned exclusion off silently; the git
-      calls now pin the output format they parse
-    - a failed git call is no longer read as "nothing changed". On an unborn HEAD
-      `git diff HEAD` exits non-zero, so a freshly generated project that had not
-      committed yet was blocked on its first session, listing every template file
-      as edited. The same went for git missing from PATH, or a held `index.lock`
-    - `git status` is parsed once, with `-uall -z`, so an entirely untracked
-      directory no longer hides the `.rej` files and workflow paths inside it,
-      and `core.quotePath` can no longer defeat the path tests
+- the `Stop` hook of a generated project looks at the right evidence
+    - it no longer blocks on the conflict-marker example inside its own
+      `copier-update` skill, on a project that has not committed yet, or on a
+      changelog entry that merely names `# noqa`
+    - it now sees a suppression added in an untracked file, and ignores one that
+      was already there
+    - git output is parsed in a pinned format, so `diff.noprefix`,
+      `core.quotePath` or an untracked directory can no longer hide evidence
 - `task check` can no longer pass without having looked at the package
-    - `PACKAGE` is the shell expansion `$package_dir`, so an exported
-      `package_dir` from a shell profile, a CI job or a direnv file outranks the
-      `.copier-answers.env` entry it is meant to come from. An empty one was the
-      damaging case: the argument vanished from the command line, ruff and mypy
-      saw only `tests`, and the checks reported success
-    - the internal `package:exists` task now asserts that the package directory
-      exists, and every check and format task depends on it, so they stop with an
-      explanation instead. A wrong value was always loud; an empty one no longer
-      passes quietly
-    - the Taskfile stays un-templated on purpose - it already contains Task's own
-      `{{.VAR}}` templating, and a second layer would make it much harder to edit
-      by hand. See *Deliberate decisions* in `CLAUDE.md`
-- the `build` task now really depends on `poetry:install`
-    - it carried both `<<: *preparation` and its own `deps: [clean]`, and the
-      explicit `deps` won, so both preparation tasks were dropped
-    - plugin: `task install` starts with `task build` and then runs `poetry run
-      cmemc`, which failed on a fresh clone because no virtualenv had been created
-    - `prepare` is deliberately not among its dependencies: `build` does not write
-      into `dist/coverage`, and it would race with `clean`, since Task runs deps
-      in parallel
+    - `PACKAGE` is a shell expansion, so an exported `package_dir` outranks the
+      `.copier-answers.env` entry - and an empty one dropped the package from
+      every command line while the checks still reported success
+    - `package:exists` now fails when the name does not resolve to a directory
+- `build` depends on `poetry:install` again
+    - plugin: `task install` builds and then runs `poetry run cmemc`, which failed
+      on a fresh clone because no virtualenv had been created
+- an empty `[tool.pytest.ini_options]` table is back in the generated
+  `pyproject.toml`, so a `pytest.ini`, `tox.ini` or `setup.cfg` above the project
+  can no longer take over its `rootdir` or inject `addopts` into its suite
+- github: `check.yml` declares a least privilege `permissions:` block, and its two
+  reporting steps are `continue-on-error`, so a pull request from a fork no longer
+  reds the whole check on a token it cannot be given
+- github: `xportation/junit-coverage-report` is pinned to `v1.0.3` rather than the
+  mutable `@main` - the same commit today, so the step does not change
 
 
 ## [9.5.0] 2026-09-02
