@@ -219,9 +219,15 @@ conventions worth matching:
 - An entry with a single originating report ends with `(#NN)`. GitHub autolinks a
   bare reference in the blob view the README's version badge points at — verified
   via `gh api --method POST /markdown` — and since this repository publishes no
-  GitHub Releases, `CHANGELOG.md` is its release notes. One issue may be cited by
+  GitHub Releases, `CHANGELOG.md` is its release notes. One report may be cited by
   two entries; one entry never cites two, because an entry that grouped several
   findings is more useful grouped than annotated.
+    - Cite the **issue**. A pull request only when the change exists solely as a
+      pull request and no issue was ever filed for it — the dynamic-port paragraph
+      of #78 is the precedent. The preference exists because a pull request here
+      is usually a batch: a triage sweep carries several findings at once, so
+      pointing a handful of entries at one number tells a reader nothing they can
+      act on. A one-change pull request does not have that problem.
     - **This repository only.** Neither `src/CHANGELOG.md` nor a generated
       project's changelog carries references: plugin work is tracked in eccenca's
       private Jira, so a reader of those files cannot open what a reference points
