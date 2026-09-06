@@ -19,7 +19,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "task format:ruff",
+                        "command": "task format:fix",
                         "timeout": 180
                     }
                 ]

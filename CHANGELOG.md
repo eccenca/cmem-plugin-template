@@ -34,13 +34,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
       the hook's JSON channel, and always exits 0 - `task` honours neither, and
       answers an unknown task name or a broken `TaskfileCustom.yaml` with its own
       output and its own exit code
-    - the `PostToolUse` hook runs the new `format:ruff` task, which is
-      `format:fix` without the dependency on `poetry:install`. `poetry install`
-      refuses to run once `pyproject.toml` has been edited without the lock file
-      being regenerated, so formatting stopped for the rest of the session during
-      a dependency bump or a template update - the work it is most needed for
-    - `task template:feedback-check` and `task format:fix` both stay, for
-      running the same thing by hand
+    - the `PostToolUse` hook still runs `task format:fix`, but neither format
+      task depends on `poetry:install` any more. `poetry install` refuses to run
+      once `pyproject.toml` has been edited without the lock file being
+      regenerated, so formatting stopped for the rest of the session during a
+      dependency bump or a template update - the work it is most needed for
+        - on a clone with no virtualenv yet, run `task check` or
+          `task poetry:install` before formatting
+    - `task template:feedback-check` stays, for running the same check by hand
 
 ### Fixed
 

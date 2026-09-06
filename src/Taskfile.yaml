@@ -71,23 +71,15 @@ tasks:
     cmds:
       - poetry install
 
+  # Neither format task depends on `poetry:install`, unlike the check tasks.
+  # `format:fix` is what the Claude Code PostToolUse hook runs after every edit,
+  # and `poetry install` refuses to run while pyproject.toml has been changed
+  # without the lock file being regenerated - exactly what a dependency bump or
+  # a template update looks like. Formatting would then quietly stop for the
+  # rest of the session. On a clone with no virtualenv yet, run `task check` or
+  # `task poetry:install` first.
   format:fix:
     desc: Format Python files and fix obvious issues
-    deps:
-      - prepare
-    cmds:
-      - task: format:ruff
-
-  format:ruff:
-    summary: |
-      The ruff invocation of `format:fix` on its own, without the dependency
-      on `poetry:install`.
-
-      This is what the Claude Code PostToolUse hook runs. `poetry install`
-      refuses to run while pyproject.toml has been changed without the lock
-      file being regenerated - which is exactly what a dependency bump or a
-      template update looks like - and the hook would then quietly stop
-      formatting anything for the rest of the session.
     deps:
       - package:exists
     cmds:
@@ -97,7 +89,7 @@ tasks:
   format:fix-unsafe:
     desc: Format Python files and fix 'unsafe' issues
     deps:
-      - prepare
+      - package:exists
     cmds:
       - poetry run ruff format tests {{.PACKAGE}}
       - poetry run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
