@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Notice friction with the cmem-plugin-template at the end of a session.
 
-This is a Claude Code ``Stop`` hook, wired up in ``.claude/settings.json`` and
-run through ``task template:feedback-check``. It belongs to the template - see
-``.claude/rules/copier-template.md``.
+This is a Claude Code ``Stop`` hook. ``.claude/settings.json`` runs it
+directly, rather than through ``task template:feedback-check``, because task
+runners write to stdout and pick their own exit codes - and stdout is this
+hook's JSON channel. The task exists for running it by hand. It belongs to the
+template - see ``.claude/rules/copier-template.md``.
 
 It says nothing at all unless the session left evidence that a template owned
 file got in the way, and then it asks the agent to consider whether that is

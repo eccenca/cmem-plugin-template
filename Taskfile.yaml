@@ -93,12 +93,12 @@ tasks:
       - >
         cd {{.TEST_CASE}}_dir &&
         out=$(printf '%s' '{"hook_event_name":"Stop","session_id":"smoke-{{.TEST_CASE}}-quiet","stop_hook_active":false}'
-        | task template:feedback-check) &&
+        | python3 .claude/hooks/template-feedback.py) &&
         { [ -z "$out" ] || { echo "hook spoke on a clean tree: $out"; exit 1; }; }
       - >
         cd {{.TEST_CASE}}_dir &&
         out=$(printf '%s' '{"hook_event_name":"Stop","session_id":"smoke-{{.TEST_CASE}}-loop","stop_hook_active":true}'
-        | task template:feedback-check) &&
+        | python3 .claude/hooks/template-feedback.py) &&
         { [ -z "$out" ] || { echo "hook ignored stop_hook_active: $out"; exit 1; }; }
 
   check:validate:cases:

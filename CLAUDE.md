@@ -173,8 +173,11 @@ reporting, and a blocking `Stop` hook that speaks only when the working tree
 shows evidence of template friction — a template owned file was edited, a
 `# noqa` or `# type: ignore` was added, a rule joined the ruff ignore list, a
 `copier update` left conflicts behind. The hook is
-`src/{{ '.claude' }}/hooks/template-feedback.py`, run through the generated
-`template:feedback-check` task; a project switches it off with an empty
+`src/{{ '.claude' }}/hooks/template-feedback.py`, which `settings.json` runs
+directly - the generated `template:feedback-check` task wraps the same script
+for hand runs, but a task runner writes to stdout and picks its own exit codes,
+and stdout is the hook's JSON channel. A project switches the hook off with an
+empty
 `.claude/no-template-feedback` file, which is project owned and therefore
 survives `copier update`.
 
@@ -417,7 +420,7 @@ renders empty removes a skill silently and every check stays green — the same
 failure mode as the dependabot `directory:` bug above.
 
 The one exception is `check:hook:case`, which pipes both `stop_hook_active`
-states into `task template:feedback-check` inside each generated project and
+states into the hook script inside each generated project and
 asserts silence. It covers the single agent file whose failure would be loud
 rather than invisible: a blocking `Stop` hook that speaks when it should not
 stops every session in every generated project from ending. It says nothing

@@ -19,7 +19,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "task format:fix",
+                        "command": "task format:ruff",
                         "timeout": 180
                     }
                 ]
@@ -30,7 +30,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "task template:feedback-check",
+                        "command": "python3 .claude/hooks/template-feedback.py",
                         "timeout": 30
                     }
                 ]
