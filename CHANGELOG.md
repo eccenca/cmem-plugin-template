@@ -21,6 +21,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - the `Stop` hook runs `.claude/hooks/template-feedback.py` directly instead of
   through `task`, whose output would corrupt the hook's JSON channel on
   stdout (#81)
+- the shipped `.claude/rules/` tells an agent not to cite an issue or Jira ticket
+  in a project's changelog, since the people reading it cannot open them
 - plugin: the `plugin-implementation` skill documents ports that depend on a
   parameter's value - the standard way to offer a parameter and a connected input
   as mutually exclusive alternatives, rather than accepting both and choosing at
