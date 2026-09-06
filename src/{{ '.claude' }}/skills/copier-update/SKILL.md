@@ -63,6 +63,44 @@ the template actually changed, such as a bumped dependency constraint.
 Example files that were deleted after generation can reappear when the template
 changes them. Delete them again.
 
+## What the merge will not tell you
+
+A conflict is raised only where copier could not decide. The cases that cost
+the most time are the silent ones, and both directions have happened:
+
+- **The template's new value is not applied.** The template set
+  `cmem-cmemc` to `^25.3.0` in v7.3.0 and lowered it again to `>=24.2.0` in
+  v8.0.0. Four repositories updated straight through that release and on to
+  v9.6.1, and every one still carried the caret afterwards. No commit in them
+  re-introduced it and no conflict was ever raised. It stayed harmless for a
+  year, until click 8.5 began rejecting an empty colour that cmemc 25 passes
+  through - and then several test suites failed at once with
+  `Unknown color ''`.
+- **This project's value is replaced by the template's.** A project carrying its
+  own `[tool.ruff.lint] ignore` and `per-file-ignores` entries lost them
+  wholesale to the template's shorter lists, and the update appeared to add 409
+  lint findings. They were not debt; the configuration that had silenced them
+  was gone.
+
+So do not read "no conflicts" as "nothing to check". After updating, look at
+`pyproject.toml` deliberately - at dependency constraints, and at every
+list-valued setting, because a list is replaced whole rather than merged
+entry by entry.
+
+The reliable check is to render a throwaway project from the same answers and
+diff against it, which shows both what should have arrived and what should not
+have:
+
+```bash
+copier copy --trust --defaults --vcs-ref <the tag you updated to> \
+  -d project_slug=<slug> -d project_type=<plugin|generic> \
+  gh:eccenca/cmem-plugin-template /tmp/reference
+diff /tmp/reference/pyproject.toml pyproject.toml
+```
+
+Treat a sudden jump in lint findings as suspected configuration loss rather
+than real debt, and check that first.
+
 ## After updating
 
 ```bash
