@@ -164,8 +164,10 @@ reporting, and a blocking `Stop` hook that speaks only when the working tree
 shows evidence of template friction — a template owned file was edited, a
 `# noqa` or `# type: ignore` was added, a rule joined the ruff ignore list, a
 `copier update` left conflicts behind. The hook is
-`src/{{ '.claude' }}/hooks/template-feedback.py`, run through the generated
-`template:feedback-check` task; a project switches it off with an empty
+`src/{{ '.claude' }}/hooks/template-feedback.py`, which `settings.json` runs
+directly rather than through a task, because a task runner writes to stdout and
+picks its own exit codes, and stdout is the hook's JSON channel. A project
+switches the hook off with an empty
 `.claude/no-template-feedback` file, which is project owned and therefore
 survives `copier update`.
 
@@ -210,7 +212,38 @@ conventions worth matching:
 - Fixes to code that was never released are folded into the entry describing the
   change, not listed separately under `### Fixed`.
 - Nested bullets are used to warn about consequences, e.g. a lint rule that may
-  start failing checks in existing projects.
+  start failing checks in existing projects — not to explain the change.
+- Removals go under `### Removed`, even when they are a side effect of something
+  in `### Changed`. That section is what a template user scans before running
+  `copier update`.
+- An entry with a single originating report ends with `(#NN)`. GitHub autolinks a
+  bare reference in the blob view the README's version badge points at — verified
+  via `gh api --method POST /markdown` — and since this repository publishes no
+  GitHub Releases, `CHANGELOG.md` is its release notes. One issue may be cited by
+  two entries; one entry never cites two, because an entry that grouped several
+  findings is more useful grouped than annotated.
+    - **This repository only.** Neither `src/CHANGELOG.md` nor a generated
+      project's changelog carries references: plugin work is tracked in eccenca's
+      private Jira, so a reader of those files cannot open what a reference points
+      at. The shipped `.claude/rules/copier-template.md` says so.
+
+### Keeping it short
+
+An entry says what changed **for a template user**. Why the old code was wrong,
+how the problem was found and what else was tried belong in the commit message,
+which is where anyone who wants them will look — and repeating them here is what
+makes a changelog long.
+
+The failure mode is a batch of work, a triage sweep or a release cycle, written
+as one narrated entry per commit. A seven-issue triage sweep produced 117 lines
+that way and was cut to 58 with nothing lost, because it had told the same three
+background stories two or three times each. Two habits prevent it:
+
+- Background shared by several entries is told **once**, in the entry it belongs
+  to. The others do not restate it.
+- Group by what a user notices, not by which issue caused it. Seven reported
+  findings in one file usually collapse into one entry with two or three
+  sub-points, not seven entries.
 
 ## Releasing
 
@@ -408,7 +441,7 @@ renders empty removes a skill silently and every check stays green — the same
 failure mode as the dependabot `directory:` bug above.
 
 The one exception is `check:hook:case`, which pipes both `stop_hook_active`
-states into `task template:feedback-check` inside each generated project and
+states into the hook script inside each generated project and
 asserts silence. It covers the single agent file whose failure would be loud
 rather than invisible: a blocking `Stop` hook that speaks when it should not
 stops every session in every generated project from ending. It says nothing
@@ -426,6 +459,32 @@ The answer has to come from `.claude/rules/`. Check the generic case too — it
 must contain `.claude/settings.json`, `.claude/rules/copier-template.md` and
 only the `copier-update` skill, plus `release` when `github_page` is answered,
 with no plugin material.
+
+### `src/Taskfile.yaml` is deliberately not a copier template
+
+It is the one file under `src/` that needs a copier answer — the package
+directory, for the ruff, mypy and coverage targets — and yet has no `.jinja`
+suffix. It takes the value the long way round instead: `.copier-answers.env` is
+rendered by copier, the Taskfile loads it through `dotenv:`, and `$package_dir`
+is expanded by the shell when a command runs.
+
+Renaming it to `Taskfile.yaml.jinja` and rendering the value in looks obviously
+better, and was tried. It is not, because a Taskfile already contains a
+templating language of its own: Task's `{{.PACKAGE}}` uses the same delimiters
+as Jinja, so every one of them has to be protected, in practice by wrapping
+almost the entire file in a `{% raw %}` block. A person editing the file then
+has to hold two templating languages in their head at once and remember which
+side of the raw block a new line falls on. Keeping the file readable by hand is
+worth more than rendering one value.
+
+The weakness of the long way round is that the shell reads `package_dir` from
+the process environment, where an exported variable of that name outranks the
+`dotenv` entry — and an empty one used to drop the package from every command
+line and let `task check` pass having looked at nothing. That is fixed **inside
+the Taskfile**, by the internal `package:exists` task that every check and
+format task depends on, not by converting the file. Report #83 is the write-up.
+Any other file that already carries a second templating language gets the same
+treatment.
 
 ### `co` in `src/.gitignore` is CMEM orchestration, not a typo
 

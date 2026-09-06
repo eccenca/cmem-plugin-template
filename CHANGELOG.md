@@ -7,7 +7,60 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- the `preparation` YAML anchor of the generated `Taskfile.yaml` is replaced by
+  two internal tasks, `prepare` and `package:exists`
+    - a merge key is silently dropped by any task that declares `deps` of its
+      own, which is how `build` came to run without `poetry:install`
+- neither format task depends on `poetry:install` any more (#81)
+    - `poetry install` refuses to run against a stale lock file, which stopped
+      the `PostToolUse` hook formatting anything for the rest of a session
+    - on a clone with no virtualenv yet, run `task check` or `task poetry:install`
+      before formatting
+- the `Stop` hook runs `.claude/hooks/template-feedback.py` directly instead of
+  through `task`, whose output would corrupt the hook's JSON channel on
+  stdout (#81)
+- plugin: the `plugin-implementation` skill prefers fixed schema ports, and names
+  the `array assignment index out of range: 0` abort that a flexible input schema
+  can cause when the operator is fed by a file dataset (#79)
+
+### Removed
+
+- the `template:feedback-check` and `check:prepare` tasks of the generated
+  `Taskfile.yaml`
+    - nothing calls either: the `Stop` hook runs its script directly, and
+      `prepare` does what `check:prepare` did
+    - a `TaskfileCustom.yaml` naming `check:prepare` as a dependency has to be
+      updated; the hand run of the hook is
+      `echo '{}' | python3 .claude/hooks/template-feedback.py`
+
+### Fixed
+
+- the `Stop` hook of a generated project looks at the right evidence (#80)
+    - it no longer blocks on the conflict-marker example inside its own
+      `copier-update` skill, on a project that has not committed yet, or on a
+      changelog entry that merely names `# noqa`
+    - it now sees a suppression added in an untracked file, and ignores one that
+      was already there
+    - git output is parsed in a pinned format, so `diff.noprefix`,
+      `core.quotePath` or an untracked directory can no longer hide evidence
+- `task check` can no longer pass without having looked at the package (#83)
+    - `PACKAGE` is a shell expansion, so an exported `package_dir` outranks the
+      `.copier-answers.env` entry - and an empty one dropped the package from
+      every command line while the checks still reported success
+    - `package:exists` now fails when the name does not resolve to a directory
+- `build` depends on `poetry:install` again (#82)
+    - plugin: `task install` builds and then runs `poetry run cmemc`, which failed
+      on a fresh clone because no virtualenv had been created
+- an empty `[tool.pytest.ini_options]` table is back in the generated
+  `pyproject.toml`, so a `pytest.ini`, `tox.ini` or `setup.cfg` above the project
+  can no longer take over its `rootdir` or inject `addopts` into its suite (#85)
+- github: `check.yml` declares a least privilege `permissions:` block, and its two
+  reporting steps are `continue-on-error`, so a pull request from a fork no longer
+  reds the whole check on a token it cannot be given (#84)
+- github: `xportation/junit-coverage-report` is pinned to `v1.0.3` rather than the
+  mutable `@main` - the same commit today, so the step does not change (#84)
 
 
 ## [9.5.0] 2026-09-02

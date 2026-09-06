@@ -7,12 +7,11 @@ version: '3'
 
 dotenv: ['.copier-answers.env', '.env']
 
-.preparation: &preparation
-  deps:
-    - poetry:install
-    - check:prepare
-
 vars:
+  # $package_dir is expanded by the shell, from the .copier-answers.env entry
+  # that `dotenv` above loads. An exported package_dir of your own outranks that
+  # entry, which the `package:exists` task below turns into a loud failure
+  # instead of a check that quietly looks at nothing.
   PACKAGE: $package_dir
   DIST_DIR: dist
 
@@ -36,11 +35,33 @@ tasks:
       - task --list
 
   # {{{ preparation tasks
-  check:prepare:
+  # These are plain internal tasks rather than a YAML anchor on purpose. A merge
+  # key only supplies keys the mapping does not already have, so a task with any
+  # `deps` of its own silently loses everything the anchor meant to add - which
+  # is what `build` used to do. Naming them in a `deps` list composes instead.
+  package:exists:
     internal: true
     summary: |
-      prepare check targets by creating appropriate directory
+      fail loudly when PACKAGE does not name a directory
     run: once
+    preconditions:
+      - sh: '[ -d "$package_dir" ]'
+        msg: >
+          The package directory does not exist. Its name comes from the
+          package_dir entry of .copier-answers.env, and an exported package_dir
+          of your own silently outranks that entry - unset it. Without this
+          check, an empty value dropped the package from every command line and
+          the checks passed having looked at nothing but tests.
+
+  prepare:
+    internal: true
+    summary: |
+      everything a check or format task needs first: the virtualenv, a package
+      directory that exists, and the directory the reports are written to
+    run: once
+    deps:
+      - poetry:install
+      - package:exists
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
@@ -50,31 +71,28 @@ tasks:
     cmds:
       - poetry install
 
+  # Neither format task depends on `poetry:install`, unlike the check tasks.
+  # `format:fix` is what the Claude Code PostToolUse hook runs after every edit,
+  # and `poetry install` refuses to run while pyproject.toml has been changed
+  # without the lock file being regenerated - exactly what a dependency bump or
+  # a template update looks like. Formatting would then quietly stop for the
+  # rest of the session. On a clone with no virtualenv yet, run `task check` or
+  # `task poetry:install` first.
   format:fix:
     desc: Format Python files and fix obvious issues
-    <<: *preparation
+    deps:
+      - package:exists
     cmds:
       - poetry run ruff format tests {{.PACKAGE}}
       - poetry run ruff check tests {{.PACKAGE}} --fix-only
 
   format:fix-unsafe:
     desc: Format Python files and fix 'unsafe' issues
-    <<: *preparation
+    deps:
+      - package:exists
     cmds:
       - poetry run ruff format tests {{.PACKAGE}}
       - poetry run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
-
-  template:feedback-check:
-    desc: Look for findings worth reporting to the cmem-plugin-template
-    summary: |
-      Reads a Claude Code Stop hook payload on stdin and asks the agent to
-      consider reporting upstream when this working tree shows that a template
-      owned file got in the way. Prints nothing when there is nothing to say.
-
-      Create an empty .claude/no-template-feedback file to switch it off.
-    silent: true
-    cmds:
-      - python3 .claude/hooks/template-feedback.py
 
   clean:
     desc: Removes dist, *.pyc and some caches
@@ -102,7 +120,8 @@ tasks:
   check:pytest:
     desc: Run unit and integration tests
     platforms: [darwin, linux, windows]
-    <<: *preparation
+    deps:
+      - prepare
     cmds:
       # --memray is not used on windows
       - platforms: [windows]
@@ -133,7 +152,8 @@ tasks:
 
   check:mypy:
     desc: Complain about typing errors
-    <<: *preparation
+    deps:
+      - prepare
     cmds:
       - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
@@ -141,7 +161,8 @@ tasks:
 
   check:trivy:
     desc: Scan for vulnerabilities using Trivy
-    <<: *preparation
+    deps:
+      - prepare
     cmds:
       - >
         poetry run trivy fs
@@ -153,13 +174,15 @@ tasks:
 
   check:deptry:
     desc: Complain about unused or missing dependencies
-    <<: *preparation
+    deps:
+      - prepare
     cmds:
       - poetry run deptry .
 
   check:ruff:
     desc: Complain about everything else
-    <<: *preparation
+    deps:
+      - prepare
     cmds:
       - poetry run ruff check --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
       - poetry run ruff check --output-format=concise tests {{.PACKAGE}}
@@ -172,8 +195,11 @@ tasks:
 
   build:
     desc: Build a tarball and a wheel package
-    <<: *preparation
+    # `prepare` is deliberately not among these: `build` does not write into
+    # dist/coverage, and it would race with `clean`, since Task runs deps in
+    # parallel.
     deps:
+      - poetry:install
       - clean
     cmds:
       - poetry build

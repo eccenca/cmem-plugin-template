@@ -106,9 +106,28 @@ input_ports=FixedNumberOfInputs([FixedSchemaPort(schema=MY_SCHEMA)]),
 output_port=FixedSchemaPort(schema=MY_SCHEMA),
 ```
 
-Use `UnknownSchemaPort` when the schema is only known at runtime, and
-`FlexibleNumberOfInputs` when the task genuinely accepts any number of inputs.
 A task that consumes nothing declares `FixedNumberOfInputs([])`.
+
+Prefer a **fixed** schema on both ends, and reach for a flexible one only when
+the task really cannot know its schema. A fixed schema lets DataIntegration
+check a connection while the workflow is being drawn, which turns a runtime
+abort into an error the author sees in the editor.
+
+`UnknownSchemaPort` and `FlexibleNumberOfInputs` are for the cases a fixed
+schema cannot express, and a flexible **input** schema costs more than it looks:
+an operator declaring one has been seen to reject a file dataset outright,
+aborting before it receives a single entity, with an entity count of 0 and
+
+```text
+array assignment index out of range: 0
+```
+
+A flexible port requests no paths, and reading a file dataset with an empty
+requested schema appears to be the trigger - the same file read by a transform,
+which requests named paths, is fine. The message names an array index, so it
+reads like a bug in the plugin rather than a schema negotiation that never
+happened. If a "process whatever arrives" task has to exist, say in its
+documentation that its input comes from another task rather than from a dataset.
 
 ## Honouring cancellation
 

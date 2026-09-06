@@ -83,6 +83,11 @@ For each accepted issue:
    conventions in `CLAUDE.md` - a `plugin:` prefix when it only applies to
    plugin projects, `github:`/`gitlab:` for the generated pipelines, and nested
    bullets when downstream projects will notice a consequence.
+
+   One commit per issue does **not** mean one changelog entry per issue. Say
+   what a template user notices and leave why the old code was wrong to the
+   commit message, and extend an existing entry rather than adding a parallel
+   one when two findings land in the same file.
 3. Commit both together, closing the issue from the subject:
 
    ```bash
@@ -128,6 +133,11 @@ be green before you report done. Note what it does *not* cover: it never runs
 the generated `.github/workflows/`, and beyond the `check:hook:case` smoke test
 it never exercises the shipped agent files. A finding about a skill or a
 workflow needs a hand run in a rendered case.
+
+Before summarising, read `## [Unreleased]` as a whole. Repetition is invisible
+while writing one entry at a time and obvious once the section is read end to
+end - the same background told three times, or seven entries where two would
+do. Condense it in its own commit; see *Keeping it short* in `CLAUDE.md`.
 
 Then summarise: what was accepted and implemented, what was declined and where
 the reasoning now lives, and what still needs a human decision.
