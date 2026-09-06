@@ -7,7 +7,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the `Stop` hook no longer reports a lint rule that was never silenced
+    - it matched any quoted rule code added anywhere in `pyproject.toml`, so it
+      fired on `extend-select`, which *tightens* linting, on a `[tool.deptry]`
+      entry, and on the `per-file-ignores` relaxation for tests that the shipped
+      rules prescribe - blocking a session for following them
+    - it now reads `[tool.ruff.lint] ignore` from the file and from `HEAD`, and
+      reports only codes that really joined it, naming them
 
 
 ## [9.6.0] 2026-09-06
