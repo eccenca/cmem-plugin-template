@@ -451,9 +451,10 @@ The weakness of the long way round is that the shell reads `package_dir` from
 the process environment, where an exported variable of that name outranks the
 `dotenv` entry — and an empty one used to drop the package from every command
 line and let `task check` pass having looked at nothing. That is fixed **inside
-the Taskfile**, with a `preconditions:` guard on the `preparation` anchor, not
-by converting the file. Report #83 is the write-up. Any other file that already
-carries a second templating language gets the same treatment.
+the Taskfile**, by the internal `package:exists` task that every check and
+format task depends on, not by converting the file. Report #83 is the write-up.
+Any other file that already carries a second templating language gets the same
+treatment.
 
 ### `co` in `src/.gitignore` is CMEM orchestration, not a typo
 

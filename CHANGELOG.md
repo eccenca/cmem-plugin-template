@@ -18,6 +18,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
       receiving any entity, with `array assignment index out of range: 0` - a
       message that reads like a bug in the plugin, so the section now names it
       for whoever searches for it next
+- the `preparation` YAML anchor of the generated `Taskfile.yaml` is gone,
+  replaced by two internal tasks, `prepare` and `package:exists`
+    - a merge key only supplies keys the mapping does not already have, so any
+      task carrying `deps` of its own silently lost everything the anchor was
+      there to add - which is how `build` came to run without `poetry:install`
+    - naming a task in a `deps` list composes instead, so a task can have both
+      the shared preparation and dependencies of its own
+    - `check:prepare` is gone: `prepare` does what it did and pulls
+      `poetry:install` and `package:exists` with it. A `TaskfileCustom.yaml`
+      that depends on `check:prepare` by name has to be updated
 - the two Claude Code hooks a generated project ships no longer go through `task`
     - the `Stop` hook runs `.claude/hooks/template-feedback.py` directly. The
       script prints nothing unless it has something to say, because stdout is
@@ -89,21 +99,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
       `.copier-answers.env` entry it is meant to come from. An empty one was the
       damaging case: the argument vanished from the command line, ruff and mypy
       saw only `tests`, and the checks reported success
-    - the `preparation` anchor now carries a `preconditions:` guard asserting
-      that the package directory exists, so every check task stops with an
+    - the internal `package:exists` task now asserts that the package directory
+      exists, and every check and format task depends on it, so they stop with an
       explanation instead. A wrong value was always loud; an empty one no longer
       passes quietly
     - the Taskfile stays un-templated on purpose - it already contains Task's own
       `{{.VAR}}` templating, and a second layer would make it much harder to edit
       by hand. See *Deliberate decisions* in `CLAUDE.md`
 - the `build` task now really depends on `poetry:install`
-    - it carried both `<<: *preparation` and its own `deps: [clean]`, and a YAML
-      merge key only supplies keys the mapping does not already have, so the
-      explicit `deps` won and both preparation tasks were dropped
+    - it carried both `<<: *preparation` and its own `deps: [clean]`, and the
+      explicit `deps` won, so both preparation tasks were dropped
     - plugin: `task install` starts with `task build` and then runs `poetry run
       cmemc`, which failed on a fresh clone because no virtualenv had been created
-    - `check:prepare` is deliberately not added back: `build` does not write into
-      `dist/coverage`, and it would race with `clean`, since Task runs deps in parallel
+    - `prepare` is deliberately not among its dependencies: `build` does not write
+      into `dist/coverage`, and it would race with `clean`, since Task runs deps
+      in parallel
 
 
 ## [9.5.0] 2026-09-02
