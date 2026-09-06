@@ -212,7 +212,28 @@ conventions worth matching:
 - Fixes to code that was never released are folded into the entry describing the
   change, not listed separately under `### Fixed`.
 - Nested bullets are used to warn about consequences, e.g. a lint rule that may
-  start failing checks in existing projects.
+  start failing checks in existing projects — not to explain the change.
+- Removals go under `### Removed`, even when they are a side effect of something
+  in `### Changed`. That section is what a template user scans before running
+  `copier update`.
+
+### Keeping it short
+
+An entry says what changed **for a template user**. Why the old code was wrong,
+how the problem was found and what else was tried belong in the commit message,
+which is where anyone who wants them will look — and repeating them here is what
+makes a changelog long.
+
+The failure mode is a batch of work, a triage sweep or a release cycle, written
+as one narrated entry per commit. A seven-issue triage sweep produced 117 lines
+that way and was cut to 58 with nothing lost, because it had told the same three
+background stories two or three times each. Two habits prevent it:
+
+- Background shared by several entries is told **once**, in the entry it belongs
+  to. The others do not restate it.
+- Group by what a user notices, not by which issue caused it. Seven reported
+  findings in one file usually collapse into one entry with two or three
+  sub-points, not seven entries.
 
 ## Releasing
 
