@@ -216,6 +216,16 @@ conventions worth matching:
 - Removals go under `### Removed`, even when they are a side effect of something
   in `### Changed`. That section is what a template user scans before running
   `copier update`.
+- An entry with a single originating report ends with `(#NN)`. GitHub autolinks a
+  bare reference in the blob view the README's version badge points at — verified
+  via `gh api --method POST /markdown` — and since this repository publishes no
+  GitHub Releases, `CHANGELOG.md` is its release notes. One issue may be cited by
+  two entries; one entry never cites two, because an entry that grouped several
+  findings is more useful grouped than annotated.
+    - **This repository only.** Neither `src/CHANGELOG.md` nor a generated
+      project's changelog carries references: plugin work is tracked in eccenca's
+      private Jira, so a reader of those files cannot open what a reference points
+      at. The shipped `.claude/rules/copier-template.md` says so.
 
 ### Keeping it short
 

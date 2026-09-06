@@ -55,3 +55,6 @@ in other projects as well.
 entry under `## [Unreleased]` in the matching `### Added`, `### Changed`,
 `### Fixed` or `### Removed` section. The trigger is whether a user would
 notice, not whether behaviour changed.
+
+Do not cite an issue or Jira ticket. The people reading this file cannot open
+them, so the entry has to stand on its own.
