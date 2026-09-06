@@ -25,6 +25,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- the `Stop` hook of a generated project now looks at the right evidence
+    - a `copier update` that **added** the conflict-marker example of the
+      `copier-update` skill was reported as "conflict markers are still in the
+      working tree" - the marker was matched against the flat diff, so the
+      template's own documentation of a conflict blocked the session during the
+      one workflow the hook exists to support
+    - `# noqa` and `# type: ignore` are now looked for in Python files only, and
+      only when a file ends up with more of them than it started with. A changelog
+      entry or a `CLAUDE.md` naming the comment no longer counts as using one, nor
+      does a functional edit to a line that always carried one
+    - a suppression in a **new, untracked** module is now seen. `git diff HEAD`
+      never lists untracked files, so whether the hook noticed depended on staging
+      state rather than on what was done
+    - the diff parser no longer assumes a `b/` prefix. With `diff.noprefix`,
+      `diff.mnemonicPrefix` or a quoted path it attributed every line to no file
+      at all, which switched the template-owned exclusion off silently; the git
+      calls now pin the output format they parse
+    - a failed git call is no longer read as "nothing changed". On an unborn HEAD
+      `git diff HEAD` exits non-zero, so a freshly generated project that had not
+      committed yet was blocked on its first session, listing every template file
+      as edited. The same went for git missing from PATH, or a held `index.lock`
+    - `git status` is parsed once, with `-uall -z`, so an entirely untracked
+      directory no longer hides the `.rej` files and workflow paths inside it,
+      and `core.quotePath` can no longer defeat the path tests
 - `task check` can no longer be narrowed by an environment variable
     - the `PACKAGE` variable of the generated `Taskfile.yaml` was written as the
       shell expansion `$package_dir`, so an exported `package_dir` from a shell
