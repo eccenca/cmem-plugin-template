@@ -7,7 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- the `copier-update` skill warns that a merge can be wrong without raising a
+  conflict, and says how to check
+    - a template change can fail to arrive, and a project's own configuration can
+      be replaced by the template's - both silently, so "no conflicts" does not
+      mean "nothing to review"
 
 
 ## [9.6.1] 2026-09-06
