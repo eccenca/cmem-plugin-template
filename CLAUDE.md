@@ -222,12 +222,13 @@ conventions worth matching:
   GitHub Releases, `CHANGELOG.md` is its release notes. One report may be cited by
   two entries; one entry never cites two, because an entry that grouped several
   findings is more useful grouped than annotated.
-    - Cite the **issue**. A pull request only when the change exists solely as a
-      pull request and no issue was ever filed for it — the dynamic-port paragraph
-      of #78 is the precedent. The preference exists because a pull request here
-      is usually a batch: a triage sweep carries several findings at once, so
-      pointing a handful of entries at one number tells a reader nothing they can
-      act on. A one-change pull request does not have that problem.
+    - What is cited is a **report** — something written to describe the problem,
+      which a reader can open and learn from. Normally an issue. A pull request
+      qualifies only when it *is* the report: one change, its description the
+      write-up, no issue ever filed — the dynamic-port paragraph of #78 is the
+      precedent. Never cite the pull request that merely carries the fix. A
+      branch of code-review fixes, or any pull request bundling several changes,
+      is a batch, and pointing entries at it tells a reader nothing.
     - **This repository only.** Neither `src/CHANGELOG.md` nor a generated
       project's changelog carries references: plugin work is tracked in eccenca's
       private Jira, so a reader of those files cannot open what a reference points

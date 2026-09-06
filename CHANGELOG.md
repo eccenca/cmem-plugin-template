@@ -9,28 +9,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- plugin: the example workflow plugin declares its ports
-    - it declared none at all, while the skill beside it says not to leave them
-      implicit - and an agent copies the example, not the skill
-    - it consumes nothing, so `input_ports` is `FixedNumberOfInputs([])`; its
-      schema follows the `number_of_values` parameter, so it is built in
-      `__init__` and the output stays a `FixedSchemaPort`, which is also what a
-      port depending on a parameter looks like
-- plugin: the `plugin-implementation` skill separates the two things a port
-  declaration says
-    - arity (`FixedNumberOfInputs`, `FlexibleNumberOfInputs`) and schema
-      (`FixedSchemaPort`, `FlexibleSchemaPort`, `UnknownSchemaPort`) are
-      independent, and the warning about flexible input schemas named only the
-      arity classes - so an author writing
-      `FixedNumberOfInputs([FlexibleSchemaPort()])`, the commonest spelling of
-      exactly that, read the warning as not applying
-- the `Stop` hook no longer reports a lint rule that was never silenced
-    - it matched any quoted rule code added anywhere in `pyproject.toml`, so it
-      fired on `extend-select`, which *tightens* linting, on a `[tool.deptry]`
-      entry, and on the `per-file-ignores` relaxation for tests that the shipped
-      rules prescribe - blocking a session for following them
-    - it now reads `[tool.ruff.lint] ignore` from the file and from `HEAD`, and
-      reports only codes that really joined it, naming them
+- the `Stop` hook only reports a rule that really joined
+  `[tool.ruff.lint] ignore`, and names it
+    - it matched any quoted rule code anywhere in `pyproject.toml`, so
+      `extend-select`, a `[tool.deptry]` entry and the `per-file-ignores`
+      relaxation the shipped rules prescribe all blocked a session
+- plugin: the `plugin-implementation` skill separates port arity
+  (`FixedNumberOfInputs`) from port schema (`FixedSchemaPort`,
+  `FlexibleSchemaPort`, `UnknownSchemaPort`) - the warning about flexible input
+  schemas named only the first, so it read as not applying to
+  `FixedNumberOfInputs([FlexibleSchemaPort()])`
+- plugin: the example workflow plugin declares its ports, which the skill beside
+  it says not to leave implicit
 
 
 ## [9.6.0] 2026-09-06
