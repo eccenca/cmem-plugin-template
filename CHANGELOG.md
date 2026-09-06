@@ -9,6 +9,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- `task check` can no longer be narrowed by an environment variable
+    - the `PACKAGE` variable of the generated `Taskfile.yaml` was written as the
+      shell expansion `$package_dir`, so an exported `package_dir` from a shell
+      profile, a CI job or a direnv file outranked the `.copier-answers.env`
+      entry it was meant to come from
+    - an empty one was the damaging case: the argument vanished from the command
+      line, ruff and mypy saw only `tests`, and `task check` reported success
+      without ever looking at the package
+    - copier now renders the value into the file, so nothing in the environment
+      can reach it; `.copier-answers.env` is still generated and still loaded,
+      for custom tasks that want `$package_dir`
 - the `build` task now really depends on `poetry:install`
     - it carried both `<<: *preparation` and its own `deps: [clean]`, and a YAML
       merge key only supplies keys the mapping does not already have, so the

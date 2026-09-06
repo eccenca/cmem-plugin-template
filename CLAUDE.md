@@ -61,6 +61,15 @@ is named `src/{{ '.claude' }}/`, an expression that always renders to
 generated project's rules and skills, including a `release` skill describing a
 release procedure this repository does not follow.
 
+`src/Taskfile.yaml.jinja` is a third special case. Task's own templating uses
+the same `{{` … `}}` delimiters as Jinja, so almost the whole file sits inside a
+single `{% raw %}` block — it opens at the end of the `PACKAGE:` line and closes
+at the end of the very last line. Only `PACKAGE` is rendered by copier, and
+anything added outside that block must therefore avoid Task's `{{.VAR}}` form.
+The trailing blank line is part of the file: keep `{% endraw %}` on the last
+content line rather than on one of its own, or every generated project sees a
+whitespace diff on its next update.
+
 ## Two project types
 
 The first copier question, `project_type`, selects between:

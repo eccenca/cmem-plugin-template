@@ -17,7 +17,12 @@ dotenv: ['.copier-answers.env', '.env']
     - check:prepare
 
 vars:
-  PACKAGE: $package_dir
+  # Filled in by copier, not read from the environment. As a `$package_dir`
+  # shell expansion this picked up any exported variable of that name instead:
+  # a wrong one pointed every check at a directory that does not exist, and an
+  # empty one dropped the argument altogether, so `task check` passed without
+  # ever looking at the package.
+  PACKAGE: {{ package_dir }}{% raw %}
   DIST_DIR: dist
 
 includes:
@@ -184,5 +189,5 @@ tasks:
       - clean
     cmds:
       - poetry build
-      - poetry export --without=dev -f requirements.txt >dist/requirements.txt
+      - poetry export --without=dev -f requirements.txt >dist/requirements.txt{% endraw %}
 
