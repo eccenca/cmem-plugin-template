@@ -25,6 +25,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- github: `check.yml` declares a least privilege `permissions:` block, and no
+  longer goes red on a pull request from a fork
+    - it declared none at all, so the two reporting steps ran on whatever the
+      organisation default happens to be. They need `checks: write` and
+      `pull-requests: write`; everything else is `contents: read`
+    - a fork pull request gets a read-only token regardless of that block, and
+      the junit step carries `if: always()`, so it failed 403 and reddened the
+      whole check on every outside contribution. Both reporting steps are now
+      `continue-on-error: true`
+- github: `xportation/junit-coverage-report` is pinned to `v1.0.3` instead of the
+  mutable `@main`
+    - it was the only action in either generated workflow tracking a branch, so
+      whoever controls that repository could change what runs with the workflow
+      token between one pull request and the next, with no diff in the project
+    - `main` and `v1.0.3` are the same commit today, so nothing about the step
+      changes
 - the `Stop` hook of a generated project now looks at the right evidence
     - a `copier update` that **added** the conflict-marker example of the
       `copier-update` skill was reported as "conflict markers are still in the
