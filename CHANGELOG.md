@@ -41,7 +41,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
       dependency bump or a template update - the work it is most needed for
         - on a clone with no virtualenv yet, run `task check` or
           `task poetry:install` before formatting
-    - `task template:feedback-check` stays, for running the same check by hand
+    - `task template:feedback-check` is removed with it. It only ever wrapped the
+      same script, and running it the obvious way hung: the script reads its
+      payload from stdin, so with a terminal attached the task waited for input
+      that never came. The hand run is
+      `echo '{}' | python3 .claude/hooks/template-feedback.py`
 
 ### Fixed
 

@@ -165,10 +165,9 @@ shows evidence of template friction — a template owned file was edited, a
 `# noqa` or `# type: ignore` was added, a rule joined the ruff ignore list, a
 `copier update` left conflicts behind. The hook is
 `src/{{ '.claude' }}/hooks/template-feedback.py`, which `settings.json` runs
-directly - the generated `template:feedback-check` task wraps the same script
-for hand runs, but a task runner writes to stdout and picks its own exit codes,
-and stdout is the hook's JSON channel. A project switches the hook off with an
-empty
+directly rather than through a task, because a task runner writes to stdout and
+picks its own exit codes, and stdout is the hook's JSON channel. A project
+switches the hook off with an empty
 `.claude/no-template-feedback` file, which is project owned and therefore
 survives `copier update`.
 
