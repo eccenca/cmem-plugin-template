@@ -9,6 +9,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- plugin: the `plugin-implementation` skill now states a preference for fixed
+  schema ports, and records what a flexible input schema costs
+    - it presented fixed and flexible as a question of how much the author knows
+      in advance, when it also decides whether the task can be wired to a file
+      dataset at all
+    - an operator with a flexible input schema has been seen to abort before
+      receiving any entity, with `array assignment index out of range: 0` - a
+      message that reads like a bug in the plugin, so the section now names it
+      for whoever searches for it next
 - the two Claude Code hooks a generated project ships no longer go through `task`
     - the `Stop` hook runs `.claude/hooks/template-feedback.py` directly. The
       script prints nothing unless it has something to say, because stdout is
