@@ -108,14 +108,20 @@ output_port=FixedSchemaPort(schema=MY_SCHEMA),
 
 A task that consumes nothing declares `FixedNumberOfInputs([])`.
 
-Prefer a **fixed** schema on both ends, and reach for a flexible one only when
+Two independent things are being declared here, and they are easy to confuse.
+`FixedNumberOfInputs` and `FlexibleNumberOfInputs` say how many inputs the task
+takes. `FixedSchemaPort`, `FlexibleSchemaPort` and `UnknownSchemaPort` say what
+a single port's schema is. `FlexibleNumberOfInputs` makes every one of its
+inputs a flexible schema port, which is why the two get read as one choice.
+
+Prefer a **fixed** schema on every port, and reach for a flexible one only when
 the task really cannot know its schema. A fixed schema lets DataIntegration
 check a connection while the workflow is being drawn, which turns a runtime
 abort into an error the author sees in the editor.
 
-`UnknownSchemaPort` and `FlexibleNumberOfInputs` are for the cases a fixed
-schema cannot express, and a flexible **input** schema costs more than it looks:
-an operator declaring one has been seen to reject a file dataset outright,
+A flexible **input** schema costs more than it looks - whether it is written
+`FixedNumberOfInputs([FlexibleSchemaPort()])` or `FlexibleNumberOfInputs()`.
+An operator declaring one has been seen to reject a file dataset outright,
 aborting before it receives a single entity, with an entity count of 0 and
 
 ```text
@@ -128,6 +134,10 @@ which requests named paths, is fine. The message names an array index, so it
 reads like a bug in the plugin rather than a schema negotiation that never
 happened. If a "process whatever arrives" task has to exist, say in its
 documentation that its input comes from another task rather than from a dataset.
+
+`UnknownSchemaPort` is the safer of the two escapes: it says the schema is not
+known in advance, without asking DataIntegration to adapt this port to whatever
+is connected.
 
 A port can also depend on a parameter's current value instead of being fixed
 at write time. Assign `input_ports`/`output_port` in `__init__` from a

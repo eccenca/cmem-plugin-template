@@ -30,6 +30,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import tomllib
 from pathlib import Path
 
 OPT_OUT = Path(".claude") / "no-template-feedback"
@@ -59,10 +60,6 @@ PYTHON_SUFFIXES = (".py", ".pyi")
 # means a rule lost an argument with real code. Counted per file against the
 # removed side, so editing a line that already carried one is not a finding.
 SILENCER = re.compile(r"#\s*(noqa|type:\s*ignore)")
-
-# A rule code added to a list in pyproject.toml - almost always the ruff
-# ignore list growing.
-RUFF_RULE = re.compile(r'^\+\s*"[A-Z]{1,4}[0-9]{1,4}"')
 
 # What copier leaves behind when an update could not be merged. Only an added
 # line counts; a marker already committed is this project's problem, not the
@@ -226,8 +223,7 @@ def collect_evidence() -> list[str]:
     """Return human readable evidence of template friction, newest first."""
     status = git("status", "--porcelain", "-uall", "-z")
     diff = git("diff", "HEAD")
-    lint = git("diff", "HEAD", "--", "pyproject.toml")
-    if status is None or diff is None or lint is None:
+    if status is None or diff is None:
         return []
 
     pairs = attributed(diff)
@@ -264,10 +260,50 @@ def collect_evidence() -> list[str]:
     # `pyproject.toml` is not template owned, but its lint configuration is
     # rendered - so during an update a new ignore entry arrived with the
     # template rather than being chosen here.
-    if not updating and any(RUFF_RULE.match(line) for line in lint.splitlines()):
-        evidence.append("a lint rule was added to the ignore list in pyproject.toml")
+    try:
+        current = Path("pyproject.toml").read_text(encoding="utf-8")
+    except OSError:
+        current = None
+    silenced = set() if updating else added_ignores(git("show", "HEAD:pyproject.toml"), current)
+    if silenced:
+        evidence.append(
+            "these lint rules joined the ruff ignore list in pyproject.toml: "
+            + ", ".join(sorted(silenced))
+        )
 
     return evidence
+
+
+def added_ignores(before: str | None, after: str | None) -> set[str]:
+    """Return the rule codes `[tool.ruff.lint] ignore` gained, comparing two files.
+
+    Reading the table is the whole point. Matching a quoted rule code against
+    the diff cannot tell which table it is in, so it fired on `extend-select`,
+    which *tightens* linting, on a `[tool.deptry]` entry, and on the
+    `per-file-ignores` relaxation for tests that the shipped rules prescribe -
+    reporting the project for doing what it was told.
+
+    `per-file-ignores` is deliberately not looked at for that reason. Anything
+    unreadable on either side yields no codes, because a suppression that
+    cannot be established is not evidence.
+    """
+
+    def ignores(source: str | None) -> set[str] | None:
+        if source is None:
+            return None
+        try:
+            lint = tomllib.loads(source)["tool"]["ruff"]["lint"]
+        except (tomllib.TOMLDecodeError, ValueError, KeyError, TypeError):
+            return None
+        listed = lint.get("ignore") if isinstance(lint, dict) else None
+        if not isinstance(listed, list):
+            return set()
+        return {code for code in listed if isinstance(code, str)}
+
+    old, new = ignores(before), ignores(after)
+    if old is None or new is None:
+        return set()
+    return new - old
 
 
 def marker_for(session_id: str) -> Path:

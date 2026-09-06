@@ -7,7 +7,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the `Stop` hook only reports a rule that really joined
+  `[tool.ruff.lint] ignore`, and names it
+    - it matched any quoted rule code anywhere in `pyproject.toml`, so
+      `extend-select`, a `[tool.deptry]` entry and the `per-file-ignores`
+      relaxation the shipped rules prescribe all blocked a session
+- plugin: the `plugin-implementation` skill separates port arity
+  (`FixedNumberOfInputs`) from port schema (`FixedSchemaPort`,
+  `FlexibleSchemaPort`, `UnknownSchemaPort`) - the warning about flexible input
+  schemas named only the first, so it read as not applying to
+  `FixedNumberOfInputs([FlexibleSchemaPort()])`
+- plugin: the example workflow plugin declares its ports, which the skill beside
+  it says not to leave implicit
 
 
 ## [9.6.0] 2026-09-06
