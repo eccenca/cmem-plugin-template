@@ -16,6 +16,7 @@ from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 @Plugin(
     label="Lifetime (age - example from template)",
+    plugin_id="{{ package_dir }}-Lifetime",
     description="From the input date,"
     "the value gets transformed into number of years (age)."
     " Supports only xsd:date(YYYY-MM-DD) format.",

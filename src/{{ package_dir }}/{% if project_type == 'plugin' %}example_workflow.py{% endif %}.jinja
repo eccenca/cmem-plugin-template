@@ -21,6 +21,10 @@ from cmem_plugin_base.dataintegration.ports import FixedNumberOfInputs, FixedSch
 
 @Plugin(
     label="Random Values (example from template)",
+    # Pin the identifier rather than letting it be derived from the module path,
+    # so moving or renaming this module does not change the identity of a task
+    # already deployed from it.
+    plugin_id="{{ package_dir }}-DollyPlugin",
     description="Generates random values of X rows a Y values.",
     documentation="""
 This example workflow operator generates random values.

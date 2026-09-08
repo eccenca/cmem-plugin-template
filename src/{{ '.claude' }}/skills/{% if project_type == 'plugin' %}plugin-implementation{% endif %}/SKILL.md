@@ -46,6 +46,39 @@ use `setup_cmempy_user_access()`. Plenty of existing plugins still call it -
 that is legacy, not a pattern to copy. `cmem-plugin-base` continues to depend
 on `cmem-cmempy` transitively, which does not make it available for new code.
 
+## The plugin identifier
+
+Set `plugin_id` explicitly on every `@Plugin`:
+
+```python
+@Plugin(
+    label="Create thing",
+    plugin_id="cmem_plugin_example-CreateThing",
+    ...
+)
+```
+
+Left unset, it is generated from where the code happens to sit -
+`generate_id(module_path + "-" + ClassName)`, so a task in
+`cmem_plugin_example/tasks/create.py` is called
+`cmem_plugin_example-tasks-create-CreateThing`. A workflow references a plugin
+by that identifier, so moving the module or renaming the class changes the
+identity of an already deployed task and orphans every workflow task built on
+it. That turns an ordinary refactoring into a breaking change, without an error
+anywhere.
+
+Name it `<package_dir>-<Name>`. The prefix carries the weight - it keeps the
+identifier distinct from every other plugin in the same workspace - and
+`<Name>` is the class name, or a shortened form where the class repeats
+something the package name already says: `cmem_plugin_ssh-Download` for
+`DownloadFiles`. An identifier you supply bypasses `generate_id()` and is
+therefore never sanitised, so keep it to `[a-zA-Z0-9_-]` yourself.
+
+**For a task that is already deployed, write down the identifier it generates
+today, verbatim** - work it out with the formula above rather than inventing a
+tidier one. The point of setting the field is to stop the identifier moving; a
+first commit that changes it breaks exactly what it is there to protect.
+
 ## Logging
 
 The base class already provides a logger as `self.log`. Use it:
@@ -156,6 +189,45 @@ same thing - a parameter here versus a connected input - rather than accepting
 both and picking one at runtime. A boolean or an enum parameter drives the same
 pattern with an `if`/`match` in place of the empty-string check.
 
+### What `execute()` receives
+
+The declaration settles what `inputs` can hold, and the two directions are not
+symmetric.
+
+Under `FixedNumberOfInputs` it never carries **more** than the declared number
+of ports. The workflow editor offers exactly the handlers a task declares, so a
+one-port task cannot be connected to two upstream tasks. Code that warns about
+or trims a surplus is unreachable from a workflow, and it especially must not
+be mentioned in the task's `documentation`: telling a user to avoid a state they
+cannot configure is worse than saying nothing. Calling `execute()` directly from
+Python bypasses the editor entirely, which is why a test - or a code review
+reading the body alone - can "reproduce" the surplus and make a non-issue look
+like a defect.
+
+It can carry **fewer**. A declared port the workflow leaves unconnected is
+absent from the sequence rather than arriving as an empty `Entities`, and
+DataIntegration runs the workflow anyway, so `inputs[0]` raises `IndexError`
+on a task whose one port nobody wired. That case is real, and each task decides
+what it means:
+
+```python
+entities = list(inputs[index].entities) if index < len(inputs) else []
+```
+
+reads an unconnected port as an empty one - the right call when input is an
+optional addition to what parameters already supply. Where the input is the
+whole point, fail with a message naming the cause instead:
+
+```python
+if not inputs:
+    raise ValueError("No input was given.")
+```
+
+Both are used across the fleet. With several declared ports, do not additionally
+assume that a partly connected task keeps each remaining port at its declared
+index; drive the loop from `len(inputs)` or accept only what you can identify
+from the entities themselves.
+
 ## Honouring cancellation
 
 A long-running task must stop when the user cancels the workflow. Check the
@@ -173,7 +245,9 @@ for entity in inputs[0].entities:
 
 The `suppress(AttributeError)` is required, not defensive noise:
 `context.workflow` is absent in some contexts - notably the test contexts - and
-an unguarded check raises there while working in production.
+an unguarded check raises there while working in production. The `inputs[0]` in
+front of it is shorthand for a task whose port is connected; see *What
+`execute()` receives* for the case where it is not.
 
 ## Reporting progress
 
