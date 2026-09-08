@@ -14,6 +14,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - a template change can fail to arrive, and a project's own configuration can
       be replaced by the template's - both silently, so "no conflicts" does not
       mean "nothing to review"
+- plugin: the `plugin-implementation` skill says to set `plugin_id` explicitly, and
+  both example plugins now do - the generated default embeds the module path and
+  class name, so moving or renaming a module changes the identity of a deployed
+  task and orphans the workflow tasks referencing it
+    - a project adopting this for a task that is already deployed has to write down
+      the identifier it generates today, verbatim; a tidier one breaks exactly what
+      setting the field protects (#91)
 
 
 ## [9.6.1] 2026-09-06
