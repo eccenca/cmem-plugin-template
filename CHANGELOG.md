@@ -21,6 +21,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - a project adopting this for a task that is already deployed has to write down
       the identifier it generates today, verbatim; a tidier one breaks exactly what
       setting the field protects (#91)
+- plugin: the `plugin-implementation` skill says what `execute()` is handed, not
+  only what a task declares - a workflow can never deliver more inputs than the
+  declared ports, but a port left unconnected is absent from the sequence rather
+  than empty
+    - a task guarding against surplus inputs is guarding against a state the
+      workflow editor cannot produce, and must not warn its users about one (#89)
 
 
 ## [9.6.1] 2026-09-06

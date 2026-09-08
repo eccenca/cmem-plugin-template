@@ -189,6 +189,45 @@ same thing - a parameter here versus a connected input - rather than accepting
 both and picking one at runtime. A boolean or an enum parameter drives the same
 pattern with an `if`/`match` in place of the empty-string check.
 
+### What `execute()` receives
+
+The declaration settles what `inputs` can hold, and the two directions are not
+symmetric.
+
+Under `FixedNumberOfInputs` it never carries **more** than the declared number
+of ports. The workflow editor offers exactly the handlers a task declares, so a
+one-port task cannot be connected to two upstream tasks. Code that warns about
+or trims a surplus is unreachable from a workflow, and it especially must not
+be mentioned in the task's `documentation`: telling a user to avoid a state they
+cannot configure is worse than saying nothing. Calling `execute()` directly from
+Python bypasses the editor entirely, which is why a test - or a code review
+reading the body alone - can "reproduce" the surplus and make a non-issue look
+like a defect.
+
+It can carry **fewer**. A declared port the workflow leaves unconnected is
+absent from the sequence rather than arriving as an empty `Entities`, and
+DataIntegration runs the workflow anyway, so `inputs[0]` raises `IndexError`
+on a task whose one port nobody wired. That case is real, and each task decides
+what it means:
+
+```python
+entities = list(inputs[index].entities) if index < len(inputs) else []
+```
+
+reads an unconnected port as an empty one - the right call when input is an
+optional addition to what parameters already supply. Where the input is the
+whole point, fail with a message naming the cause instead:
+
+```python
+if not inputs:
+    raise ValueError("No input was given.")
+```
+
+Both are used across the fleet. With several declared ports, do not additionally
+assume that a partly connected task keeps each remaining port at its declared
+index; drive the loop from `len(inputs)` or accept only what you can identify
+from the entities themselves.
+
 ## Honouring cancellation
 
 A long-running task must stop when the user cancels the workflow. Check the
@@ -206,7 +245,9 @@ for entity in inputs[0].entities:
 
 The `suppress(AttributeError)` is required, not defensive noise:
 `context.workflow` is absent in some contexts - notably the test contexts - and
-an unguarded check raises there while working in production.
+an unguarded check raises there while working in production. The `inputs[0]` in
+front of it is shorthand for a task whose port is connected; see *What
+`execute()` receives* for the case where it is not.
 
 ## Reporting progress
 
