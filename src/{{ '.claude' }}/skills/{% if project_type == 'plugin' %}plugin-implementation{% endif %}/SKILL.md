@@ -344,6 +344,7 @@ nor `__len__`, so the obvious guard never fires:
 
 ```python
 if self.api_key:  # True even when the field was left blank
+    ...
 ```
 
 A plugin whose behaviour depends on whether a secret was supplied takes the
