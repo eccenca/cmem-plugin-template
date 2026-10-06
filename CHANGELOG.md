@@ -7,7 +7,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- plugin: the `plugin-implementation` skill says that DataIntegration renders
+  parameters in constructor order, not in the order `@Plugin` lists them - the
+  decorator list is a lookup table, so reordering it leaves the form untouched
+    - it also notes that a decorator entry matching no constructor argument is
+      dropped without an error, which is what a renamed argument looks like
+      (#93)
 
 
 ## [9.7.0] 2026-09-08

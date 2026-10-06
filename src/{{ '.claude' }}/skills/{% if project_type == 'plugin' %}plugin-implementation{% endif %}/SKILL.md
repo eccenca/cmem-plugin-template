@@ -272,6 +272,29 @@ context.report.update(
   the work is finished shows a user nothing while the task is running, which is
   exactly when they are looking.
 
+## The constructor decides the form, not the decorator list
+
+The `parameters=[...]` list in `@Plugin` reads as the order a user sees on the
+task form. It is not. The descriptor is built by walking
+`inspect.signature(__init__)` and looking each argument name up in the decorator
+list, so the **constructor's argument order is the form's field order** and the
+decorator list is only a lookup table for labels, descriptions and types.
+
+Two things follow:
+
+- Reordering the decorator list changes nothing a user can see, which is
+  unpleasant to debug because the file you edited is the one that looks
+  authoritative. Keep the two lists in the same order and reorder them together,
+  so the source reads the way the form does.
+- A decorator entry whose name matches no constructor argument is **dropped
+  without an error**. A renamed argument therefore silently takes its label and
+  description with it, and the field appears bare rather than missing.
+
+Order the constructor the way the decision reads: a parameter goes before the
+ones that depend on it, and above the flag that switches it on. Reordering is
+safe because the framework instantiates by keyword - but check that nothing
+constructs the class positionally first, which tests often do.
+
 ## A constructor with six or more parameters
 
 Ruff's `PLR0913` and `PLR0917` both complain about a long argument list, and a
