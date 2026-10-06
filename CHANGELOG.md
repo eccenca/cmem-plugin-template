@@ -29,6 +29,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - a crashed run otherwise leaves a fixed-id asset behind and every later run
       fails in setup; a restore reverts whatever else reached the shared
       deployment meanwhile (#95)
+- plugin: the `plugin-documentation` skill decides how a task's documentation is
+  marked up - headings and lists are named as available, prose carries a short
+  block, and `##` headings named after the four beats take over past roughly
+  twenty lines (#97)
 
 
 ## [9.7.0] 2026-09-08
