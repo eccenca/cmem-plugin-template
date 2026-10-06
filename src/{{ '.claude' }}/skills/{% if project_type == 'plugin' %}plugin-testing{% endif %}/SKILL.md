@@ -91,6 +91,32 @@ broken plugin fails the assertion instead of the fixture. Never point a test at
 assets that happen to exist in the deployment: the next person runs the suite
 somewhere else.
 
+The teardown runs **before** the test as well. A fixture whose asset has a
+fixed id leaves it behind whenever a run crashes or is killed, and every later
+run then fails in setup on the leftover rather than in the test it was meant to
+exercise. Deleting first, tolerating an asset that is not there, makes the suite
+self-healing:
+
+```python
+@pytest.fixture
+def project() -> Iterator[Client]:
+    """Provide an empty project, whatever the last run left behind."""
+    client = get_client(PROJECT_ID)
+    client.projects.delete_item(PROJECT_ID, skip_if_missing=True)
+    client.projects.create_item(Project(name=PROJECT_ID))
+    yield client
+    client.projects.delete_item(PROJECT_ID, skip_if_missing=True)
+```
+
+**Delete what the test created; never restore the whole store.** Snapshotting
+the triple store before a test and importing the snapshot back afterwards does
+restore the assets, and also reverts everything else written to the deployment
+in between. It looks thorough rather than dangerous, which is why it gets
+written - but integration tests commonly point at one shared instance, so the
+blast radius is every other suite and every person using it, not the handful of
+assets being undone. It is also slow: replacing such a snapshot with targeted
+deletion took one suite from about 127 seconds to 22.
+
 ## Finishing
 
 Run `task check:pytest` before finishing, and `task check` before considering

@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - plugin: the `plugin-implementation` skill says a knowledge graph IRI may be a
   URN, so a hand-written check must not use `validators.url()` alone - it
   rejects `urn:example:data`, which the store itself accepts (#96)
+- plugin: the `plugin-testing` skill says a fixture deletes its asset before the
+  test as well as after it, tolerating one that is not there, and that cleanup
+  never means snapshotting and restoring the whole triple store
+    - a crashed run otherwise leaves a fixed-id asset behind and every later run
+      fails in setup; a restore reverts whatever else reached the shared
+      deployment meanwhile (#95)
 
 
 ## [9.7.0] 2026-09-08
