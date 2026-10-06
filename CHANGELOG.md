@@ -20,6 +20,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   emptiness check reading the decrypted value instead
     - a test that passes a plain `str` exercises the naive guard correctly, so
       this only fails against a deployment (#94)
+- plugin: the `plugin-implementation` skill says a knowledge graph IRI may be a
+  URN, so a hand-written check must not use `validators.url()` alone - it
+  rejects `urn:example:data`, which the store itself accepts (#96)
 
 
 ## [9.7.0] 2026-09-08

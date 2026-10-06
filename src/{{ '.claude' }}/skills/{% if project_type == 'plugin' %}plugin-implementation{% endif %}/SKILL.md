@@ -364,6 +364,30 @@ Tests hide this rather than catching it: a test passing a plain `str` exercises
 the naive guard correctly, so the mistake only appears against a deployment,
 where DataIntegration hands over a `Password`.
 
+## Validating an IRI the user types
+
+A knowledge graph IRI **is not necessarily a URL**. `urn:example:data` and
+`urn:uuid:...` are ordinary ways to name a graph, and the store imports into and
+queries one without complaint - so `validators.url()`, the obvious import,
+rejects a graph that works. The trap is quiet: the check looks right, and the
+resulting *Invalid value for parameter ...* never mentions that the scheme was
+what failed.
+
+`GraphParameterType` covers the case where the user picks a graph. Hand-written
+validation is for the ones they type - an ignore list, a target graph that does
+not exist yet, a class or property filter - and it has to accept a URN as well:
+
+```python
+URN = re.compile(r"^urn:[a-z0-9][a-z0-9-]{1,31}:\S+$", re.IGNORECASE)
+
+if not validators.url(iri) and not URN.match(iri):
+    raise ValueError(f"{iri} is neither a URL nor a URN.")
+```
+
+The namespace identifier is two to thirty-two characters starting with an
+alphanumeric one, and the namespace specific string must be non-empty
+(RFC 8141).
+
 ## Custom parameter types
 
 A `PluginParameter` without an explicit `param_type` gets one derived from the
