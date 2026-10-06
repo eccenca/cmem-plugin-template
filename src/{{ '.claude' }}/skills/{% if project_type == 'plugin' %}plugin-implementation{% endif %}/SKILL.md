@@ -272,6 +272,29 @@ context.report.update(
   the work is finished shows a user nothing while the task is running, which is
   exactly when they are looking.
 
+## The constructor decides the form, not the decorator list
+
+The `parameters=[...]` list in `@Plugin` reads as the order a user sees on the
+task form. It is not. The descriptor is built by walking
+`inspect.signature(__init__)` and looking each argument name up in the decorator
+list, so the **constructor's argument order is the form's field order** and the
+decorator list is only a lookup table for labels, descriptions and types.
+
+Two things follow:
+
+- Reordering the decorator list changes nothing a user can see, which is
+  unpleasant to debug because the file you edited is the one that looks
+  authoritative. Keep the two lists in the same order and reorder them together,
+  so the source reads the way the form does.
+- A decorator entry whose name matches no constructor argument is **dropped
+  without an error**. A renamed argument therefore silently takes its label and
+  description with it, and the field appears bare rather than missing.
+
+Order the constructor the way the decision reads: a parameter goes before the
+ones that depend on it, and above the flag that switches it on. Reordering is
+safe because the framework instantiates by keyword - but check that nothing
+constructs the class positionally first, which tests often do.
+
 ## A constructor with six or more parameters
 
 Ruff's `PLR0913` and `PLR0917` both complain about a long argument list, and a
@@ -314,6 +337,57 @@ PluginParameter(
 The value arrives as a `Password`; call `.decrypt()` only where it is used.
 Typing it as `str` puts the secret in plain text in the task configuration and
 in the project export.
+
+An **empty secret field is still truthy**. A blank parameter arrives as a
+`Password` wrapping an empty value, and `Password` defines neither `__bool__`
+nor `__len__`, so the obvious guard never fires:
+
+```python
+if self.api_key:  # True even when the field was left blank
+    ...
+```
+
+A plugin whose behaviour depends on whether a secret was supplied takes the
+wrong branch, and the failure surfaces much later - as a library error deep
+inside whatever consumes the secret, or as a request sent with an empty
+credential. Ask the question against the decrypted value, through a helper that
+also accepts the plain `str` that a default value or a test supplies, and keep
+the answer rather than the plaintext:
+
+```python
+def _secret(value: Password | str) -> str:
+    return value if isinstance(value, str) else value.decrypt()
+
+self.signing = bool(_secret(private_key))  # keep the answer, not the secret
+```
+
+Tests hide this rather than catching it: a test passing a plain `str` exercises
+the naive guard correctly, so the mistake only appears against a deployment,
+where DataIntegration hands over a `Password`.
+
+## Validating an IRI the user types
+
+A knowledge graph IRI **is not necessarily a URL**. `urn:example:data` and
+`urn:uuid:...` are ordinary ways to name a graph, and the store imports into and
+queries one without complaint - so `validators.url()`, the obvious import,
+rejects a graph that works. The trap is quiet: the check looks right, and the
+resulting *Invalid value for parameter ...* never mentions that the scheme was
+what failed.
+
+`GraphParameterType` covers the case where the user picks a graph. Hand-written
+validation is for the ones they type - an ignore list, a target graph that does
+not exist yet, a class or property filter - and it has to accept a URN as well:
+
+```python
+URN = re.compile(r"^urn:[a-z0-9][a-z0-9-]{1,31}:\S+$", re.IGNORECASE)
+
+if not validators.url(iri) and not URN.match(iri):
+    raise ValueError(f"{iri} is neither a URL nor a URN.")
+```
+
+The namespace identifier is two to thirty-two characters starting with an
+alphanumeric one, and the namespace specific string must be non-empty
+(RFC 8141).
 
 ## Custom parameter types
 

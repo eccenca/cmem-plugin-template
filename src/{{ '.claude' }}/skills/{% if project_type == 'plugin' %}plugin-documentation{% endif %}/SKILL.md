@@ -11,8 +11,8 @@ This governs the text a user reads inside eccenca Corporate Memory: the `label`,
 Python docstrings, error messages or identifiers. Those are read by developers
 and follow the ordinary code conventions.
 
-`documentation` is rendered as Markdown, so backticks, `**bold**` and links all
-work. `description` is a single line shown next to the task in the task list.
+`documentation` is rendered as Markdown, so backticks, `**bold**`, links, `##`
+headings and lists all work. `description` is a single line shown next to the task in the task list.
 
 ## Ground every claim in the code
 
@@ -65,6 +65,18 @@ Length follows content. Most tasks land somewhere around fifteen to twenty
 lines. Do not pad a simple task to match a complex one, and do not cut a
 complex one down to match a simple one. A task with three mutually exclusive
 modes genuinely needs more words than one with a single input port.
+
+Mark the beats by length, not by taste. While the block is short - which for
+most tasks it is - write it as one run of paragraphs and let the beats follow
+each other unannounced. Once it passes roughly twenty lines, give each beat a
+`##` heading named after it, so a reader scans for the beat they need instead of
+reading until they find it. The caveats beat is the one that stops working as
+prose first, and reads best as a list with the claim in bold at the front of
+each item.
+
+Letting the length decide is what keeps sibling tasks in one package looking
+like one product. A user meets several of them in a workspace, and two
+documentation styles there read as two different things.
 
 ## Parameters
 

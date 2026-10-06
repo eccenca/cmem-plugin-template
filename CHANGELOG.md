@@ -7,7 +7,36 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- plugin: the `plugin-implementation` skill says that DataIntegration renders
+  parameters in constructor order, not in the order `@Plugin` lists them, and
+  that a decorator entry naming no constructor argument is dropped silently
+    - reordering the decorator list alone changes nothing a user can see, and a
+      renamed argument loses its label and description without an error (#93)
+- plugin: the `plugin-implementation` skill warns that an empty secret parameter
+  is truthy, so `if self.api_key:` is true for a blank field, and shows the
+  emptiness check reading the decrypted value instead
+    - a test that passes a plain `str` exercises the naive guard correctly, so
+      this only fails against a deployment (#94)
+- plugin: the `plugin-implementation` skill says a knowledge graph IRI may be a
+  URN, so a hand-written check must not use `validators.url()` alone - it
+  rejects `urn:example:data`, which the store itself accepts (#96)
+- plugin: the `plugin-testing` skill says a fixture deletes its asset before the
+  test as well as after it, tolerating one that is not there, and that cleanup
+  never means snapshotting and restoring the whole triple store
+    - a crashed run otherwise leaves a fixed-id asset behind and every later run
+      fails in setup; a restore reverts whatever else reached the shared
+      deployment meanwhile (#95)
+- plugin: the `plugin-documentation` skill decides how a task's documentation is
+  marked up - headings and lists are named as available, prose carries a short
+  block, and `##` headings named after the four beats take over past roughly
+  twenty lines (#97)
+- the shipped `.claude/rules/copier-template.md` names `PLR0913`/`PLR0917` on a
+  framework-fixed signature - a plugin constructor, a Click command - as the one
+  settled instance of a rule that cannot be satisfied
+    - a generic project no longer re-raises a question answered until now only
+      in the plugin skill it is not given (#98)
 
 
 ## [9.7.0] 2026-09-08
