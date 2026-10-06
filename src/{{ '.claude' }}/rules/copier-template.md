@@ -49,6 +49,14 @@ silence the rule for code nobody has looked at. Report it with the
 `template-feedback` skill too, since a rule that is wrong here is usually wrong
 in other projects as well.
 
+One class of that is already settled and needs neither a human nor a report:
+`PLR0913` and `PLR0917` on a signature whose arity a framework fixes rather
+than the author - a plugin constructor with one argument per `PluginParameter`,
+a Click command with one per option. Suppress both on the `def`, with the
+reason above it. Neither escape ruff suggests is available, since keyword-only
+arguments answer `PLR0917` but not `PLR0913`, and folding the arguments into
+one object breaks the one-argument-per-option mapping the framework relies on.
+
 ## Every user visible change gets a changelog entry
 
 `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/). Add an

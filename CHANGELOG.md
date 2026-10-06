@@ -33,6 +33,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   marked up - headings and lists are named as available, prose carries a short
   block, and `##` headings named after the four beats take over past roughly
   twenty lines (#97)
+- the shipped `.claude/rules/copier-template.md` names `PLR0913`/`PLR0917` on a
+  framework-fixed signature as the one already settled instance of a rule that
+  cannot be satisfied, so a project does not re-raise it
+    - generic projects could only reach that answer through the plugin skill,
+      which they are not given, while a Click command hits the same rule (#98)
 
 
 ## [9.7.0] 2026-09-08
