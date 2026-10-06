@@ -15,6 +15,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - it also notes that a decorator entry matching no constructor argument is
       dropped without an error, which is what a renamed argument looks like
       (#93)
+- plugin: the `plugin-implementation` skill warns that an empty secret parameter
+  is truthy, so `if self.api_key:` is true for a blank field, and shows the
+  emptiness check reading the decrypted value instead
+    - a test that passes a plain `str` exercises the naive guard correctly, so
+      this only fails against a deployment (#94)
 
 
 ## [9.7.0] 2026-09-08

@@ -338,6 +338,32 @@ The value arrives as a `Password`; call `.decrypt()` only where it is used.
 Typing it as `str` puts the secret in plain text in the task configuration and
 in the project export.
 
+An **empty secret field is still truthy**. A blank parameter arrives as a
+`Password` wrapping an empty value, and `Password` defines neither `__bool__`
+nor `__len__`, so the obvious guard never fires:
+
+```python
+if self.api_key:  # True even when the field was left blank
+```
+
+A plugin whose behaviour depends on whether a secret was supplied takes the
+wrong branch, and the failure surfaces much later - as a library error deep
+inside whatever consumes the secret, or as a request sent with an empty
+credential. Ask the question against the decrypted value, through a helper that
+also accepts the plain `str` that a default value or a test supplies, and keep
+the answer rather than the plaintext:
+
+```python
+def _secret(value: Password | str) -> str:
+    return value if isinstance(value, str) else value.decrypt()
+
+self.signing = bool(_secret(private_key))  # keep the answer, not the secret
+```
+
+Tests hide this rather than catching it: a test passing a plain `str` exercises
+the naive guard correctly, so the mistake only appears against a deployment,
+where DataIntegration hands over a `Password`.
+
 ## Custom parameter types
 
 A `PluginParameter` without an explicit `param_type` gets one derived from the
