@@ -7,7 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- `PLR2004` (magic value used in comparison) is ignored under `tests/**/*.py`
+    - an assertion's expected value is the literal, so naming it as a constant
+      moves the specification away from the assertion that states it; the rule
+      still applies to the package itself (#101)
 
 
 ## [9.8.0] 2026-10-06
