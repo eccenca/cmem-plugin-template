@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - an assertion's expected value is the literal, so naming it as a constant
       moves the specification away from the assertion that states it; the rule
       still applies to the package itself (#101)
+- plugin: `TRY400` (use `logging.exception` instead of `logging.error`) is
+  ignored, because `PluginLogger` has no `exception()` and the rule therefore
+  asks for a call that does not exist; the `plugin-implementation` skill says so
+  beside the `G004` note
+    - a project that suppressed it with a `# noqa: TRY400` now fails `RUF100`
+      instead, and has to drop the suppression (#105)
 
 
 ## [9.8.0] 2026-10-06

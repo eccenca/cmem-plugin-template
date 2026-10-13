@@ -98,7 +98,12 @@ formatted string. The `logging` idiom
 `self.log.info("Fetched %s records", count)` raises `TypeError` at runtime, so
 an f-string is the form to use - the ruff rule
 `G004` (logging statement uses f-string) is in the `ignore` list accordingly.
-The same gap is why `self.log` cannot be passed as a `logger` argument.
+There is no `exception()` either, so a failure logged inside an `except` block
+uses `error()` - ruff's `TRY400` asks for `logging.exception` there, and is in
+the `ignore` list for the same reason as `G004`. Do not downgrade the call to
+`warning()` to quieten the rule: that understates a failure that is usually
+about to be re-raised. The same gap is why `self.log` cannot be passed as a
+`logger` argument.
 
 ## The icon
 
