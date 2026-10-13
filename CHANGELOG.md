@@ -7,7 +7,37 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- gitlab: the pipeline includes `.gitlab-ci-custom.yml` when that file exists,
+  so a project adds a job - an integration test needing a service container, an
+  extra deployment step - without editing the template owned `.gitlab-ci.yml`
+    - the custom file can add keys to a templated job but not replace one, and
+      the pipeline's `stages` list wins, so a custom job uses an existing stage
+      or `.pre` / `.post`; `.github/workflows/` has no equivalent hook (#104)
+
+### Changed
+
+- `PLR2004` (magic value used in comparison) is ignored under `tests/**/*.py`
+    - an assertion's expected value is the literal, so naming it as a constant
+      moves the specification away from the assertion that states it; the rule
+      still applies to the package itself (#101)
+- plugin: `TRY400` (use `logging.exception` instead of `logging.error`) is
+  ignored, because `PluginLogger` has no `exception()` and the rule therefore
+  asks for a call that does not exist; the `plugin-implementation` skill says so
+  beside the `G004` note
+    - a project that suppressed it with a `# noqa: TRY400` now fails `RUF100`
+      instead, and has to drop the suppression (#105)
+- plugin: the `plugin-implementation` skill says that a `ChoiceParameterType`
+  dropdown is not shown in the order of the `OrderedDict` it was built from, and
+  carries the subclass that fixes it
+    - the shipped `autocomplete()` sorts and then deduplicates with `set()`, so
+      the order differs after every restart and nothing local shows it (#103)
+- plugin: the `plugin-implementation` skill says not to name a parameter `tags`,
+  because the task dialog's own tag field takes that key and its widget object
+  reaches the parameter in place of a string
+    - `label` and `description` are not affected, although the dialog shows the
+      item's own fields under those names too (#102)
 
 
 ## [9.8.0] 2026-10-06

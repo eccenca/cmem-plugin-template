@@ -21,6 +21,17 @@ stages:
   - publish
 {%- endif %}
 
+# Project specific jobs belong in .gitlab-ci-custom.yml, which is included when
+# that file exists - the same convention as TaskfileCustom.yaml. It can add jobs
+# and add keys to the jobs below, but not replace a key they already set, and
+# the stages list above wins over an included one, so a custom job uses one of
+# those stages or the always available .pre / .post.
+include:
+  - local: .gitlab-ci-custom.yml
+    rules:
+      - exists:
+          - .gitlab-ci-custom.yml
+
 ruff:
   stage: test
   script:

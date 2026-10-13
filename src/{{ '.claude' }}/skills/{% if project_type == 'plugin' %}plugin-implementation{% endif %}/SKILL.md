@@ -98,7 +98,12 @@ formatted string. The `logging` idiom
 `self.log.info("Fetched %s records", count)` raises `TypeError` at runtime, so
 an f-string is the form to use - the ruff rule
 `G004` (logging statement uses f-string) is in the `ignore` list accordingly.
-The same gap is why `self.log` cannot be passed as a `logger` argument.
+There is no `exception()` either, so a failure logged inside an `except` block
+uses `error()` - ruff's `TRY400` asks for `logging.exception` there, and is in
+the `ignore` list for the same reason as `G004`. Do not downgrade the call to
+`warning()` to quieten the rule: that understates a failure that is usually
+about to be re-raised. The same gap is why `self.log` cannot be passed as a
+`logger` argument.
 
 ## The icon
 
@@ -295,6 +300,31 @@ ones that depend on it, and above the flag that switches it on. Reordering is
 safe because the framework instantiates by keyword - but check that nothing
 constructs the class positionally first, which tests often do.
 
+## The one parameter name the task form claims
+
+Do not name a parameter `tags`. Every task dialog carries a "Tags" field for the
+item's own tags, and that widget's value arrives on a plugin parameter of the
+same name in place of the string the parameter declares, so saving the task - or
+any other task action - fails with:
+
+```text
+Invalid value for plugin parameter 'tags' of plugin '<package>-<Task>'.
+Got a nested object with the keys createdItems, selectedItems, but expected a string.
+```
+
+An empty tag list fails just as well, because the widget still posts both keys
+as empty lists. Nothing local catches it: discovery succeeds, the descriptors
+show the parameter present, labelled and typed as a string, and `task check` is
+green - the failure exists only against a deployment, in the dialog.
+
+Name the parameter for what it carries - `notification_tags`, `issue_tags` - and
+keep the user-visible wording in the `label`, which can still read "Tags".
+
+`label` and `description` are **not** claimed, although the dialog shows the
+item's own fields under those names as well. `cmem-plugin-shapes`,
+`cmem-plugin-metadata` and `cmem-plugin-vocab` all ship a parameter called
+`label`, and `cmem-plugin-metadata` one called `description`.
+
 ## A constructor with six or more parameters
 
 Ruff's `PLR0913` and `PLR0917` both complain about a long argument list, and a
@@ -451,6 +481,43 @@ class CollectionParameterType(StringParameterType):
   on whitespace.
 - Return a **stable order**. Sort at the end; do not deduplicate with `set()`
   after sorting, because that throws the ordering away again.
+
+### A choice dropdown is not shown in its declared order
+
+`ChoiceParameterType` does the very thing that last bullet warns against, so
+the `OrderedDict` it takes is **not** the order the user sees: `autocomplete()`
+sorts by label and then returns `list(set(result))`, and `Autocompletion` is a
+frozen dataclass, so the set reorders by hash bucket and discards the sort.
+Python randomizes string hashing per process, so the dropdown comes out
+differently after every restart of DataIntegration - which also means one run in
+three looks plausible enough to miss. Nothing local shows it: the `OrderedDict`
+is intact in the source and in the descriptors, and `task check` is green.
+
+So for a choice whose order carries meaning - priorities, log levels, sizes,
+compression levels, conflict policies - subclass it until
+<https://github.com/eccenca/cmem-plugin-base/issues/49> is released:
+
+```python
+class OrderedChoiceParameterType(ChoiceParameterType):
+    """A choice whose dropdown keeps the order the choices were declared in."""
+
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
+        """Return the choices matching all query terms, in their declared order."""
+        terms = [term.lower() for term in query_terms]
+        return [
+            Autocompletion(value=value, label=label)
+            for value, label in self.choice_list.items()
+            if all(term in label.lower() for term in terms)
+        ]
+```
+
+Numbering the labels does not rescue it - `(1)` to `(5)` only feeds the sort
+that is thrown away.
 
 ### The flags
 
