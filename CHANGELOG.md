@@ -7,6 +7,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- gitlab: the pipeline includes `.gitlab-ci-custom.yml` when that file exists,
+  so a project adds a job - an integration test needing a service container, an
+  extra deployment step - without editing the template owned `.gitlab-ci.yml`
+    - the custom file can add keys to a templated job but not replace one, and
+      the pipeline's `stages` list wins, so a custom job uses an existing stage
+      or `.pre` / `.post`; `.github/workflows/` has no equivalent hook (#104)
+
 ### Changed
 
 - `PLR2004` (magic value used in comparison) is ignored under `tests/**/*.py`

@@ -13,7 +13,10 @@ the next `copier update` either reverts them or turns them into a merge
 conflict.
 
 Add project specific build steps to `TaskfileCustom.yaml` instead - note the
-`.yaml` spelling, since only that one is included. Project specific agent
+`.yaml` spelling, since only that one is included. A GitLab pipeline takes
+project specific jobs from `.gitlab-ci-custom.yml` the same way, included when
+that file exists; it can add to a templated job but not redefine one, and
+`.github/workflows/` has no equivalent hook. Project specific agent
 instructions belong in `CLAUDE.md`, which the template never writes and which
 is read alongside these rules. Personal tool permissions belong in
 `.claude/settings.local.json`, which is git-ignored.
