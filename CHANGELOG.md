@@ -33,6 +33,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   carries the subclass that fixes it
     - the shipped `autocomplete()` sorts and then deduplicates with `set()`, so
       the order differs after every restart and nothing local shows it (#103)
+- plugin: the `plugin-implementation` skill says not to name a parameter `tags`,
+  because the task dialog's own tag field takes that key and its widget object
+  reaches the parameter in place of a string
+    - `label` and `description` are not affected, although the dialog shows the
+      item's own fields under those names too (#102)
 
 
 ## [9.8.0] 2026-10-06

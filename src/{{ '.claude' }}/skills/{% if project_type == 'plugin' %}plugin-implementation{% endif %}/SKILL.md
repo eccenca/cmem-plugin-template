@@ -300,6 +300,31 @@ ones that depend on it, and above the flag that switches it on. Reordering is
 safe because the framework instantiates by keyword - but check that nothing
 constructs the class positionally first, which tests often do.
 
+## The one parameter name the task form claims
+
+Do not name a parameter `tags`. Every task dialog carries a "Tags" field for the
+item's own tags, and that widget's value arrives on a plugin parameter of the
+same name in place of the string the parameter declares, so saving the task - or
+any other task action - fails with:
+
+```text
+Invalid value for plugin parameter 'tags' of plugin '<package>-<Task>'.
+Got a nested object with the keys createdItems, selectedItems, but expected a string.
+```
+
+An empty tag list fails just as well, because the widget still posts both keys
+as empty lists. Nothing local catches it: discovery succeeds, the descriptors
+show the parameter present, labelled and typed as a string, and `task check` is
+green - the failure exists only against a deployment, in the dialog.
+
+Name the parameter for what it carries - `notification_tags`, `issue_tags` - and
+keep the user-visible wording in the `label`, which can still read "Tags".
+
+`label` and `description` are **not** claimed, although the dialog shows the
+item's own fields under those names as well. `cmem-plugin-shapes`,
+`cmem-plugin-metadata` and `cmem-plugin-vocab` all ship a parameter called
+`label`, and `cmem-plugin-metadata` one called `description`.
+
 ## A constructor with six or more parameters
 
 Ruff's `PLR0913` and `PLR0917` both complain about a long argument list, and a
