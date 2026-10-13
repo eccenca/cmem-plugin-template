@@ -457,6 +457,43 @@ class CollectionParameterType(StringParameterType):
 - Return a **stable order**. Sort at the end; do not deduplicate with `set()`
   after sorting, because that throws the ordering away again.
 
+### A choice dropdown is not shown in its declared order
+
+`ChoiceParameterType` does the very thing that last bullet warns against, so
+the `OrderedDict` it takes is **not** the order the user sees: `autocomplete()`
+sorts by label and then returns `list(set(result))`, and `Autocompletion` is a
+frozen dataclass, so the set reorders by hash bucket and discards the sort.
+Python randomizes string hashing per process, so the dropdown comes out
+differently after every restart of DataIntegration - which also means one run in
+three looks plausible enough to miss. Nothing local shows it: the `OrderedDict`
+is intact in the source and in the descriptors, and `task check` is green.
+
+So for a choice whose order carries meaning - priorities, log levels, sizes,
+compression levels, conflict policies - subclass it until
+<https://github.com/eccenca/cmem-plugin-base/issues/49> is released:
+
+```python
+class OrderedChoiceParameterType(ChoiceParameterType):
+    """A choice whose dropdown keeps the order the choices were declared in."""
+
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
+        """Return the choices matching all query terms, in their declared order."""
+        terms = [term.lower() for term in query_terms]
+        return [
+            Autocompletion(value=value, label=label)
+            for value, label in self.choice_list.items()
+            if all(term in label.lower() for term in terms)
+        ]
+```
+
+Numbering the labels does not rescue it - `(1)` to `(5)` only feeds the sort
+that is thrown away.
+
 ### The flags
 
 - `allow_only_autocompleted_values = True` makes the parameter a closed

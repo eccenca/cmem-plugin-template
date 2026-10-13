@@ -28,6 +28,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   beside the `G004` note
     - a project that suppressed it with a `# noqa: TRY400` now fails `RUF100`
       instead, and has to drop the suppression (#105)
+- plugin: the `plugin-implementation` skill says that a `ChoiceParameterType`
+  dropdown is not shown in the order of the `OrderedDict` it was built from, and
+  carries the subclass that fixes it
+    - the shipped `autocomplete()` sorts and then deduplicates with `set()`, so
+      the order differs after every restart and nothing local shows it (#103)
 
 
 ## [9.8.0] 2026-10-06
