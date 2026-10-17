@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - trivy: use 0.76.0.1
+- `check:deptry` and `check:trivy` ignore `.claude/`, so a git worktree created
+  there - a complete second checkout inside the repository - no longer fails
+  `task check` with findings from its own copy of the tests and its own lock
+  file (#109)
 
 
 ## [9.9.0] 2026-10-13
