@@ -576,3 +576,23 @@ added.
 A project that wants the check can add a `check:links` task to its own
 `TaskfileCustom.yaml`, which is exactly what that file is for, and run it on a
 schedule rather than on every commit — which is the cadence link rot deserves.
+
+### The coverage badge is not made to tolerate a package with no code
+
+`check:pytest` ends by generating the coverage badge, and on a package with
+zero statements that step fails:
+`ValueError: Computed line rate (0) is different from the one in the file
+(1.0)` — `coverage.xml` records `line-rate="1.0"` for nothing at all, genbadge
+recomputes it as 0 and refuses the file. Report #107 asked for the badge step
+to be skipped when the package has no lines, so that an emptied package fails
+on deptry alone, which is the check that is actually right.
+
+Declined, because the state it would rescue is one the template now tells you
+not to create. The example files say to replace them with the first real task
+in the same change, precisely because a package emptied beforehand has no green
+baseline to start from. And the badge is not the first thing to go: `pytest`
+exits 5 on having collected no tests before genbadge runs at all, and deptry
+reports `DEP002 'cmem-plugin-base' defined as a dependency but not used`. Three
+correct signals say the same true thing, so silencing the third one changes
+nothing a user would notice — while the shell conditional it needs would have
+to hold on the Windows branch of that task too.

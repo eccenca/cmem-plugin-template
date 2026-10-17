@@ -20,6 +20,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   per project; `plugin-implementation` says why renaming it to `_inputs` is the
   wrong answer, and the example plugin now carries the reason above its
   `# noqa` (#108)
+- the example files say to replace them with the first real task in the same
+  change, rather than to remove them after bootstrapping: an emptied package
+  fails `task check` three times over - deptry on the now unused
+  `cmem-plugin-base`, pytest on collecting no tests, and the coverage badge on
+  a package with no statements (#107)
 
 
 ## [9.9.0] 2026-10-13
