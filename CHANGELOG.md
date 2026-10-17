@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   there - a complete second checkout inside the repository - no longer fails
   `task check` with findings from its own copy of the tests and its own lock
   file (#109)
+- `ARG002` on an argument whose presence the framework fixes - `inputs` in a
+  workflow task with no input ports - is a settled suppression in the shipped
+  rules, beside `PLR0913` and `PLR0917`, so it no longer needs a human decision
+  per project; `plugin-implementation` says why renaming it to `_inputs` is the
+  wrong answer, and the example plugin now carries the reason above its
+  `# noqa` (#108)
 
 
 ## [9.9.0] 2026-10-13

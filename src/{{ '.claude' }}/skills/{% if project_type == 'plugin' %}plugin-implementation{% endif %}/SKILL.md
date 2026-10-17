@@ -350,6 +350,33 @@ start failing on it without anything in the task changing. Suppress it on the
 constructor only - it stays a real finding on an ordinary function, which is
 why it is not in the `ignore` list in `pyproject.toml`.
 
+## An argument the task never reads
+
+`ARG002` complains about an unused method argument, and a task declaring
+`FixedNumberOfInputs([])` generates its own entities - so `execute()` never
+reads `inputs`, while `WorkflowPlugin` decides the signature all the same. A
+`TransformPlugin` or a `PluginAction` ignoring an argument the framework
+supplies is the same case.
+
+This is the standing exception the lint rules describe, so it needs no fresh
+decision either. Suppress the code on the argument, with the reason above it:
+
+```python
+def execute(
+    self,
+    # This task has no input ports, so it never reads inputs - but the
+    # signature is the one WorkflowPlugin declares.
+    inputs: Sequence[Entities],  # noqa: ARG002
+    context: ExecutionContext,
+) -> Entities:
+```
+
+Do not rename it to `_inputs` instead. Ruff accepts the underscore and mypy
+permits the rename, but the name is part of the API the caller uses:
+`execute(inputs=(), context=TestExecutionContext())` is a keyword call, which is
+how `tests/test_example.py` and the `plugin-testing` skill invoke a task, and it
+raises `TypeError` against a renamed argument.
+
 ## Parameters that carry secrets
 
 A password, token or API key is typed, never a plain string:

@@ -79,6 +79,8 @@ class DollyPlugin(WorkflowPlugin):
 
     def execute(
         self,
+        # This task has no input ports, so it never reads inputs - but the
+        # signature is the one WorkflowPlugin declares.
         inputs: Sequence[Entities],  # noqa: ARG002
         context: ExecutionContext,
     ) -> Entities:
