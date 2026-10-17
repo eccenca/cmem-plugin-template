@@ -10,6 +10,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - trivy: use 0.76.0.1
+- `check:deptry` and `check:trivy` ignore `.claude/`, so a git worktree created
+  there - a complete second checkout inside the repository - no longer fails
+  `task check` with findings from its own copy of the tests and its own lock
+  file (#109)
+- `ARG002` on an argument whose presence the framework fixes - `inputs` in a
+  workflow task with no input ports - is a settled suppression in the shipped
+  rules, beside `PLR0913` and `PLR0917`, so it no longer needs a human decision
+  per project; `plugin-implementation` says why renaming it to `_inputs` is the
+  wrong answer, and the example plugin now carries the reason above its
+  `# noqa` (#108)
+- the example files say to replace them with the first real task in the same
+  change, rather than to remove them after bootstrapping: an emptied package
+  fails `task check` three times over - deptry on the now unused
+  `cmem-plugin-base`, pytest on collecting no tests, and the coverage badge on
+  a package with no statements (#107)
 
 
 ## [9.9.0] 2026-10-13

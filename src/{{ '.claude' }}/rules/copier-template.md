@@ -60,6 +60,14 @@ reason above it. Neither escape ruff suggests is available, since keyword-only
 arguments answer `PLR0917` but not `PLR0913`, and folding the arguments into
 one object breaks the one-argument-per-option mapping the framework relies on.
 
+`ARG002` is settled on the same grounds, one argument further in: a method the
+framework calls has the signature the framework declares, so an argument the
+implementation does not need cannot be dropped - a workflow task with no input
+ports never reads `inputs`. Suppress it on the argument, again with the reason
+above it. Renaming it to `_inputs` silences ruff as well, and is wrong here:
+the name belongs to an API the caller may use by keyword, as this project's own
+tests do.
+
 ## Every user visible change gets a changelog entry
 
 `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/). Add an

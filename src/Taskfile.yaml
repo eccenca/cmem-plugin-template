@@ -164,10 +164,14 @@ tasks:
     deps:
       - prepare
     cmds:
+      # .claude/ is skipped because a git worktree created there is a second
+      # checkout inside the repository, whose lock file is scanned as if it
+      # were this one - on an older branch, with older findings.
       - >
         poetry run trivy fs
         --include-dev-deps
         --scanners vuln
+        --skip-dirs .claude
         --skip-files .poetry/plugins/poetry.lock
         --exit-code 1
         .
@@ -177,7 +181,12 @@ tasks:
     deps:
       - prepare
     cmds:
-      - poetry run deptry .
+      # deptry's default excludes cover a tests directory at the root but not
+      # a nested copy of one, so the worktree described above would be read as
+      # source and its test imports reported.
+      - >
+        poetry run deptry .
+        --extend-exclude '\.claude'
 
   check:ruff:
     desc: Complain about everything else
