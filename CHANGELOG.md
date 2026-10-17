@@ -7,7 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- trivy: use 0.76.0.1
 
 
 ## [9.9.0] 2026-10-13
