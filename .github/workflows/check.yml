@@ -42,23 +42,13 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: '3.13'
-
-      - name: Install and configure poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 2.1.4
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-          installer-parallel: true
-
-      - name: install copier
-        run: |
-          python3 -m pip install --user copier>=9
+          enable-cache: true
+          # the root has no lock file; without this the cache key never changes
+          cache-dependency-glob: "src/pyproject.toml.jinja"
 
       - name: create projects with default answers and run check
         env:

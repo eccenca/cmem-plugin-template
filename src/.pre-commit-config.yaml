@@ -13,27 +13,19 @@ repos:
         types_or: [python, pyi]
         pass_filenames: false
 
-      - id: poetry-check
-        name: poetry-check
-        description: run poetry check to validate config
-        entry: poetry check
+      - id: uv-lock
+        name: uv-lock
+        description: run uv lock to update the lock file
+        entry: uv lock
         language: python
         pass_filenames: false
-        files: ^(.*/)?pyproject\.toml$
+        files: ^(.*/)?(uv\.lock|pyproject\.toml)$
 
-      - id: poetry-lock
-        name: poetry-lock
-        description: run poetry lock to update lock file
-        entry: poetry lock
-        language: python
-        pass_filenames: false
-        files: ^(.*/)?(poetry\.lock|pyproject\.toml)$
-
-      - id: poetry-install
-        name: poetry-install
+      - id: uv-sync
+        name: uv-sync
         description: >
-          run poetry install to install dependencies from the lock file
-        entry: poetry install
+          run uv sync to install dependencies from the lock file
+        entry: uv sync
         language: python
         pass_filenames: false
         stages: [post-checkout, post-merge]

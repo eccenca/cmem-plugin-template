@@ -5,9 +5,10 @@ description: Cut a release of this project - check the changelog, rename the Unr
 
 # Releasing {{ package_name }}
 
-The version is never written into a file. `poetry-dynamic-versioning` derives
-it from the git tag, so **the annotated tag is the release**. `pyproject.toml`
-keeps `version = "0.0.0"` forever; changing it there does nothing.
+The version is never written into a file. `uv-dynamic-versioning` derives it
+from the git tag, so **the annotated tag is the release**. `pyproject.toml`
+declares `dynamic = ["version"]` and carries no version at all; adding one
+there would break the build rather than set the version.
 
 {% if pypi -%}
 Pushing a tag triggers `.github/workflows/publish.yml`, which builds the

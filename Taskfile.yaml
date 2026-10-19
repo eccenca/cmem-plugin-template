@@ -25,7 +25,7 @@ tasks:
     deps:
       - clean
     cmds:
-      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} . new_dir
+      - uvx --from 'copier>=9' copier copy --vcs-ref {{.TEMPLATE_REVISION}} . new_dir
 
   check:generate:case:
     desc: generate a project with the current version from a TEST_CASE
@@ -40,7 +40,7 @@ tasks:
       - rm -rf {{.TEST_CASE}}_dir
       - mkdir {{.TEST_CASE}}_dir
       - cp tests/{{.TEST_CASE}}.yml {{.TEST_CASE}}_dir/.copier-answers.yml
-      - copier copy --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.TEST_CASE}}_dir
+      - uvx --from 'copier>=9' copier copy --vcs-ref {{.TEMPLATE_REVISION}} --defaults . {{.TEST_CASE}}_dir
       - git config --global init.defaultBranch develop
       - cd {{.TEST_CASE}}_dir && git init .
       - cd {{.TEST_CASE}}_dir && git add .
@@ -74,8 +74,42 @@ tasks:
     cmds:
       - task: check:hook:case
         vars: {TEST_CASE: '{{.TEST_CASE}}'}
-      - cd {{.TEST_CASE}}_dir && poetry update
+      - cd {{.TEST_CASE}}_dir && uv sync
       - cd {{.TEST_CASE}}_dir && task check
+      - task: check:build:case
+        vars: {TEST_CASE: '{{.TEST_CASE}}'}
+
+  check:build:case:
+    desc: build a generated project and check the shape of its artifacts
+    summary: |
+      Nothing else here runs `task build`, so a change to the sdist include
+      list - or a hatchling upgrade changing its defaults - would silently ship
+      tests, pipeline configuration and agent files inside every plugin while
+      every check stayed green.
+    internal: true
+    cmds:
+      - cd {{.TEST_CASE}}_dir && task build
+      - cmd: |
+          cd {{.TEST_CASE}}_dir
+          sdist=$(ls dist/*.tar.gz)
+          list=$(tar tzf "$sdist" | sed 's|^[^/]*/||' | sort -u)
+          for unwanted in tests/ .github/ .claude/; do
+            if printf '%s\n' "$list" | grep -q "^$unwanted"; then
+              echo "sdist must not ship $unwanted (found in $sdist)"
+              exit 1
+            fi
+          done
+          case "$sdist" in
+            *-0.0.0.tar.gz)
+              echo "version was not derived from git: $sdist"
+              exit 1
+              ;;
+          esac
+          if grep -q '^-e ' dist/requirements.txt; then
+            echo "requirements.txt must not contain the project itself"
+            exit 1
+          fi
+          echo "artifact check ok: $sdist"
 
   check:hook:case:
     desc: smoke test the Stop hook a generated project ships

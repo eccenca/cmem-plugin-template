@@ -3,16 +3,21 @@ default:
   image: docker-registry.eccenca.com/eccenca-python:v3.13.13
   # all jobs can be interrupted in case a new commit is pushed
   interruptible: true
-  before_script:
-    # make sure poetry creates virtual environment as .venv
-    - poetry config virtualenvs.in-project true
   cache:
-    # cache the virtual environment based on the poetry lock file
+    # cache uv's package cache, keyed on uv.lock
     key:
       files:
-        - poetry.lock
+        - uv.lock
     paths:
-      - .venv
+      - .uv-cache
+  after_script:
+    - uv cache prune --ci
+
+variables:
+  # uv's cache has to live inside the project directory to be cacheable here
+  UV_CACHE_DIR: .uv-cache
+  # jobs fail instead of silently re-resolving when uv.lock is out of date
+  UV_LOCKED: "1"
 
 stages:
   - test
@@ -108,6 +113,5 @@ pypi:
   allow_failure: true
   when: manual
   script:
-    - poetry config pypi-token.pypi $PYPI_TOKEN
-    - poetry publish
+    - uv publish --token $PYPI_TOKEN
 {% endif %}
