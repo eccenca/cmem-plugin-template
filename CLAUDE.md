@@ -78,7 +78,8 @@ projects and runs *their* checks:
 
 1. `check:generate:cases` renders every test case in `tests/*.yml` into a
    `<case>_dir` directory at the repository root and git-inits it.
-2. `check:validate:cases` runs `poetry update && task check` inside each one.
+2. `check:validate:cases` runs `uv sync && task check` inside each one, then
+   `check:build:case`.
 
 The `tests/*.yml` files are copier answer files. `plugin`,
 `plugin-github-pypi`, `generic-project` and `generic-github-pypi` cover
@@ -464,7 +465,8 @@ cd plugin_dir && claude -p "Which files in this repository belong to the templat
 
 The answer has to come from `.claude/rules/`. Check the generic case too — it
 must contain `.claude/settings.json`, `.claude/rules/copier-template.md` and
-only the `copier-update` skill, plus `release` when `github_page` is answered,
+only the `copier-update` and `template-feedback` skills, plus `release` when
+`github_page` is answered,
 with no plugin material.
 
 ### `src/Taskfile.yaml` is deliberately not a copier template
@@ -511,7 +513,7 @@ In the badge rows of `README.md`, `src/README.md.jinja` and
 `src/README-public.md.jinja`, `mypy-shield` points at
 `https://www.mypy-lang.org/static/mypy_badge.svg`. It is the only badge not
 served by shields.io, so it renders flat — no gradient, no logo — while
-`poetry`, `ruff` and `copier` beside it have both. This reads as an oversight
+`uv`, `ruff` and `copier` beside it have both. This reads as an oversight
 and is not one.
 
 That SVG is the badge mypy itself publishes for exactly this use. Replacing it
@@ -562,12 +564,12 @@ goes red for reasons unrelated to the change gets disabled or `--force`d, and
 then it protects nothing — the same reasoning that kept an automated
 product-name check out of `task check` in report #74.
 
-It also costs more than it looks. The toolchain is otherwise entirely Poetry
+It also costs more than it looks. The toolchain is otherwise entirely uv
 managed, so every generated project, every contributor machine and every runner
 would need a non-Python binary installed for it.
 
 And most of the links in a freshly generated project are the template's own —
-`documentation.eccenca.com`, the badge endpoints, `python-poetry.org`,
+`documentation.eccenca.com`, the badge endpoints, `docs.astral.sh`,
 `taskfile.dev`. Those are fixed here, once, for everybody. Checking them again
 in each of fifty downstream projects re-verifies the template's URLs fifty
 times over and still says nothing about the one link a plugin author actually
@@ -596,3 +598,36 @@ reports `DEP002 'cmem-plugin-base' defined as a dependency but not used`. Three
 correct signals say the same true thing, so silencing the third one changes
 nothing a user would notice — while the shell conditional it needs would have
 to hold on the Windows branch of that task too.
+
+### The generated `.gitignore` is published inside every sdist
+
+Hatchling force-includes the VCS ignore file into every source distribution,
+from `get_default_build_data()` in `hatchling/builders/sdist.py`, and force
+includes bypass `exclude`, `only-include` and `ignore-vcs` alike. No setting
+removes it. The warning header at the top of `src/.gitignore` is the
+mitigation; the file itself cannot be kept out without changing build backend,
+and no other backend offers dunamai's version semantics.
+
+### `check:trivy` scans the whole repository, `.venv` included
+
+The scan is deliberately not narrowed to the lock file. Generic projects
+rendered from this template regularly carry material beyond the Python package —
+a single page frontend with its own dependencies, a Dockerfile — and a
+lockfile-only scan would silently skip exactly those. `.venv` is scanned too; it
+yields nothing beyond `uv.lock`.
+
+Two directories are excluded. `.claude` (issue #109), because a git worktree
+created there is a second checkout whose lock file would be scanned as if it
+were this project's. `.uv-cache`, because it is uv's package cache, not project
+content, and the gitlab pipeline keeps it inside the project (GitLab can only
+cache paths there). Both live as `--skip-dirs` flags in `check:trivy`, because
+such a flag replaces `TRIVY_SKIP_DIRS` rather than adding to it: an exclusion
+moved into the environment silently stops working.
+
+### `poetry shell` has no successor and none is shipped
+
+uv removed the concept deliberately. The supported equivalents are `uv run`,
+which the whole build plan already uses, and `source .venv/bin/activate`, which
+the generated README documents. A `shell` task was considered and rejected: a
+task runs in a subshell and cannot leave the caller in an activated
+environment.

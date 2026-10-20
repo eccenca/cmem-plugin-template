@@ -2,7 +2,7 @@
 # cmem-plugin-template
 
 [![workflow][build-shield-main]][github-actions] [![workflow][build-shield-develop]][github-actions] [![version][version-shield]][changelog] ![python][python-shield]
-[![poetry][poetry-shield]][poetry-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier]
+[![uv][uv-shield]][uv-link] [![ruff][ruff-shield]][ruff-link] [![mypy][mypy-shield]][mypy-link] [![copier][copier-shield]][copier]
 [![eccenca Corporate Memory][cmem-shield]][cmem]
 
 This repository contains a [copier](https://copier.readthedocs.io/) template.
@@ -38,7 +38,7 @@ You can use it to bootstrap the following types of project:
 
 ## Features
 
-- [Python / poetry](https://python-poetry.org/) project with
+- [Python / uv](https://docs.astral.sh/uv/) project with
   - [pytest](https://www.pytest.org/) (incl. [memray](https://bloomberg.github.io/memray/) + [pytest-dotenv](https://github.com/quiqua/pytest-dotenv) + [code coverage](https://github.com/pytest-dev/pytest-cov)) as the testing framework,
   - [ruff](https://docs.astral.sh/ruff/) as all-hands linter and formatter,
   - [mypy](https://mypy-lang.org/) as type checker,
@@ -127,7 +127,7 @@ task: Available tasks for this project:
 * check:trivy:             Scan for vulnerabilities using Trivy
 * format:fix:              Format Python files and fix obvious issues
 * format:fix-unsafe:       Format Python files and fix 'unsafe' issues
-* poetry:install:          Install dependencies managed by Poetry
+* uv:install:              Install dependencies managed by uv
 ```
 
 You can extend this task list by creating a file `TaskfileCustom.yaml` in your repository root:
@@ -155,10 +155,10 @@ The following tools are needed for local task execution:
 - Python 3.13.x
 - [copier](https://copier.readthedocs.io/) (>= v9) for project template rendering and updating
 - [task](https://taskfile.dev/) (>= v3.29) for running build tasks (make sure to follow the installation instructions to avoid confusion with taskwarrior)
-- [poetry](https://python-poetry.org/) (>= v2.1) for packaging and dependency managing (needed plugins such as [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning) are declared with `[tool.poetry.requires-plugins]` and installed automatically)
+- [uv](https://docs.astral.sh/uv/) (>= v0.11.7) for packaging and dependency management, with [hatchling](https://hatch.pypa.io/latest/) and [uv-dynamic-versioning](https://github.com/ninoseki/uv-dynamic-versioning) as the build backend, declared in `[build-system]` and installed automatically
 - [pre-commit](https://pre-commit.com/) (>= v2.20) for managing pre-commit hooks (optional)
 
-Example installation of the requirements with [pipx](https://pipx.pypa.io/) on Ubuntu:
+Example installation of the requirements on Ubuntu, using [pipx](https://pipx.pypa.io/) for the Python tools and the official installer for uv:
 
 ``` shell-session
 sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
@@ -166,7 +166,7 @@ python3 -m pip install --user pipx
 python3 -m pipx ensurepath
 pipx install copier
 pipx install pre-commit
-pipx install poetry
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ### Integration Tests
@@ -276,6 +276,6 @@ OAUTH_GRANT_TYPE="client_credentials"
 [mypy-shield]: https://www.mypy-lang.org/static/mypy_badge.svg
 [ruff-link]: https://docs.astral.sh/ruff/
 [ruff-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&label=Code%20Style
-[poetry-link]: https://python-poetry.org/
-[poetry-shield]: https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json
+[uv-link]: https://docs.astral.sh/uv/
+[uv-shield]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
 

@@ -7,7 +7,38 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- **uv replaces poetry as the package and dependency manager**
+  - the build backend is now `hatchling` with `uv-dynamic-versioning`, which is built on the same `dunamai` engine as `poetry-dynamic-versioning`, so existing tags produce identical version strings
+  - project metadata moved to the PEP 621 `[project]` table and development dependencies to the PEP 735 `[dependency-groups]` table, which retires the nine deprecation warnings `poetry check` printed on every commit
+  - the license is declared the PEP 639 way, as an SPDX expression plus `license-files`
+  - **migrating an existing project** - read this before running `copier update`:
+    1. work on a branch with a clean tree
+    2. convert a throwaway copy: `git worktree add ../uv-scratch`, then `uvx migrate-to-uv` inside it. Its `pyproject.toml` shows the PEP 440 equivalent of each caret constraint, and its `uv.lock` pins your dependencies to the versions in `poetry.lock`. Do not run it on your branch - the conversion would collide with the template's
+    3. `copier update --defaults`
+    4. `git rm poetry.lock` and copy `../uv-scratch/uv.lock` into the project - before anything locks, so the old versions are what uv starts from. Also `rm -rf .poetry`: poetry 2 installs its plugins there, git never shows it, and trivy fails `task check` on the lock file inside
+    5. in `pyproject.toml`, take the **template's** side of every conflict, then re-declare your own dependencies with `uv add …` and `uv add --group dev …`, copying the constraints from `../uv-scratch/pyproject.toml`. Then delete every remaining `[tool.poetry…]` table, after carrying over what the scratch copy translated for them - sources to `[[tool.uv.index]]`, scripts to `[project.scripts]`, extras to `[project.optional-dependencies]`, plugins to `[project.entry-points]` - because uv ignores them silently
+    6. `uv lock` and `uv sync` - a dependency moves off its old version only where the template's constraints require it
+    7. `task check`, commit `uv.lock`, then `git worktree remove --force ../uv-scratch` (the scratch copy always holds uncommitted changes) and `git branch -D uv-scratch`
+  - your own `TaskfileCustom.yaml`, `.gitlab-ci-custom.yml` and `CLAUDE.md` are project owned and are not updated: any `poetry run …`, `poetry version …` or `poetry:install` task dependency in them has to be changed by hand, and the jobs in `.gitlab-ci-custom.yml` inherit `default:`, so they no longer get the removed `before_script`
+- uv 0.11.7 or newer is required, enforced by `required-version` in `pyproject.toml`
+- `task poetry:install` is now `task uv:install`; every other task keeps its name
+- `.python-version` now ships with generic projects too, not only plugin projects, because uv reads it to choose and if necessary download the interpreter
+- the source distribution contents are pinned explicitly and are unchanged from before, except that hatchling force-includes `.gitignore` into every sdist and no setting can prevent it - a note at the top of the generated `.gitignore` warns not to put internal names there
+- gitlab: the pipeline drops its `before_script` (the eccenca image ships uv and the environment is always `.venv`), caches uv's package cache keyed on `uv.lock`, and publishes with `uv publish`
+- github: `astral-sh/setup-uv` replaces both `actions/setup-python` and `snok/install-poetry`; publishing is now `uv build` followed by `uv publish` because `uv publish` has no build flag
+- both pipelines set `UV_LOCKED`, so a pipeline whose committed lock file no longer matches `pyproject.toml` fails instead of silently resolving something else
+  - **this can turn a first pipeline run red** if the lock was not committed alongside a metadata change; `uv lock` and commit the result
+
+### Removed
+
+- `poetry.lock` - delete it; `uv.lock` replaces it and belongs in version control
+- the `pip` development dependency, a workaround for a scanner finding against the `pip` that poetry installed into every environment. uv installs none
+- the `poetry-check` pre-commit hook, which has no uv equivalent. The `poetry-lock` and `poetry-install` hooks become `uv-lock` and `uv-sync`
+- the `poetry:install` task, replaced by `uv:install`
+- gitlab: `default: before_script`
+- `poetry shell`, which uv removed deliberately - use `uv run`, or `source .venv/bin/activate`
 
 
 ## [9.10.0] 2026-10-17

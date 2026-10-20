@@ -4,10 +4,11 @@
             "Bash(task build:*)",
             "Bash(task check:*)",
             "Bash(task format:fix:*)",
-            "Bash(poetry install:*)",
-            "Bash(poetry run mypy:*)",
-            "Bash(poetry run pytest:*)",
-            "Bash(poetry run ruff:*)",
+            "Bash(uv sync:*)",
+            "Bash(uv lock:*)",
+            "Bash(uv run mypy:*)",
+            "Bash(uv run pytest:*)",
+            "Bash(uv run ruff:*)",
             "Bash(gh issue list:*)",
             "Bash(gh search issues:*)"
         ]

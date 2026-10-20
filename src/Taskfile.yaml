@@ -60,39 +60,39 @@ tasks:
       directory that exists, and the directory the reports are written to
     run: once
     deps:
-      - poetry:install
+      - uv:install
       - package:exists
     cmds:
       - mkdir -p {{.DIST_DIR}}/coverage
 
-  poetry:install:
-    desc: Install dependencies managed by Poetry
+  uv:install:
+    desc: Install dependencies managed by uv
     run: once
     cmds:
-      - poetry install
+      - uv sync
 
-  # Neither format task depends on `poetry:install`, unlike the check tasks.
+  # Neither format task depends on `uv:install`, unlike the check tasks.
   # `format:fix` is what the Claude Code PostToolUse hook runs after every edit,
-  # and `poetry install` refuses to run while pyproject.toml has been changed
-  # without the lock file being regenerated - exactly what a dependency bump or
-  # a template update looks like. Formatting would then quietly stop for the
-  # rest of the session. On a clone with no virtualenv yet, run `task check` or
-  # `task poetry:install` first.
+  # and `uv run` syncs the environment on its own, so formatting keeps working
+  # right after a dependency bump or a template update without a separate
+  # install step. That `uv run` also re-locks after a `pyproject.toml` edit, so
+  # formatting fails until that resolves: offline, with unresolvable
+  # constraints, or with `UV_LOCKED` exported in the shell.
   format:fix:
     desc: Format Python files and fix obvious issues
     deps:
       - package:exists
     cmds:
-      - poetry run ruff format tests {{.PACKAGE}}
-      - poetry run ruff check tests {{.PACKAGE}} --fix-only
+      - uv run ruff format tests {{.PACKAGE}}
+      - uv run ruff check tests {{.PACKAGE}} --fix-only
 
   format:fix-unsafe:
     desc: Format Python files and fix 'unsafe' issues
     deps:
       - package:exists
     cmds:
-      - poetry run ruff format tests {{.PACKAGE}}
-      - poetry run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
+      - uv run ruff format tests {{.PACKAGE}}
+      - uv run ruff check tests {{.PACKAGE}} --fix-only --unsafe-fixes
 
   clean:
     desc: Removes dist, *.pyc and some caches
@@ -126,21 +126,21 @@ tasks:
       # --memray is not used on windows
       - platforms: [windows]
         cmd: >
-          poetry run pytest --junitxml={{.JUNIT_FILE}}
+          uv run pytest --junitxml={{.JUNIT_FILE}}
           --cov-report term  --cov-report xml:{{.COVERAGE_FILE}}
           --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
           --html={{.HTML_FILE}} --self-contained-html
       - platforms: [darwin, linux]
         cmd: >
-          poetry run pytest --memray --junitxml={{.JUNIT_FILE}}
+          uv run pytest --memray --junitxml={{.JUNIT_FILE}}
           --cov-report term --cov-report xml:{{.COVERAGE_FILE}}
           --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
           --html={{.HTML_FILE}} --self-contained-html
       - cmd: >
-          poetry run genbadge coverage -l
+          uv run genbadge coverage -l
           -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
       - cmd: >
-          poetry run genbadge tests -l
+          uv run genbadge tests -l
           -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
     vars:
       BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
@@ -155,7 +155,7 @@ tasks:
     deps:
       - prepare
     cmds:
-      - poetry run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
+      - uv run mypy -p tests -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
 
@@ -166,13 +166,15 @@ tasks:
     cmds:
       # .claude/ is skipped because a git worktree created there is a second
       # checkout inside the repository, whose lock file is scanned as if it
-      # were this one - on an older branch, with older findings.
+      # were this one - on an older branch, with older findings. .uv-cache is
+      # uv's package cache, which the gitlab pipeline keeps inside the project;
+      # the flag is harmless where the directory does not exist.
       - >
-        poetry run trivy fs
+        uv run trivy fs
         --include-dev-deps
         --scanners vuln
         --skip-dirs .claude
-        --skip-files .poetry/plugins/poetry.lock
+        --skip-dirs .uv-cache
         --exit-code 1
         .
 
@@ -185,7 +187,7 @@ tasks:
       # a nested copy of one, so the worktree described above would be read as
       # source and its test imports reported.
       - >
-        poetry run deptry .
+        uv run deptry .
         --extend-exclude '\.claude'
 
   check:ruff:
@@ -193,9 +195,9 @@ tasks:
     deps:
       - prepare
     cmds:
-      - poetry run ruff check --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
-      - poetry run ruff check --output-format=concise tests {{.PACKAGE}}
-      - poetry run ruff format --check tests {{.PACKAGE}}
+      - uv run ruff check --exit-zero tests {{.PACKAGE}} {{.XML_PARAMS}}
+      - uv run ruff check --output-format=concise tests {{.PACKAGE}}
+      - uv run ruff format --check tests {{.PACKAGE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-ruff.xml
       XML_PARAMS: --output-format junit --output-file {{.JUNIT_FILE}}
@@ -208,9 +210,11 @@ tasks:
     # dist/coverage, and it would race with `clean`, since Task runs deps in
     # parallel.
     deps:
-      - poetry:install
+      - uv:install
       - clean
     cmds:
-      - poetry build
-      - poetry export --without=dev -f requirements.txt >dist/requirements.txt
+      - uv build
+      - >
+        uv export --no-dev --no-emit-project
+        --format requirements-txt -o dist/requirements.txt
 

@@ -58,7 +58,10 @@ in the template.
 
 `CHANGELOG.md`, `README.md` and `pyproject.toml` are the opposite case: they
 carry real project content, so keep this project's text and take only the parts
-the template actually changed, such as a bumped dependency constraint.
+the template actually changed, such as a bumped dependency constraint. A major
+release is the exception - it can replace such a file wholesale, in which case
+the changelog entry for that release says so and says what to do instead. Read
+it before resolving.
 
 Example files that were deleted after generation can reappear when the template
 changes them. Delete them again.
@@ -104,7 +107,7 @@ than real debt, and check that first.
 ## After updating
 
 ```bash
-poetry update
+uv sync
 task check
 ```
 
