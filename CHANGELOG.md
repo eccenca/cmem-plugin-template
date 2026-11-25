@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - gitlab: the `trivy` job keeps the uv package cache instead of downloading the whole environment on every run (#126)
+- the generated README speaks of the project's one pipeline instead of "both pipelines" (#127)
 
 ## [10.0.0] 2026-11-25
 

@@ -10,7 +10,7 @@
 - Run [task](https://taskfile.dev/) to see all major development tasks.
 - Commands run inside the project environment with `uv run`; to enter it
   instead, activate it with `source .venv/bin/activate` (`.venv\Scripts\activate` on Windows).
-- Commit `uv.lock`: both pipelines set `UV_LOCKED`, so the first pipeline fails without it.
+- Commit `uv.lock`: the pipeline sets `UV_LOCKED`, so it fails without it.
 - Use [pre-commit](https://pre-commit.com/) to avoid errors before commit.
 - Agent instructions and skills for this project are in `.claude/` - your own
   instructions belong in `CLAUDE.md`, which is never overwritten.
