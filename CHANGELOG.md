@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - gitlab: the `trivy` job keeps the uv package cache instead of downloading the whole environment on every run (#126)
 - the generated README speaks of the project's one pipeline instead of "both pipelines" (#127)
+- the 9.0.0 promise that `copier update` removes the pipeline files `github_page` and `pypi` no longer select held only for an update to exactly 9.0.0: from 9.0.1 on, a project updated from before 9.0.0 keeps them, still installing poetry
+  - if `github_page` is blank and `.github/workflows/` exists, delete `.github/`; if `pypi` is not answered, delete `.github/workflows/publish.yml`. The `copier-update` skill now checks for both (#128)
 
 ## [10.0.0] 2026-11-25
 
