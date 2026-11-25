@@ -74,15 +74,22 @@ and report the specific reason; do not attempt to fix it silently.
 8. **CI is green on exactly this commit.**
 
    ```bash
-   gh run list --branch develop --limit 10 --json headSha,conclusion,status
+   gh run list --workflow check.yml --commit "$(git rev-parse develop)" \
+     --json headSha,conclusion,status,event,url
    ```
 
-   There must be a run whose `headSha` equals `git rev-parse develop` with
-   `status` `completed` and `conclusion` `success`. Do **not** accept the most
-   recent successful run on `develop` if its `headSha` differs — that releases
-   commits nothing has built. If the run is missing, in progress, or failed,
-   stop and say which, with the run URL. Do not wait or poll; releasing is not
-   urgent.
+   There must be a run with `status` `completed` and `conclusion` `success`.
+   Do **not** accept the most recent successful run on `develop` if its
+   `headSha` differs — that releases commits nothing has built. If the run is
+   missing, in progress, or failed, stop and say which, with the run URL. Do
+   not wait or poll; releasing is not urgent.
+
+   Both filters matter. Without `--workflow check.yml`, the "Dependabot Updates"
+   runs count as well, and they pile up on whatever commit `develop` is sitting
+   at — before 10.0.0 they were the only ten runs a `--limit 10` query
+   returned, all green, while the one real `check` run was the 21st and never
+   looked at. Filtering by `--commit` rather than taking the latest few runs on
+   the branch means no window can push the `check` run out of view.
 9. **No other CI run is occupying the concurrency group.**
 
    ```bash
