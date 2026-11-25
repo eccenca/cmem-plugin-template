@@ -3,8 +3,10 @@ default:
   image: docker-registry.eccenca.com/eccenca-python:v3.13.13
   # all jobs can be interrupted in case a new commit is pushed
   interruptible: true
-  cache:
-    # cache uv's package cache, keyed on uv.lock
+  cache: &uv-cache
+    # cache uv's package cache, keyed on uv.lock - a job that sets its own
+    # cache: replaces this one instead of adding to it, so it has to list
+    # *uv-cache again
     key:
       files:
         - uv.lock
@@ -87,8 +89,9 @@ trivy:
   script:
     - task check:trivy
   cache:
-    paths:
-      - .trivycache/
+    - *uv-cache
+    - paths:
+        - .trivycache/
 
 build:
   stage: build
