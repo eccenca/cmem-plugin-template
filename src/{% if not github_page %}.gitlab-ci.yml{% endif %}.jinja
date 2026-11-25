@@ -5,9 +5,8 @@ default:
   interruptible: true
   cache: &uv-cache
     # cache uv's package cache, keyed on uv.lock - a job that sets its own
-    # cache: replaces this one instead of adding to it, so it has to list
-    # !reference [default, cache] again (the *uv-cache alias only works in
-    # this file, not in .gitlab-ci-custom.yml)
+    # cache: replaces this one instead of adding to it, so a job below that
+    # does lists *uv-cache again
     key:
       files:
         - uv.lock
