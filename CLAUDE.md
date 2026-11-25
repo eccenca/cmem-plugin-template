@@ -137,6 +137,13 @@ conditional directory and file names used everywhere else in `src/`. The
 project receives exactly what the conditional names delivered before — verified
 across all six test cases, byte for byte, against the 9.0.0 render.
 
+That equivalence holds for a fresh render only. On `copier update`, copier
+renders the *old* release with the *new* release's `_exclude`, so an excluded
+path never appears as deleted and is left in the project untouched. A
+conditional name that renders empty does delete it. Projects that skipped
+9.0.0 therefore kept the workflows 9.0.0 was meant to remove (#128) — and
+moving any other path into `_exclude` has the same effect.
+
 Two details make that safe to touch. Setting `_exclude` normally replaces
 copier's built-in defaults, but this template sets `_subdirectory`, and copier
 only applies `DEFAULT_EXCLUDE` when the subdirectory is the repository root

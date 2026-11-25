@@ -84,6 +84,13 @@ the most time are the silent ones, and both directions have happened:
   wholesale to the template's shorter lists, and the update appeared to add 409
   lint findings. They were not debt; the configuration that had silenced them
   was gone.
+- **A file the template stopped delivering is not removed.** Copier leaves
+  alone anything the template excludes, including files an earlier release
+  wrote. A project updated from before v9.0.0 with `github_page` left blank
+  keeps its old `.github/workflows/`, and one with `pypi` not answered keeps
+  `.github/workflows/publish.yml`. Both still install poetry, nothing updates
+  them any more, and on a gitlab project nothing runs them either, so they go
+  unnoticed. Delete them.
 
 So do not read "no conflicts" as "nothing to check". After updating, look at
 `pyproject.toml` deliberately - at dependency constraints, and at every
@@ -99,6 +106,7 @@ copier copy --trust --defaults --vcs-ref <the tag you updated to> \
   -d project_slug=<slug> -d project_type=<plugin|generic> \
   gh:eccenca/cmem-plugin-template /tmp/reference
 diff /tmp/reference/pyproject.toml pyproject.toml
+diff -rq /tmp/reference/.github .github  # a missing side is the answer
 ```
 
 Treat a sudden jump in lint findings as suspected configuration loss rather
