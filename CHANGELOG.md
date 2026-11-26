@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - the 10.0.0 migration notes left out that hatchling orders wheel and sdist entries differently from poetry-core, which can break a project-owned check in `TaskfileCustom.yaml` or `.gitlab-ci-custom.yml` although the artifact is correct
   - a check of the form `unzip -l dist/*.whl | grep -q <path>` fails with exit code 141 in a GitLab job, whose shell sets `pipefail`, whenever the entry is listed early, and never fails locally through `task`. Use `unzip -l dist/*.whl <path>` instead: it exits non-zero on its own when the entry is missing, with no pipe (#132)
+- step 5 of the 10.0.0 migration notes did not list poetry's `include`: hatchling leaves every file matched by the root `.gitignore` out of both the sdist and the wheel, so a bundled build output that is not committed - a compiled frontend, generated data - silently drops out of the build while `task check` stays green
+  - add `artifacts = ["<package_dir>/<path>/**"]` under both `[tool.hatch.build.targets.sdist]` and `[tool.hatch.build.targets.wheel]`; `uv build` needs the first because it builds the wheel from the sdist, and `uv build --wheel` needs the second. Verify with `unzip -l dist/*.whl <path>` (#133)
 
 ## [10.0.1] 2026-11-25
 
