@@ -7,7 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- the 10.0.0 migration notes left out that hatchling orders wheel and sdist entries differently from poetry-core, which can break a project-owned check in `TaskfileCustom.yaml` or `.gitlab-ci-custom.yml` although the artifact is correct
+  - a check of the form `unzip -l dist/*.whl | grep -q <path>` fails with exit code 141 in a GitLab job, whose shell sets `pipefail`, whenever the entry is listed early, and never fails locally through `task`. Use `unzip -l dist/*.whl <path>` instead: it exits non-zero on its own when the entry is missing, with no pipe (#132)
 
 ## [10.0.1] 2026-11-25
 
